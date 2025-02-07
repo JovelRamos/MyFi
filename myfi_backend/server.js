@@ -13,6 +13,7 @@ const uri = "mongodb+srv://jovel:423275077127@myfi.ezmdt.mongodb.net/?retryWrite
 app.use(cors());
 app.use(express.json());
 
+// Connect to MongoDB using Mongoose
 async function connect(){
     try{
         await mongoose.connect(uri);

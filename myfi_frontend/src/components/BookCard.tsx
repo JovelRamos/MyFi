@@ -1,44 +1,65 @@
-// Singular book component
+// BookCard.tsx
 
-import { Book } from '../types/book';
+import { Book } from '../types/Book';
+import { useState } from 'react';
 
 interface BookCardProps {
     book: Book;
 }
 
 export const BookCard = ({ book }: BookCardProps) => {
+    const [isHovered, setIsHovered] = useState(false);
+    
     const coverUrl = book.cover_id 
         ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
         : '../assets/placeholder-book.png'; //placeholder image
 
     return (
-        <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
+        <div 
+            className="relative h-64 rounded overflow-hidden shadow-lg"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {/* Cover Image */}
             <img 
-                className="w-full h-64 object-cover"
+                className={`w-full h-full object-cover transition-transform duration-300 ${
+                    isHovered ? 'scale-105' : ''
+                }`}
                 src={coverUrl}
                 alt={`Cover of ${book.title}`}
             />
-            <div className="px-6 py-4">
-                <h2 className="font-bold text-xl mb-2 text-gray-800">{book.title}</h2>
-                <p className="text-gray-600 text-sm">
-                    {book.author_names?.join(', ')}
-                </p>
-                <p className="text-gray-500 text-sm">
-                    Published: {book.first_publish_year}
-                </p>
-                {book.ratings_average && (
-                    <div className="mt-2">
-                        <span className="text-yellow-500">★</span>
-                        <span className="text-gray-700">
-                            {book.ratings_average.toFixed(1)}
-                        </span>
-                        {book.ratings_count && (
-                            <span className="text-gray-500 text-sm ml-1">
-                                ({book.ratings_count} ratings)
+            
+            {/* Overlay with Book Information */}
+            <div 
+                className={`absolute inset-0 bg-black bg-opacity-75 transition-opacity duration-300 ${
+                    isHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+            >
+                <div className="flex flex-col justify-center h-full p-4 text-white">
+                    <h2 className="font-bold text-lg mb-2 overflow-hidden text-ellipsis">
+                        {book.title}
+                    </h2>
+                    <p className="text-sm mb-1 overflow-hidden text-ellipsis">
+                        {book.author_names?.join(', ')}
+                    </p>
+                    <p className="text-sm text-gray-300">
+                        Published: {book.first_publish_year}
+                    </p>
+                    
+                    {book.ratings_average && (
+                        <div className="mt-2">
+                            <span className="text-yellow-500">★</span>
+                            <span className="text-white">
+                                {book.ratings_average.toFixed(1)}
                             </span>
-                        )}
-                    </div>
-                )}
+                            {book.ratings_count && (
+                                <span className="text-gray-300 text-sm ml-1">
+                                    ({book.ratings_count} ratings)
+                                </span>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

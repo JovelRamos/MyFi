@@ -1,52 +1,65 @@
 import { useState, useEffect } from 'react';
-import { Book } from './types/book';
-import { BookGrid } from './components/BookGrid';
+import { Book } from './types/Book';
+import { BookSegment } from './types/BookSegment';
+import { BookSegmentRow } from './components/BookSegment';
+import { SegmentManager } from './services/segmentManager';
 
 function App() {
-    const [books, setBooks] = useState<Book[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [segments, setSegments] = useState<BookSegment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/books');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch books');
-                }
-                const data = await response.json();
-                setBooks(data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
-            } finally {
-                setIsLoading(false);
-            }
-        };
+  // Simulated user data 
+  const userReadingList = ['67a2863786be561bd64bb805', '67a2863786be561bd64bb808'];
+  const currentlyReading = ['67a2863886be561bd64bb80e'];
 
-        fetchBooks();
-    }, []);
+  useEffect(() => {
+    const fetchBooksAndCreateSegments = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/books');
+        if (!response.ok) throw new Error('Failed to fetch books');
+        
+        const booksData = await response.json();
+        setBooks(booksData);
+        
+        const generatedSegments = SegmentManager.generateSegments(
+          booksData,
+          userReadingList,
+          currentlyReading
+        );
+        setSegments(generatedSegments);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white shadow">
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-bold text-gray-900">
-                        MyFi
-                    </h1>
-                </div>
-            </header>
+    fetchBooksAndCreateSegments();
+  }, []);
 
-            <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-                {error ? (
-                    <div className="text-red-600 text-center p-4">
-                        {error}
-                    </div>
-                ) : (
-                    <BookGrid books={books} isLoading={isLoading} />
-                )}
-            </main>
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+
+  return (
+    <div className="min-h-screen bg-gray-900 overflow-x-hidden">
+      <header className="bg-gray-800 shadow">
+        <div className="max-w-7xl mx-auto py-6 px-4">
+          <h1 className="text-3xl font-bold text-white">
+            MyFi Books
+          </h1>
         </div>
-    );
+      </header>
+
+      <main className="max-w-7xl mx-auto py-6 px-4">
+        {segments.map(segment => (
+          <BookSegmentRow key={segment.id} segment={segment} />
+        ))}
+      </main>
+    </div>
+  );
 }
 
 export default App;

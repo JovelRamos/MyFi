@@ -1,6 +1,6 @@
 // Book layout
 
-import { Book } from '../types/book';
+import { Book } from '../types/Book';
 import { BookCard } from './BookCard';
 
 interface BookGridProps {
