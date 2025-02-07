@@ -5,26 +5,27 @@ import { useState } from 'react';
 
 interface BookCardProps {
     book: Book;
+    className?: string; // Add this to accept additional classes
 }
 
-export const BookCard = ({ book }: BookCardProps) => {
+export const BookCard = ({ book, className = '' }: BookCardProps) => {
     const [isHovered, setIsHovered] = useState(false);
     
     const coverUrl = book.cover_id 
         ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
-        : '../assets/placeholder-book.png'; //placeholder image
+        : '../assets/placeholder-book.png';
 
-    return (
-        <div 
-            className="relative h-64 rounded overflow-hidden shadow-lg"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
+        return (
+            <div 
+                className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
+                    isHovered ? 'scale-130 z-20' : 'z-10'  // Update z-index values
+                } ${className}`}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
             {/* Cover Image */}
             <img 
-                className={`w-full h-full object-cover transition-transform duration-300 ${
-                    isHovered ? 'scale-105' : ''
-                }`}
+                className="w-full h-full rounded object-cover"
                 src={coverUrl}
                 alt={`Cover of ${book.title}`}
             />
@@ -32,7 +33,7 @@ export const BookCard = ({ book }: BookCardProps) => {
             {/* Overlay with Book Information */}
             <div 
                 className={`absolute inset-0 bg-black bg-opacity-75 transition-opacity duration-300 ${
-                    isHovered ? 'opacity-100' : 'opacity-0'
+                    isHovered ? 'rounded opacity-100' : 'opacity-0'
                 }`}
             >
                 <div className="flex flex-col justify-center h-full p-4 text-white">

@@ -53,7 +53,7 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto py-6 px-4">
+      <main className="max-w-screen mx-auto py-6 px-120">
         {segments.map(segment => (
           <BookSegmentRow key={segment.id} segment={segment} />
         ))}
