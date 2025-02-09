@@ -1,10 +1,22 @@
 @import "tailwindcss";
 
 #root {
+  max-width: 3840px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  overflow-x: hidden;
 }
+
+.flex {
+  scroll-behavior: smooth;
+}
+
+.aspect-ratio:hover {
+  transform: scale(1.05);
+  transition: transform 200ms ease-in-out;
+}
+
 
 .logo {
   height: 6em;

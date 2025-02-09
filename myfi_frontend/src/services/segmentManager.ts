@@ -4,13 +4,13 @@ import { BookSegment, SegmentType } from '../types/BookSegment';
 export class SegmentManager {
   private static readonly SEGMENT_SIZES = {
     CURRENTLY_READING: 5,
-    BECAUSE_YOU_READ: 10,
-    TRENDING_SCIFI: 15,
-    TRENDING_FANTASY: 15,
-    EPIC_SAGAS: 10,
-    PRE_2000: 10,
-    POST_2000: 10,
-    MY_LIST: 20
+    BECAUSE_YOU_READ: 24,
+    TRENDING_SCIFI: 24,
+    TRENDING_FANTASY: 24,
+    EPIC_SAGAS: 24,
+    PRE_2000: 24,
+    POST_2000: 24,
+    MY_LIST: 24
   };
 
   static generateSegments(

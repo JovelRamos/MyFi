@@ -1,33 +1,40 @@
 // BookCard.tsx
 
 import { Book } from '../types/Book';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface BookCardProps {
     book: Book;
-    className?: string; // Add this to accept additional classes
+    className?: string;
 }
 
 export const BookCard = ({ book, className = '' }: BookCardProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const [imageError, setImageError] = useState(false);
     
-    const coverUrl = book.cover_id 
+    const coverUrl = book.cover_id && !imageError
         ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
         : '../assets/placeholder-book.png';
 
-        return (
-            <div 
-                className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
-                    isHovered ? 'scale-130 z-20' : 'z-10'  // Update z-index values
-                } ${className}`}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-            >
-            {/* Cover Image */}
+    return (
+        <div 
+            className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
+                isHovered ? 'scale-130 z-20' : 'z-10'
+            } ${className}`}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {/* Cover Image with lazy loading */}
             <img 
                 className="w-full h-full rounded object-cover"
                 src={coverUrl}
                 alt={`Cover of ${book.title}`}
+                loading="lazy"
+                onError={() => {
+                    console.error(`Failed to load cover for book: "${book.title}"`);
+                    setImageError(true);
+                }}
+                decoding="async"
             />
             
             {/* Overlay with Book Information */}
