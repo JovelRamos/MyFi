@@ -40,6 +40,11 @@ async function fetchBooks() {
             
             // Process and save each book
             for (const bookData of books) {
+                if (!bookData.language.includes('eng')) {
+                    console.log(`Skipping non-English book: ${bookData.title}`);
+                    continue;
+                }
+
                 const bookDocument = {
                     title: bookData.title,
                     author_names: bookData.author_name || [],

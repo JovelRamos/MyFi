@@ -7,104 +7,96 @@ interface BookSegmentProps {
 }
 
 export const BookSegmentRow = ({ segment }: BookSegmentProps) => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [maxScroll, setMaxScroll] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const bookWidthWithMargin = 300; // Approximate default width of book card, adjusted dynamically later
-  const scrollButtonWidth = 50; // Width of the scroll buttons (matches peek cover width)
+  const [currentPage, setCurrentPage] = useState(0);
+  const [showControls, setShowControls] = useState(false);
+  const segmentRef = useRef<HTMLDivElement>(null);
+  const booksPerPage = 6;
+  const totalPages = Math.ceil(segment.books.length / booksPerPage);
 
   useEffect(() => {
-    if (containerRef.current) {
-      const containerWidth = containerRef.current.clientWidth;
-      const totalContentWidth = containerRef.current.scrollWidth;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (segmentRef.current) {
+        const rect = segmentRef.current.getBoundingClientRect();
+        const isInVerticalRange = e.clientY >= rect.top && e.clientY <= rect.bottom;
+        setShowControls(isInVerticalRange);
+      }
+    };
 
-      // Set maximum scroll position
-      setMaxScroll(totalContentWidth - containerWidth);
-    }
-  }, [segment.books]);
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
-  const calculateScrollAmount = () => {
-    const containerWidth = containerRef.current?.clientWidth || 0;
-
-    // Compute the number of books visible per row, subtracted by peek (scroll button width)
-    const totalVisibleWidth = containerWidth - 2 * scrollButtonWidth; // Space excluding left/right peeks
-    const booksPerRow = Math.floor(totalVisibleWidth / bookWidthWithMargin);
-
-    // Calculate the amount to scroll — equivalent to one "row" of books
-    return booksPerRow * bookWidthWithMargin;
-  };
-
-  const scroll = (direction: "left" | "right") => {
-    if (containerRef.current) {
-      const scrollAmount = calculateScrollAmount();
-      const scrollByAmount = direction === "left" ? -scrollAmount : scrollAmount;
-
-      containerRef.current.scrollBy({ left: scrollByAmount, behavior: "smooth" });
-
-      setScrollPosition((prev) => {
-        const newPosition = prev + scrollByAmount;
-        return Math.max(0, Math.min(newPosition, maxScroll));
-      });
-    }
+  const getCurrentPageBooks = () => {
+    const start = currentPage * booksPerPage;
+    const end = start + booksPerPage;
+    return segment.books.slice(start, end);
   };
 
   return (
-    <div className="relative mx-0 -mb-8">
-      <div className="absolute left-4 z-0 w-full">
+    <div 
+      ref={segmentRef}
+      className="mb-16 relative"
+    >
+      <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-white">
           {segment.isPersonalized && "📚 "}
           {segment.title}
         </h2>
+        
+        {/* Page Indicators */}
+        {showControls && (
+          <div className="flex">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <div
+                key={index}
+                className={`h-1 transition-all duration-200
+                          ${index === currentPage 
+                            ? 'w-8 bg-white' 
+                            : 'w-4 bg-gray-600'}`}
+                aria-label={`Page ${index + 1} of ${totalPages}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      <div className="relative group">
-        {/* Left Scroll Button */}
-        <button
-          onClick={() => scroll("left")}
-          className="absolute left-0 z-30 h-full px-2 py-4 bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{
-            display: scrollPosition <= 0 ? "none" : "block",
-            width: `${scrollButtonWidth}px`,
-          }}
-        >
-          ←
-        </button>
+      <div className="flex items-center relative">
+        {/* Previous Button */}
+        {showControls && currentPage > 0 && (
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+            className="absolute left-[-60px] top-1/2 -translate-y-1/2 w-12 h-24 
+                     bg-gray-800 hover:bg-gray-700 text-white rounded-l
+                     transition-colors duration-200 flex items-center justify-center"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
 
-        <div
-          ref={containerRef}
-          className="flex overflow-x-scroll overflow-y-hidden scroll-smooth px-0"
-          style={{
-            paddingTop: "3rem",
-            paddingBottom: "2rem",
-            position: "relative",
-            zIndex: 1,
-          }}
-          onScroll={(e) => setScrollPosition(e.currentTarget.scrollLeft)}
-        >
-          {segment.books.map((book, index) => (
-            <div
-              key={book._id}
-              className="flex-none"
-              style={{
-                width: `calc(${100 / 6}% - 3rem)`, // Dynamically divide space for 6 books with margins
-                marginRight: `${index === segment.books.length - 1 ? "" : "1rem"}`, 
-                 // consistent spacing
-                aspectRatio: "2 / 3",
-              }}
-            >
+        {/* Books Grid */}
+        <div className="grid grid-cols-6 gap-8 w-full">
+          {getCurrentPageBooks().map((book) => (
+            <div key={book._id} className="aspect-[2/3]">
               <BookCard book={book} />
             </div>
           ))}
         </div>
 
-        {/* Right Button */}
-        <button
-          onClick={() => scroll("right")}
-          className="absolute right-0 top-0 z-30 h-full px-4 py-4 bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ display: scrollPosition >= maxScroll ? "none" : "block" }}
-        >
-          →
-        </button>
+        {/* Next Button */}
+        {showControls && currentPage < totalPages - 1 && (
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+            className="absolute right-[-60px] top-1/2 -translate-y-1/2 w-12 h-24 
+                     bg-gray-800 hover:bg-gray-700 text-white rounded-r
+                     transition-colors duration-200 flex items-center justify-center"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );

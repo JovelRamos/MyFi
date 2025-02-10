@@ -16,14 +16,14 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
         ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
         : '../assets/placeholder-book.png';
 
-    return (
-        <div 
-            className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
-                isHovered ? 'scale-130 z-20' : 'z-10'
-            } ${className}`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
+        return (
+            <div 
+              className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
+                isHovered ? 'scale-105 z-20' : 'z-10'
+              } ${className}`}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
             {/* Cover Image with lazy loading */}
             <img 
                 className="w-full h-full rounded object-cover"

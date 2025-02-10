@@ -6,6 +6,25 @@ const http = rateLimit(axios.create(), { maxRequests: 15, perMilliseconds: 1000 
 
 const Book = require('../models/Book');
 
+async function fetchBookDescription(workId) {
+    try {
+        const response = await http.get(`https://openlibrary.org/works/${workId}.json`);
+        if (response.data.description) {
+            // Handle both string and object descriptions
+            const description = typeof response.data.description === 'object' 
+                ? response.data.description.value 
+                : response.data.description;
+            
+            // Split on '----------' and take only the first part
+            return description.split('----------')[0].trim();
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching description for work ${workId}:`, error);
+        return null;
+    }
+}
+
 async function fetchTopScifiBooks() {
     try {
         // Fetch initial search results
@@ -17,8 +36,23 @@ async function fetchTopScifiBooks() {
         
         // Process and save each book
         for (const bookData of books) {
+            if (!bookData.language) {
+                console.log(`⚠️ Missing language data for book: ${bookData.title}`);
+                continue
+            } else if (!bookData.language.includes('eng')) {
+                console.log(`Skipping non-English book: ${bookData.title}`);
+                continue;
+            }
+
+            // Extract work ID from the key
+            const workId = bookData.key.split('/')[2];
+            
+            // Fetch description from works API
+            const description = await fetchBookDescription(workId);
+
             const bookDocument = {
                 title: bookData.title,
+                description: description,
                 author_names: bookData.author_name || [],
                 author_keys: bookData.author_key || [],
                 cover_edition_key: bookData.cover_edition_key,

@@ -44,16 +44,16 @@ function App() {
 
 
   return (
-    <div className="min-h-screen bg-gray-900 overflow-x-hidden">
+    <div className="min-w-screen bg-zinc-900">
       <header className="bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4">
+        <div className="max-w-[3840px] min-w-[1920px] mx-auto py-6 px-24">
           <h1 className="text-3xl font-bold text-white">
             MyFi Books
           </h1>
         </div>
       </header>
 
-      <main className="max-w-screen mx-auto py-6 px-120">
+      <main className="max-w-[3840px] min-w-[1920px] mx-auto py-12 px-120">
         {segments.map(segment => (
           <BookSegmentRow key={segment.id} segment={segment} />
         ))}
