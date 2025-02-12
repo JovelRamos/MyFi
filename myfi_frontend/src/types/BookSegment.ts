@@ -3,6 +3,7 @@ import { Book } from './Book';
 export type SegmentType = 
   | 'CURRENTLY_READING'
   | 'BECAUSE_YOU_READ'
+  | 'RECOMMENDED_FOR_YOU'
   | 'TRENDING_SCIFI'
   | 'TRENDING_FANTASY'
   | 'EPIC_SAGAS'
@@ -10,7 +11,7 @@ export type SegmentType =
   | 'POST_2000'
   | 'MY_LIST';
 
-export interface Segment {
+export interface BookSegment {
   id: string;
   title: string;
   type: SegmentType;

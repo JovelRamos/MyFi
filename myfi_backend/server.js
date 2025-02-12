@@ -10,6 +10,8 @@ const PORT = 8000;
 
 const uri = "mongodb+srv://jovel:423275077127@myfi.ezmdt.mongodb.net/?retryWrites=true&w=majority&appName=myfi"
 
+const { spawn } = require('child_process');
+
 app.use(cors());
 app.use(express.json());
 
@@ -43,9 +45,56 @@ app.get('/api/import-books', async (req, res) => {
 app.get('/api/books', async (req, res) => {
     try {
         const books = await Book.find().sort({ ratings_average: -1 });
-        res.json(books);
+        
+        // Test user data
+        const userData = {
+            currentlyReading: ['/works/OL27482W'],  // The Hobbit
+            readingList: ['/works/OL82536W']        // Harry Potter
+        };
+
+        res.json({
+            books,
+            userData
+        });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch books' });
+    }
+});
+
+app.get('/api/recommendations/:bookId', async (req, res) => {
+    try {
+        const { bookId } = req.params;
+        
+        // Spawn Python process
+        const python = spawn('python', ['recommendation_service.py', bookId]);
+        
+        let dataString = '';
+
+        // Collect data from script
+        python.stdout.on('data', function (data) {
+            dataString += data.toString();
+        });
+
+        // Handle errors
+        python.stderr.on('data', (data) => {
+            console.error(`Error from Python script: ${data}`);
+        });
+
+        // Send recommendations when process completes
+        python.on('close', (code) => {
+            if (code !== 0) {
+                return res.status(500).json({ error: 'Failed to get recommendations' });
+            }
+            try {
+                const recommendations = JSON.parse(dataString);
+                res.json(recommendations);
+            } catch (error) {
+                res.status(500).json({ error: 'Failed to parse recommendations' });
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get recommendations' });
     }
 });
 
