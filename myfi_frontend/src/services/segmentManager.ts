@@ -169,21 +169,41 @@ export class SegmentManager {
         allBooks: Book[]
     ): Promise<Book[]> {
         try {
+            // Include the full backend URL
             const response = await fetch(
-                `/api/recommendations/${sourceBookId}`
+                `http://localhost:8000/api/recommendations/${sourceBookId}`
             );
             
             if (!response.ok) {
-                throw new Error('Failed to fetch recommendations');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            const recommendations: Recommendation[] = await response.json();
-            
+    
+            const text = await response.text(); // First get the raw text
+            console.log('Raw API response:', text); // Log the raw response
+    
+            let recommendations: Recommendation[];
+            try {
+                recommendations = JSON.parse(text);
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError);
+                console.error('Received text:', text);
+                throw new Error('Invalid JSON response from API');
+            }
+    
+            if (!Array.isArray(recommendations)) {
+                console.error('Unexpected response format:', recommendations);
+                throw new Error('API response is not an array');
+            }
+    
             // Map recommendation IDs to actual book objects
             return recommendations
-                .map((rec: Recommendation) => 
-                    allBooks.find((book: Book) => book._id === rec.id)
-                )
+                .map((rec: Recommendation) => {
+                    const book = allBooks.find((book: Book) => book._id === rec.id);
+                    if (!book) {
+                        console.warn(`Book not found for recommendation ID: ${rec.id}`);
+                    }
+                    return book;
+                })
                 .filter((book: Book | undefined): book is Book => book !== undefined);
                 
         } catch (error) {
@@ -191,5 +211,6 @@ export class SegmentManager {
             return [];
         }
     }
+    
   }
   

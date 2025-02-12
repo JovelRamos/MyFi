@@ -51,6 +51,7 @@ async function fetchTopScifiBooks() {
             const description = await fetchBookDescription(workId);
 
             const bookDocument = {
+                _id: bookData.key,
                 title: bookData.title,
                 description: description,
                 author_names: bookData.author_name || [],
@@ -59,12 +60,11 @@ async function fetchTopScifiBooks() {
                 cover_id: bookData.cover_i,
                 first_publish_year: bookData.first_publish_year,
                 languages: bookData.language || [],
-                open_library_key: bookData.key,
                 edition_count: bookData.edition_count,
             };
 
             // Check if book already exists
-            const existingBook = await Book.findOne({ open_library_key: bookData.key });
+            const existingBook = await Book.findOne({ _id: bookData.key });
             
             if (existingBook) {
                 // Update existing record

@@ -12,7 +12,12 @@ const uri = "mongodb+srv://jovel:423275077127@myfi.ezmdt.mongodb.net/?retryWrite
 
 const { spawn } = require('child_process');
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
+
 app.use(express.json());
 
 // Connect to MongoDB using Mongoose
@@ -63,39 +68,107 @@ app.get('/api/books', async (req, res) => {
 
 app.get('/api/recommendations/:bookId', async (req, res) => {
     try {
-        const { bookId } = req.params;
+        let { bookId } = req.params;
+        
+        // Add '/works/' prefix back if it's not present
+        if (!bookId.startsWith('/works/')) {
+            bookId = `/works/${bookId}`;
+        }
+        
+        console.log('Processing recommendation request for book:', bookId); // Debug log
         
         // Spawn Python process
-        const python = spawn('python', ['recommendation_service.py', bookId]);
+        const python = spawn('python', ['services/recommendation_service.py', bookId]);
         
         let dataString = '';
+        let errorString = '';
 
         // Collect data from script
         python.stdout.on('data', function (data) {
             dataString += data.toString();
+            console.log(`Python stdout: ${data}`);
         });
 
         // Handle errors
         python.stderr.on('data', (data) => {
-            console.error(`Error from Python script: ${data}`);
+            errorString += data.toString();
+            console.error(`Python stderr: ${data}`);
         });
 
-        // Send recommendations when process completes
         python.on('close', (code) => {
             if (code !== 0) {
-                return res.status(500).json({ error: 'Failed to get recommendations' });
+                console.error(`Python process failed with code ${code}`);
+                console.error(`Error output: ${errorString}`);
+                return res.status(500).json({ 
+                    error: 'Failed to get recommendations',
+                    details: errorString
+                });
             }
+
             try {
-                const recommendations = JSON.parse(dataString);
+                const recommendations = JSON.parse(dataString.trim());
                 res.json(recommendations);
             } catch (error) {
-                res.status(500).json({ error: 'Failed to parse recommendations' });
+                console.error('Failed to parse recommendations:', error);
+                res.status(500).json({ 
+                    error: 'Failed to parse recommendations',
+                    details: error.message
+                });
             }
         });
 
     } catch (error) {
-        res.status(500).json({ error: 'Failed to get recommendations' });
+        console.error('Endpoint error:', error);
+        res.status(500).json({ 
+            error: 'Failed to get recommendations',
+            details: error.message
+        });
     }
 });
+
+// Test endpoint to check if a book exists
+app.get('/api/books/:bookId', async (req, res) => {
+    try {
+        const { bookId } = req.params;
+        const formattedId = bookId.startsWith('/works/') ? bookId : `/works/${bookId}`;
+        
+        console.log('Looking for book with ID:', formattedId);
+        
+        const book = await Book.findById(formattedId);
+        
+        if (!book) {
+            return res.status(404).json({ 
+                error: 'Book not found',
+                searchedId: formattedId
+            });
+        }
+        
+        res.json(book);
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Failed to fetch book',
+            details: error.message,
+            searchedId: req.params.bookId
+        });
+    }
+});
+
+
+// Debug endpoint to check first few books in database
+app.get('/api/debug/books', async (req, res) => {
+    try {
+        const books = await Book.find().limit(5);
+        res.json({
+            count: await Book.countDocuments(),
+            sampleBooks: books
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
+
 
 app.listen(PORT, () => console.log(`Server started on ${PORT}`));
