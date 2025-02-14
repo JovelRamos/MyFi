@@ -169,48 +169,49 @@ export class SegmentManager {
         allBooks: Book[]
     ): Promise<Book[]> {
         try {
-            // Include the full backend URL
+            // Remove any existing '/works/' prefix
+            const cleanBookId = sourceBookId.replace('/works/', '/');
+            
+            console.log('Requesting recommendations for:', cleanBookId); // Debug log
+            
             const response = await fetch(
-                `http://localhost:8000/api/recommendations/${sourceBookId}`
+                `http://localhost:8000/api/recommendations${cleanBookId}`
             );
             
             if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-    
-            const text = await response.text(); // First get the raw text
-            console.log('Raw API response:', text); // Log the raw response
-    
-            let recommendations: Recommendation[];
-            try {
-                recommendations = JSON.parse(text);
-            } catch (parseError) {
-                console.error('JSON parse error:', parseError);
-                console.error('Received text:', text);
-                throw new Error('Invalid JSON response from API');
-            }
-    
-            if (!Array.isArray(recommendations)) {
-                console.error('Unexpected response format:', recommendations);
-                throw new Error('API response is not an array');
-            }
-    
-            // Map recommendation IDs to actual book objects
+            console.log('Response OK'); // Debug log
+
+            const recommendations = await response.json();
+            console.log('Books found:', recommendations); // Debug log
+
             return recommendations
                 .map((rec: Recommendation) => {
-                    const book = allBooks.find((book: Book) => book._id === rec.id);
+                    // Clean up the recommendation ID as well
+                    const recId = rec.id.replace('/works/', '');
+                    const book = allBooks.find((b: Book) => 
+                        b._id.replace('/works/', '') === recId
+                    );
                     if (!book) {
                         console.warn(`Book not found for recommendation ID: ${rec.id}`);
                     }
+
                     return book;
                 })
                 .filter((book: Book | undefined): book is Book => book !== undefined);
-                
+
         } catch (error) {
             console.error('Error getting ML recommendations:', error);
+            
             return [];
         }
+
     }
+    
+    
     
   }
   

@@ -53,7 +53,7 @@ app.get('/api/books', async (req, res) => {
         
         // Test user data
         const userData = {
-            currentlyReading: ['/works/OL27482W'],  // The Hobbit
+            currentlyReading: ['/works/OL82536W'],  // The Hobbit
             readingList: ['/works/OL82536W']        // Harry Potter
         };
 
@@ -66,6 +66,8 @@ app.get('/api/books', async (req, res) => {
     }
 });
 
+
+
 app.get('/api/recommendations/:bookId', async (req, res) => {
     try {
         let { bookId } = req.params;
@@ -75,7 +77,14 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
             bookId = `/works/${bookId}`;
         }
         
-        console.log('Processing recommendation request for book:', bookId); // Debug log
+        console.log('Processing recommendation request for book:', bookId);
+        
+        // Check if the book exists in the database first
+        const book = await Book.findById(bookId);
+        if (!book) {
+            console.log('Book not found in database:', bookId);
+            return res.status(404).json({ error: 'Book not found in database' });
+        }
         
         // Spawn Python process
         const python = spawn('python', ['services/recommendation_service.py', bookId]);
@@ -166,6 +175,22 @@ app.get('/api/debug/books', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+app.get('/api/debug/book/:bookId', async (req, res) => {
+    try {
+        const { bookId } = req.params;
+        const formattedId = bookId.startsWith('/works/') ? bookId : `/works/${bookId}`;
+        const book = await Book.findById(formattedId);
+        res.json({
+            exists: !!book,
+            bookData: book,
+            searchedId: formattedId
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 
 
