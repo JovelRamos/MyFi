@@ -53,8 +53,8 @@ app.get('/api/books', async (req, res) => {
         
         // Test user data
         const userData = {
-            currentlyReading: ['/works/OL82536W'],  // The Hobbit
-            readingList: ['/works/OL82536W']        // Harry Potter
+            currentlyReading: ['/works/OL82536W'],  // Harry Potter
+            readingList: ['/works/OL27482W']        // The Hobbit
         };
 
         res.json({

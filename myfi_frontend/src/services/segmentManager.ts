@@ -72,10 +72,13 @@ export class SegmentManager {
         // ML-based recommendations
         if (currentlyReading.length > 0) {
             try {
+                console.log('Getting ML recommendations for:', currentlyReading[0]);
                 const recommendedBooks = await this.getMLRecommendations(
                     currentlyReading[0],
                     books
                 );
+                console.log('Number of recommended books:', recommendedBooks.length);
+                console.log('Recommended books:', recommendedBooks);
                 
                 if (recommendedBooks.length > 0) {
                     segments.push({
@@ -86,6 +89,8 @@ export class SegmentManager {
                         priority: 3,
                         isPersonalized: true
                     });
+                } else {
+                    console.log('No recommendations were found');
                 }
             } catch (error) {
                 console.error('Failed to get ML recommendations:', error);
@@ -144,6 +149,7 @@ export class SegmentManager {
                 priority: 7
             }
         );
+        console.log('Final segments:', segments);
 
         // Filter out any segments that ended up with zero books
         return segments
@@ -186,22 +192,28 @@ export class SegmentManager {
             console.log('Response OK'); // Debug log
 
             const recommendations = await response.json();
-            console.log('Books found:', recommendations); // Debug log
+            console.log('Raw recommendations:', recommendations); // Debug log
 
-            return recommendations
-                .map((rec: Recommendation) => {
-                    // Clean up the recommendation ID as well
-                    const recId = rec.id.replace('/works/', '');
-                    const book = allBooks.find((b: Book) => 
-                        b._id.replace('/works/', '') === recId
-                    );
-                    if (!book) {
-                        console.warn(`Book not found for recommendation ID: ${rec.id}`);
-                    }
+            // Log the book matching process
+            const mappedBooks = recommendations.map((rec: Recommendation) => {
+                const recId = rec.id.replace('/works/', '');
+                console.log('Looking for book with ID:', recId);
+                
+                const book = allBooks.find((b: Book) => 
+                    b._id.replace('/works/', '') === recId
+                );
+                
+                if (!book) {
+                    console.log('No matching book found for ID:', recId);
+                } else {
+                    console.log('Found matching book:', book.title);
+                }
+                
+                return book;
+            }).filter((book: Book | undefined): book is Book => book !== undefined);
 
-                    return book;
-                })
-                .filter((book: Book | undefined): book is Book => book !== undefined);
+            console.log('Final mapped books:', mappedBooks.length);
+            return mappedBooks;
 
         } catch (error) {
             console.error('Error getting ML recommendations:', error);
