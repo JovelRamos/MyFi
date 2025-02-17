@@ -128,14 +128,14 @@ if __name__ == "__main__":
         if len(sys.argv) < 2:
             raise ValueError("Book ID argument is required")
             
-        book_id = sys.argv[1]
-        print(f"Starting recommendation process for book ID: {book_id}", file=sys.stderr)
+        book_ids = sys.argv[1:]
+        print(f"Starting recommendation process for book IDs: {book_ids}", file=sys.stderr)
         
         recommender = BookRecommender()
-        recommendations = recommender.get_recommendations(book_id)
+        recommendations = recommender.get_recommendations_multiple(book_ids)
         
         if not recommendations:
-            print(f"No recommendations found for book ID: {book_id}", file=sys.stderr)
+            print(f"No recommendations found for book IDs: {book_ids}", file=sys.stderr)
             
         print(json.dumps(recommendations))
         

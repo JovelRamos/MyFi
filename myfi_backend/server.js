@@ -53,8 +53,8 @@ app.get('/api/books', async (req, res) => {
         
         // Test user data
         const userData = {
-            currentlyReading: ['/works/OL82536W'],  // Harry Potter
-            readingList: ['/works/OL27482W']        // The Hobbit
+            currentlyReading: ['/works/OL82536W, /works/OL27482W'],  // Harry Potter & The Hobbit
+            readingList: ['']    
         };
 
         res.json({
@@ -190,6 +190,131 @@ app.get('/api/debug/book/:bookId', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// Add this new endpoint for multiple book recommendations
+app.get('/api/recommendations_multiple', async (req, res) => {
+    try {
+        let bookIds = req.query.books;
+        
+        if (!bookIds) {
+            return res.status(400).json({ error: 'No book IDs provided' });
+        }
+
+        // Split the comma-separated book IDs and clean them
+        const bookIdArray = bookIds.split(',').map(id => {
+            // Remove any existing '/works/' prefix and trim whitespace
+            id = id.trim().replace('/works/', '');
+            // Add '/works/' prefix
+            return `/works/${id}`;
+        });
+        
+        console.log('Processing recommendation request for books:', bookIdArray);
+        
+        // Verify all books exist in the database
+        for (const bookId of bookIdArray) {
+            const book = await Book.findById(bookId);
+            if (!book) {
+                console.log('Book not found in database:', bookId);
+                return res.status(404).json({ error: `Book not found in database: ${bookId}` });
+            }
+        }
+        
+        // Spawn Python process with multiple book IDs
+        const python = spawn('python', [
+            'services/recommendation_service.py',
+            ...bookIdArray
+        ]);
+        
+        let dataString = '';
+        let errorString = '';
+
+        python.stdout.on('data', function (data) {
+            dataString += data.toString();
+            console.log(`Python stdout: ${data}`);
+        });
+
+        python.stderr.on('data', (data) => {
+            errorString += data.toString();
+            console.error(`Python stderr: ${data}`);
+        });
+
+        python.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`Python process failed with code ${code}`);
+                console.error(`Error output: ${errorString}`);
+                return res.status(500).json({ 
+                    error: 'Failed to get recommendations',
+                    details: errorString
+                });
+            }
+
+            try {
+                const recommendations = JSON.parse(dataString.trim());
+                res.json(recommendations);
+            } catch (error) {
+                console.error('Failed to parse recommendations:', error);
+                res.status(500).json({ 
+                    error: 'Failed to parse recommendations',
+                    details: error.message
+                });
+            }
+        });
+
+    } catch (error) {
+        console.error('Endpoint error:', error);
+        res.status(500).json({ 
+            error: 'Failed to get recommendations',
+            details: error.message
+        });
+    }
+});
+
+
+// Add debug endpoint for testing multiple recommendations
+app.get('/api/debug/recommendations_multiple', async (req, res) => {
+    try {
+        // Test with some sample book IDs
+        const testBookIds = ['/works/OL82536W', '/works/OL27482W'];
+        
+        console.log('Testing multiple recommendations for:', testBookIds);
+        
+        // Spawn Python process with test book IDs
+        const python = spawn('python', [
+            'services/recommendation_service.py',
+            ...testBookIds
+        ]);
+        
+        let dataString = '';
+        let errorString = '';
+
+        python.stdout.on('data', (data) => {
+            dataString += data.toString();
+            console.log(`Debug Python stdout: ${data}`);
+        });
+
+        python.stderr.on('data', (data) => {
+            errorString += data.toString();
+            console.error(`Debug Python stderr: ${data}`);
+        });
+
+        python.on('close', (code) => {
+            res.json({
+                status: code === 0 ? 'success' : 'error',
+                exitCode: code,
+                stdout: dataString,
+                stderr: errorString,
+                testBookIds: testBookIds
+            });
+        });
+
+    } catch (error) {
+        res.status(500).json({ 
+            error: 'Debug endpoint failed',
+            details: error.message
+        });
+    }
+});
+
 
 
 

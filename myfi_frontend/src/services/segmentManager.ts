@@ -74,7 +74,7 @@ export class SegmentManager {
             try {
                 console.log('Getting ML recommendations for:', currentlyReading[0]);
                 const recommendedBooks = await this.getMLRecommendations(
-                    currentlyReading[0],
+                    currentlyReading,
                     books
                 );
                 console.log('Number of recommended books:', recommendedBooks.length);
@@ -97,12 +97,32 @@ export class SegmentManager {
             }
         }
 
-        // Because You Read
-        if (currentlyReading.length > 0) {
-            const sourceBook = books.find(book => currentlyReading[0] === book._id);
-            if (sourceBook) {
-                const similarBooks = this.adjustArrayToMultipleOfSix(
-                    this.getSimilarBooks(sourceBook, books)
+    // Because You Read
+    if (currentlyReading.length > 0) {
+        // Split the string if it contains multiple IDs
+        const bookIds = currentlyReading[0].split(',').map(id => id.trim());
+        const mostRecentBook = bookIds[bookIds.length - 1]; // Get the last ID
+        
+        console.log('Most recent book ID (before cleanup):', mostRecentBook);
+
+        // Clean up the ID
+        const cleanMostRecentId = mostRecentBook.replace('/works/', '').trim();
+        
+        console.log('Looking for book with clean ID:', cleanMostRecentId);
+
+        const sourceBook = books.find(book => {
+            const cleanBookId = book._id.replace('/works/', '').trim();
+            return cleanBookId === cleanMostRecentId;
+        });
+
+        console.log('Found source book:', sourceBook);
+
+        if (sourceBook) {
+            try {
+                console.log('Getting recommendations for most recent book:', sourceBook.title);
+                const similarBooks = await this.getMLRecommendations(
+                    [mostRecentBook],
+                    books.filter(b => b._id !== sourceBook._id)
                 );
                 
                 if (similarBooks.length > 0) {
@@ -110,14 +130,33 @@ export class SegmentManager {
                         id: `because-${sourceBook._id}`,
                         title: `Because You Read ${sourceBook.title}`,
                         type: 'BECAUSE_YOU_READ',
-                        books: similarBooks,
+                        books: this.adjustArrayToMultipleOfSix(similarBooks),
                         priority: 4,
                         isPersonalized: true,
                         sourceBook
                     });
                 }
+            } catch (error) {
+                console.error('Failed to get Because You Read recommendations:', error);
+                console.error('Source book:', sourceBook);
             }
+        } else {
+            console.error('Source book not found. Details:', {
+                originalId: mostRecentBook,
+                cleanId: cleanMostRecentId,
+                bookIds,
+                availableBookIds: books.slice(0, 5).map(b => ({
+                    id: b._id,
+                    cleanId: b._id.replace('/works/', '').trim(),
+                    title: b.title
+                })),
+                currentlyReading
+            });
         }
+    }
+
+
+
 
         // Other segments
         segments.push(
@@ -157,12 +196,6 @@ export class SegmentManager {
             .sort((a, b) => a.priority - b.priority);
     }
   
-    private static getSimilarBooks(sourceBook: Book, allBooks: Book[]): Book[] {
-      // Implement similarity logic here (based on genres, authors, etc.)
-      return allBooks
-        .filter(book => book._id !== sourceBook._id)
-        .slice(0, this.SEGMENT_SIZES.BECAUSE_YOU_READ);
-    }
   
     private static filterAndSortByRating(books: Book[], genre?: string): Book[] {
       return [...books]
@@ -171,57 +204,68 @@ export class SegmentManager {
     }
 
     private static async getMLRecommendations(
-        sourceBookId: string,
+        bookIds: string[],
         allBooks: Book[]
     ): Promise<Book[]> {
         try {
-            // Remove any existing '/works/' prefix
-            const cleanBookId = sourceBookId.replace('/works/', '/');
-            
-            console.log('Requesting recommendations for:', cleanBookId); // Debug log
-            
-            const response = await fetch(
-                `http://localhost:8000/api/recommendations${cleanBookId}`
-            );
-            
+            // Ensure we have valid book IDs
+            if (!bookIds.length) {
+                console.error('No book IDs provided');
+                return [];
+            }
+    
+            // Clean and format book IDs
+            const cleanBookIds = bookIds.map(id => {
+                const cleaned = id.replace('/works/', '').trim();
+                console.log('Cleaned book ID:', cleaned);
+                return cleaned;
+            });
+    
+            console.log('Requesting recommendations for:', cleanBookIds);
+    
+            // Construct the query string
+            const queryString = cleanBookIds.join(',');
+            const url = `http://localhost:8000/api/recommendations_multiple?books=${queryString}`;
+            console.log('Making request to:', url);
+    
+            const response = await fetch(url);
+    
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Error response:', errorText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            console.log('Response OK'); // Debug log
-
+    
             const recommendations = await response.json();
-            console.log('Raw recommendations:', recommendations); // Debug log
-
-            // Log the book matching process
-            const mappedBooks = recommendations.map((rec: Recommendation) => {
-                const recId = rec.id.replace('/works/', '');
-                console.log('Looking for book with ID:', recId);
-                
-                const book = allBooks.find((b: Book) => 
-                    b._id.replace('/works/', '') === recId
-                );
-                
-                if (!book) {
-                    console.log('No matching book found for ID:', recId);
-                } else {
-                    console.log('Found matching book:', book.title);
-                }
-                
-                return book;
-            }).filter((book: Book | undefined): book is Book => book !== undefined);
-
-            console.log('Final mapped books:', mappedBooks.length);
+            console.log('Received recommendations:', recommendations);
+    
+            // Map recommendations to books
+            const mappedBooks = recommendations
+                .map((rec: Recommendation) => {
+                    const recId = rec.id.replace('/works/', '');
+                    const book = allBooks.find(b => 
+                        b._id.replace('/works/', '') === recId
+                    );
+    
+                    if (book) {
+                        console.log('Found matching book:', book.title);
+                        return book;
+                    } else {
+                        console.log('No matching book found for ID:', recId);
+                        return null;
+                    }
+                })
+                .filter((book: Book | null): book is Book => book !== null);
+    
+            console.log(`Mapped ${mappedBooks.length} books successfully`);
             return mappedBooks;
-
+    
         } catch (error) {
-            console.error('Error getting ML recommendations:', error);
-            
+            console.error('Error in getMLRecommendations:', error);
             return [];
         }
-
     }
+    
     
     
     
