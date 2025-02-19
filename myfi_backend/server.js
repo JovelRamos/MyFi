@@ -1,14 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { fetchTopScifiBooks } = require('./utils/fetchBaseBooks');
 const Book = require('./models/Book');
+const User = require('./models/User');
+const auth = require('./middleware/auth');
 
 const app = express();
-const PORT = 8000;
-
-const uri = "mongodb+srv://jovel:423275077127@myfi.ezmdt.mongodb.net/?retryWrites=true&w=majority&appName=myfi"
+const PORT = process.env.PORT || 8000;
+const uri = process.env.MONGODB_URI;
 
 const { spawn } = require('child_process');
 
@@ -51,20 +53,36 @@ app.get('/api/books', async (req, res) => {
     try {
         const books = await Book.find().sort({ ratings_average: -1 });
         
-        // Test user data
-        const userData = {
-            currentlyReading: ['/works/OL82536W, /works/OL27482W'],  // Harry Potter & The Hobbit
-            readingList: ['']    
-        };
+        // If user is authenticated, include their data
+        let userData = null;
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                const user = await User.findById(decoded.userId);
+                if (user) {
+                    userData = {
+                        currentlyReading: user.currentlyReading,
+                        readingList: user.readingList
+                    };
+                }
+            } catch (error) {
+                // Token verification failed, but we'll still return books
+                console.log('Token verification failed:', error);
+            }
+        }
 
         res.json({
             books,
-            userData
+            userData // Will be null if user is not authenticated
         });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch books' });
     }
 });
+
+
 
 
 
@@ -315,7 +333,125 @@ app.get('/api/debug/recommendations_multiple', async (req, res) => {
     }
 });
 
-
+// Register endpoint
+app.post('/api/auth/register', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+  
+      // Check if user already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: 'Email already registered' });
+      }
+  
+      // Create new user
+      const user = new User({
+        email,
+        password,
+        readingList: [],
+        currentlyReading: []
+      });
+  
+      await user.save();
+  
+      // Generate token
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRATION }
+      );
+  
+      res.status(201).json({
+        token,
+        user: {
+          id: user._id,
+          email: user.email,
+          readingList: user.readingList,
+          currentlyReading: user.currentlyReading
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Registration failed' });
+    }
+  });
+  
+  // Login endpoint
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+  
+      // Find user
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+  
+      // Verify password
+      const isMatch = await user.comparePassword(password);
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+  
+      // Generate token
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRATION }
+      );
+  
+      res.json({
+        token,
+        user: {
+          id: user._id,
+          email: user.email,
+          readingList: user.readingList,
+          currentlyReading: user.currentlyReading
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Login failed' });
+    }
+  });
+  
+  // Verify token endpoint
+  app.get('/api/auth/verify', auth, async (req, res) => {
+    try {
+      const user = await User.findById(req.userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      res.json({
+        id: user._id,
+        email: user.email,
+        readingList: user.readingList,
+        currentlyReading: user.currentlyReading
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Verification failed' });
+    }
+  });
+  
+  // Protected route example - Update reading list
+  app.post('/api/user/reading-list', auth, async (req, res) => {
+    try {
+      const { bookId, action } = req.body; // action can be 'add' or 'remove'
+      const user = await User.findById(req.userId);
+  
+      if (action === 'add') {
+        if (!user.readingList.includes(bookId)) {
+          user.readingList.push(bookId);
+        }
+      } else if (action === 'remove') {
+        user.readingList = user.readingList.filter(id => id !== bookId);
+      }
+  
+      await user.save();
+      res.json({ readingList: user.readingList });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update reading list' });
+    }
+  });
 
 
 
