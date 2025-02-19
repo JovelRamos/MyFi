@@ -12,6 +12,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --panel-bg: #181818;
+  --form-bg: #111111;
 }
 
 a {
