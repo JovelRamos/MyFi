@@ -3,7 +3,7 @@ import { Book } from './types/Book';
 import { BookSegment } from './types/BookSegment';
 import { BookSegmentRow } from './components/BookSegment';
 import { SegmentManager } from './services/segmentManager';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import AuthButtons from './components/AuthButtons'; // Import AuthButtons
 
 interface ApiResponse {
@@ -21,18 +21,33 @@ function AppContent() {
   const [error, setError] = useState<string | null>(null);
   const [currentlyReading, setCurrentlyReading] = useState<string[]>([]);
   const [readingList, setReadingList] = useState<string[]>([]);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchBooksAndCreateSegments = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/books');
+        const headers: HeadersInit = {};
+        const token = localStorage.getItem('token');
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch('http://localhost:8000/api/books', {
+          headers
+        });
+        
         if (!response.ok) throw new Error('Failed to fetch books');
         
         const data: ApiResponse = await response.json();
         setBooks(data.books);
         
-        setCurrentlyReading(data.userData?.currentlyReading || []);
-        setReadingList(data.userData?.readingList || []);
+        if (isAuthenticated) {
+          setCurrentlyReading(data.userData?.currentlyReading || []);
+          setReadingList(data.userData?.readingList || []);
+        } else {
+          setCurrentlyReading([]);
+          setReadingList([]);
+        }
 
         const generatedSegments = await SegmentManager.generateSegments(
           data.books,
@@ -48,7 +63,7 @@ function AppContent() {
     };
 
     fetchBooksAndCreateSegments();
-  }, []);
+  }, [isAuthenticated]); // Add isAuthenticated as dependency
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

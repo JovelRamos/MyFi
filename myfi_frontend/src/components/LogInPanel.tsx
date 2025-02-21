@@ -14,7 +14,8 @@ export default function LogInPanel({ isOpen, onClose, onSwitchToSignup }: LogInP
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  
   
   const { login } = useAuth();
 
@@ -38,16 +39,30 @@ export default function LogInPanel({ isOpen, onClose, onSwitchToSignup }: LogInP
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Clear previous errors
+    setErrors({});
+    
     if (!validateForm()) return;
-
+  
     try {
       await login(email, password);
       onClose();
-    } catch (error) {
-      console.error('LogIn error:', error);
-      // Handle error appropriately
+    } catch (error: any) {
+      console.error('Login error:', error);
+      
+      // Handle different types of errors
+      if (error instanceof Error) {
+        setErrors({ general: error.message });
+      } else if (error.response?.data?.error) {
+        setErrors({ general: error.response.data.error });
+      } else {
+        setErrors({ general: 'An unexpected error occurred. Please try again.' });
+      }
     }
   };
+  
+
+  
 
   return (
     <div
@@ -138,13 +153,21 @@ export default function LogInPanel({ isOpen, onClose, onSwitchToSignup }: LogInP
 
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white rounded-md py-2 px-4 
-                     hover:bg-indigo-700 transition-colors mt-4"
-          >
-            Sign In
-          </button>
+{/* Add this error display component */}
+{errors.general && (
+  <div className="p-3 rounded-md bg-red-900/50 border border-red-500/50">
+    <p className="text-sm text-red-400 text-center">{errors.general}</p>
+  </div>
+)}
+
+<button
+  type="submit"
+  className="w-full bg-indigo-600 text-white rounded-md py-2 px-4 
+           hover:bg-indigo-700 transition-colors mt-4"
+>
+  Sign In
+</button>
+
           <div className="flex items-center justify-between">
 
 <button

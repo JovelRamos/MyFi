@@ -1,3 +1,4 @@
+// AuthContext.tsx
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface User {
@@ -13,6 +14,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (email: string, password: string) => Promise<void>;
+  isAuthenticated: boolean;  // Add this
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,12 +22,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in (check localStorage token)
     const token = localStorage.getItem('token');
     if (token) {
-      // Verify token with backend and set user
       verifyToken(token);
     } else {
       setLoading(false);
@@ -39,52 +40,85 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Authorization': `Bearer ${token}`
         }
       });
+      
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        setIsAuthenticated(true);
+      } else {
+        throw new Error('Token verification failed');
       }
     } catch (error) {
+      console.error('Token verification failed:', error);
       localStorage.removeItem('token');
+      setUser(null);
+      setIsAuthenticated(false);
     } finally {
       setLoading(false);
     }
   };
 
   const login = async (email: string, password: string) => {
-    const response = await fetch('http://localhost:8000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch('http://localhost:8000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!response.ok) throw new Error('Login failed');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login failed');
+      }
 
-    const data = await response.json();
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    setIsAuthenticated(false);
   };
 
   const register = async (email: string, password: string) => {
-    const response = await fetch('http://localhost:8000/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch('http://localhost:8000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!response.ok) throw new Error('Registration failed');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Registration failed');
+      }
 
-    const data = await response.json();
-    localStorage.setItem('token', data.token);
-    setUser(data.user);
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      login, 
+      logout, 
+      register, 
+      isAuthenticated 
+    }}>
       {children}
     </AuthContext.Provider>
   );
