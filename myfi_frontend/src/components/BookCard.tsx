@@ -1,7 +1,6 @@
-// BookCard.tsx
-
 import { Book } from '../types/Book';
 import { useState, useEffect } from 'react';
+import { FaBookOpen, FaPlus } from 'react-icons/fa';
 
 interface BookCardProps {
     book: Book;
@@ -16,15 +15,15 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
         ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
         : '../assets/placeholder-book.png';
 
-        return (
-            <div 
-              className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
+    return (
+        <div 
+            className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
                 isHovered ? 'scale-105 z-20' : 'z-10'
-              } ${className}`}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-            {/* Cover Image with lazy loading */}
+            } ${className}`}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            {/* Cover Image */}
             <img 
                 className="w-full h-full rounded object-cover"
                 src={coverUrl}
@@ -39,11 +38,12 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
             
             {/* Overlay with Book Information */}
             <div 
-                className={`absolute inset-0 bg-black bg-opacity-75 transition-opacity duration-300 ${
+                className={`absolute inset-0 bg-black bg-opacity-75 transition-opacity duration-300 flex flex-col justify-between ${
                     isHovered ? 'rounded opacity-100' : 'opacity-0'
                 }`}
             >
-                <div className="flex flex-col justify-center h-full p-4 text-white">
+                {/* Book Info */}
+                <div className="p-4 text-white">
                     <h2 className="font-bold text-lg mb-2 overflow-hidden text-ellipsis">
                         {book.title}
                     </h2>
@@ -67,6 +67,35 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
                             )}
                         </div>
                     )}
+                </div>
+
+                {/* Circular Buttons */}
+                <div className="flex justify-center space-x-4 pb-4">
+                    {/* Read Button */}
+                    <div className="group relative">
+                        <button 
+                            className="bg-gray-800 text-white p-3 rounded-full transition hover:bg-gray-600 flex items-center justify-center"
+                            aria-label="Read"
+                        >
+                            <FaBookOpen className="w-5 h-5" />
+                        </button>
+                        <span className="absolute bottom-full mb-2 hidden group-hover:block bg-black text-white text-xs py-1 px-2 rounded">
+                            Read
+                        </span>
+                    </div>
+
+                    {/* Add to My List Button */}
+                    <div className="group relative">
+                        <button 
+                            className="bg-gray-800 text-white p-3 rounded-full transition hover:bg-gray-600 flex items-center justify-center"
+                            aria-label="Add to My List"
+                        >
+                            <FaPlus className="w-5 h-5" />
+                        </button>
+                        <span className="absolute bottom-full mb-2 hidden group-hover:block bg-black text-white text-xs py-1 px-2 rounded">
+                            Add to My List
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
