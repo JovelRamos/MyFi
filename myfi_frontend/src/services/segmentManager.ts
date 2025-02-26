@@ -99,14 +99,13 @@ export class SegmentManager {
 
     // Because You Read
     if (currentlyReading.length > 0) {
-        // Split the string if it contains multiple IDs
-        const bookIds = currentlyReading[0].split(',').map(id => id.trim());
-        const mostRecentBook = bookIds[bookIds.length - 1]; // Get the last ID
+        // Get the most recent book (last item in the array)
+        const mostRecentBookId = currentlyReading[currentlyReading.length - 1];
         
-        console.log('Most recent book ID (before cleanup):', mostRecentBook);
+        console.log('Most recent book ID (before cleanup):', mostRecentBookId);
 
         // Clean up the ID
-        const cleanMostRecentId = mostRecentBook.replace('/works/', '').trim();
+        const cleanMostRecentId = mostRecentBookId.replace('/works/', '').trim();
         
         console.log('Looking for book with clean ID:', cleanMostRecentId);
 
@@ -121,7 +120,7 @@ export class SegmentManager {
             try {
                 console.log('Getting recommendations for most recent book:', sourceBook.title);
                 const similarBooks = await this.getMLRecommendations(
-                    [mostRecentBook],
+                    [mostRecentBookId],
                     books.filter(b => b._id !== sourceBook._id)
                 );
                 
@@ -142,15 +141,14 @@ export class SegmentManager {
             }
         } else {
             console.error('Source book not found. Details:', {
-                originalId: mostRecentBook,
+                originalId: mostRecentBookId,
                 cleanId: cleanMostRecentId,
-                bookIds,
+                currentlyReading,
                 availableBookIds: books.slice(0, 5).map(b => ({
                     id: b._id,
                     cleanId: b._id.replace('/works/', '').trim(),
                     title: b.title
-                })),
-                currentlyReading
+                }))
             });
         }
     }
@@ -270,4 +268,3 @@ export class SegmentManager {
     
     
   }
-  

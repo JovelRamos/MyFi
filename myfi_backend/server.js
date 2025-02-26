@@ -453,6 +453,64 @@ app.post('/api/auth/register', async (req, res) => {
     }
   });
 
+  // Add book to reading list
+app.post('/api/user/reading-list', auth, async (req, res) => {
+    try {
+      const { bookId } = req.body;
+      const user = await User.findById(req.userId);
+      
+      if (!user.readingList.includes(bookId)) {
+        user.readingList.push(bookId);
+      }
+      
+      await user.save();
+      res.json({ readingList: user.readingList });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update reading list' });
+    }
+  });
+  
+  // Mark book as currently reading
+  app.post('/api/user/currently-reading', auth, async (req, res) => {
+    try {
+      const { bookId } = req.body;
+      const user = await User.findById(req.userId);
+      
+      if (!user.currentlyReading.includes(bookId)) {
+        user.currentlyReading.push(bookId);
+      }
+      
+      await user.save();
+      res.json({ currentlyReading: user.currentlyReading });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update currently reading list' });
+    }
+  });
+  
+  // Rate a book
+  app.post('/api/user/rate-book', auth, async (req, res) => {
+    try {
+      const { bookId, rating } = req.body;
+      const user = await User.findById(req.userId);
+      
+      // Find if the book is already rated
+      const ratingIndex = user.ratings.findIndex(item => item.bookId === bookId);
+      
+      if (ratingIndex !== -1) {
+        // Update existing rating
+        user.ratings[ratingIndex].rating = rating;
+      } else {
+        // Add new rating
+        user.ratings.push({ bookId, rating });
+      }
+      
+      await user.save();
+      res.json({ ratings: user.ratings });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to rate book' });
+    }
+  });
+  
 
 
 

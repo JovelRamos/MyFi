@@ -4,6 +4,9 @@ import { BookSegment } from './types/BookSegment';
 import { BookSegmentRow } from './components/BookSegment';
 import { SegmentManager } from './services/segmentManager';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { UserBookProvider } from './contexts/UserBookContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AuthButtons from './components/AuthButtons'; // Import AuthButtons
 
 interface ApiResponse {
@@ -91,15 +94,19 @@ function AppContent() {
           <BookSegmentRow key={segment.id} segment={segment} />
         ))}
       </main>
+      <ToastContainer position="bottom-right" />
+
     </div>
   );
 }
 
 function App() {
   return (
+    <UserBookProvider>
     <AuthProvider>
       <AppContent />
     </AuthProvider>
+    </UserBookProvider>
   );
 }
 
