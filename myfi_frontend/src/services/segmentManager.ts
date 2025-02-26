@@ -36,37 +36,56 @@ export class SegmentManager {
     ): Promise<BookSegment[]> {
         const segments: BookSegment[] = [];
 
-        // Currently Reading
+        // Currently Reading (reverse order - most recent first)
         if (currentlyReading.length > 0) {
-            const currentlyReadingBooks = this.adjustArrayToMultipleOfSix(
-                books.filter(book => currentlyReading.includes(book._id))
-            );
+            // Get the currently reading books in the order they appear in the currentlyReading array
+            const currentlyReadingBooksOrdered = [];
             
-            if (currentlyReadingBooks.length > 0) {
+            // Process in reverse to get most recent (last items) first
+            for (let i = currentlyReading.length - 1; i >= 0; i--) {
+                const bookId = currentlyReading[i];
+                const book = books.find(b => b._id === bookId);
+                if (book) {
+                    currentlyReadingBooksOrdered.push(book);
+                }
+            }
+            
+            if (currentlyReadingBooksOrdered.length > 0) {
                 segments.push({
                     id: 'currently-reading',
                     title: 'Currently Reading',
                     type: 'CURRENTLY_READING',
-                    books: currentlyReadingBooks,
+                    books: currentlyReadingBooksOrdered,
                     priority: 1,
                     isPersonalized: true
                 });
             }
         }
 
-        // My List
-        const myListBooks = this.adjustArrayToMultipleOfSix(
-            books.filter(book => userReadingList.includes(book._id))
-        );
-        if (myListBooks.length > 0) {
-            segments.push({
-                id: 'my-list',
-                title: 'My List',
-                type: 'MY_LIST',
-                books: myListBooks,
-                priority: 2,
-                isPersonalized: true
-            });
+        // My List (reverse order - most recent first)
+        if (userReadingList.length > 0) {
+            // Get the my list books in the order they appear in the userReadingList array
+            const myListBooksOrdered = [];
+            
+            // Process in reverse to get most recent (last items) first
+            for (let i = userReadingList.length - 1; i >= 0; i--) {
+                const bookId = userReadingList[i];
+                const book = books.find(b => b._id === bookId);
+                if (book) {
+                    myListBooksOrdered.push(book);
+                }
+            }
+            
+            if (myListBooksOrdered.length > 0) {
+                segments.push({
+                    id: 'my-list',
+                    title: 'My List',
+                    type: 'MY_LIST',
+                    books: myListBooksOrdered,
+                    priority: 2,
+                    isPersonalized: true
+                });
+            }
         }
 
         // ML-based recommendations
@@ -97,64 +116,61 @@ export class SegmentManager {
             }
         }
 
-    // Because You Read
-    if (currentlyReading.length > 0) {
-        // Get the most recent book (last item in the array)
-        const mostRecentBookId = currentlyReading[currentlyReading.length - 1];
-        
-        console.log('Most recent book ID (before cleanup):', mostRecentBookId);
+        // Because You Read
+        if (currentlyReading.length > 0) {
+            // Get the most recent book (last item in the array)
+            const mostRecentBookId = currentlyReading[currentlyReading.length - 1];
+            
+            console.log('Most recent book ID (before cleanup):', mostRecentBookId);
 
-        // Clean up the ID
-        const cleanMostRecentId = mostRecentBookId.replace('/works/', '').trim();
-        
-        console.log('Looking for book with clean ID:', cleanMostRecentId);
+            // Clean up the ID
+            const cleanMostRecentId = mostRecentBookId.replace('/works/', '').trim();
+            
+            console.log('Looking for book with clean ID:', cleanMostRecentId);
 
-        const sourceBook = books.find(book => {
-            const cleanBookId = book._id.replace('/works/', '').trim();
-            return cleanBookId === cleanMostRecentId;
-        });
-
-        console.log('Found source book:', sourceBook);
-
-        if (sourceBook) {
-            try {
-                console.log('Getting recommendations for most recent book:', sourceBook.title);
-                const similarBooks = await this.getMLRecommendations(
-                    [mostRecentBookId],
-                    books.filter(b => b._id !== sourceBook._id)
-                );
-                
-                if (similarBooks.length > 0) {
-                    segments.push({
-                        id: `because-${sourceBook._id}`,
-                        title: `Because You Read ${sourceBook.title}`,
-                        type: 'BECAUSE_YOU_READ',
-                        books: this.adjustArrayToMultipleOfSix(similarBooks),
-                        priority: 4,
-                        isPersonalized: true,
-                        sourceBook
-                    });
-                }
-            } catch (error) {
-                console.error('Failed to get Because You Read recommendations:', error);
-                console.error('Source book:', sourceBook);
-            }
-        } else {
-            console.error('Source book not found. Details:', {
-                originalId: mostRecentBookId,
-                cleanId: cleanMostRecentId,
-                currentlyReading,
-                availableBookIds: books.slice(0, 5).map(b => ({
-                    id: b._id,
-                    cleanId: b._id.replace('/works/', '').trim(),
-                    title: b.title
-                }))
+            const sourceBook = books.find(book => {
+                const cleanBookId = book._id.replace('/works/', '').trim();
+                return cleanBookId === cleanMostRecentId;
             });
+
+            console.log('Found source book:', sourceBook);
+
+            if (sourceBook) {
+                try {
+                    console.log('Getting recommendations for most recent book:', sourceBook.title);
+                    const similarBooks = await this.getMLRecommendations(
+                        [mostRecentBookId],
+                        books.filter(b => b._id !== sourceBook._id)
+                    );
+                    
+                    if (similarBooks.length > 0) {
+                        segments.push({
+                            id: `because-${sourceBook._id}`,
+                            title: `Because You Read ${sourceBook.title}`,
+                            type: 'BECAUSE_YOU_READ',
+                            books: this.adjustArrayToMultipleOfSix(similarBooks),
+                            priority: 4,
+                            isPersonalized: true,
+                            sourceBook
+                        });
+                    }
+                } catch (error) {
+                    console.error('Failed to get Because You Read recommendations:', error);
+                    console.error('Source book:', sourceBook);
+                }
+            } else {
+                console.error('Source book not found. Details:', {
+                    originalId: mostRecentBookId,
+                    cleanId: cleanMostRecentId,
+                    currentlyReading,
+                    availableBookIds: books.slice(0, 5).map(b => ({
+                        id: b._id,
+                        cleanId: b._id.replace('/works/', '').trim(),
+                        title: b.title
+                    }))
+                });
+            }
         }
-    }
-
-
-
 
         // Other segments
         segments.push(
@@ -193,7 +209,6 @@ export class SegmentManager {
             .filter(segment => segment.books.length > 0)
             .sort((a, b) => a.priority - b.priority);
     }
-  
   
     private static filterAndSortByRating(books: Book[], genre?: string): Book[] {
       return [...books]
@@ -263,8 +278,4 @@ export class SegmentManager {
             return [];
         }
     }
-    
-    
-    
-    
-  }
+}

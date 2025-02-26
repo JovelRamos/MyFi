@@ -432,13 +432,12 @@ app.post('/api/auth/register', async (req, res) => {
     }
   });
   
-  // Protected route example - Update reading list
   app.post('/api/user/reading-list', auth, async (req, res) => {
     try {
       const { bookId, action } = req.body; // action can be 'add' or 'remove'
       const user = await User.findById(req.userId);
   
-      if (action === 'add') {
+      if (!action || action === 'add') {
         if (!user.readingList.includes(bookId)) {
           user.readingList.push(bookId);
         }
@@ -452,23 +451,7 @@ app.post('/api/auth/register', async (req, res) => {
       res.status(500).json({ error: 'Failed to update reading list' });
     }
   });
-
-  // Add book to reading list
-app.post('/api/user/reading-list', auth, async (req, res) => {
-    try {
-      const { bookId } = req.body;
-      const user = await User.findById(req.userId);
-      
-      if (!user.readingList.includes(bookId)) {
-        user.readingList.push(bookId);
-      }
-      
-      await user.save();
-      res.json({ readingList: user.readingList });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to update reading list' });
-    }
-  });
+  
   
   // Mark book as currently reading
   app.post('/api/user/currently-reading', auth, async (req, res) => {

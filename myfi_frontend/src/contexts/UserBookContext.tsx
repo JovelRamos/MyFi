@@ -43,12 +43,17 @@ export const UserBookProvider = ({ children }: { children: ReactNode }) => {
 
   const addToReadingList = async (bookId: string) => {
     try {
-      const response = await api.post('/user/reading-list', { bookId });
+      const response = await api.post('/user/reading-list', { 
+        bookId,
+        action: 'add'  // Add this parameter
+      });
       setReadingList(response.data.readingList);
     } catch (error) {
       console.error('Failed to add book to reading list', error);
+      throw error; // Re-throw error to be caught in the component
     }
   };
+  
 
   const markAsCurrentlyReading = async (bookId: string) => {
     try {
