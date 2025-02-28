@@ -1,7 +1,8 @@
+// models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -13,22 +14,21 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  readingList: [{
-    type: String,
-    ref: 'Book'
-  }],
-  currentlyReading: [{
-    type: String,
-    ref: 'Book'
-  }],
+  readingList: [String],
+  currentlyReading: [String],
+  finishedBooks: [String], // Add this new field
   ratings: [{
     bookId: String,
     rating: Number
-  }]
-}, { timestamps: true });
+  }],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-// Hash password before saving
-userSchema.pre('save', async function(next) {
+// Password hashing middleware
+UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
   try {
@@ -40,9 +40,9 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// Method to compare passwords
-userSchema.methods.comparePassword = async function(candidatePassword) {
+// Method to compare password for login
+UserSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', UserSchema);

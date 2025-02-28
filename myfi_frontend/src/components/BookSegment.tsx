@@ -81,14 +81,17 @@ export const BookSegmentRow = ({ segment }: BookSegmentProps) => {
           </button>
         )}
 
-        {/* Books Grid */}
-        <div className="grid grid-cols-6 gap-8 w-full">
-          {getCurrentPageBooks().map((book) => (
-            <div key={book._id} className="aspect-[2/3]">
-              <BookCard book={book} />
+{/* Books Grid */}
+<div className="grid grid-cols-6 gap-8 w-full">
+    {getCurrentPageBooks().map((book) => (
+        <div key={book._id} className="aspect-[2/3] relative">
+            <div className="absolute inset-0 transform-gpu transition-all duration-200 hover:scale-[1.15] hover:z-40">
+                <BookCard book={book} />
             </div>
-          ))}
         </div>
+    ))}
+</div>
+
 
         {/* Next Button */}
         {showControls && currentPage < totalPages - 1 && (

@@ -1,6 +1,7 @@
+// BookCard.tsx with updated button logic
 import { Book } from '../types/Book';
 import { useState, useEffect } from 'react';
-import { FaBookOpen, FaPlus, FaThumbsUp, FaThumbsDown, FaHeart } from 'react-icons/fa';
+import { FaBookOpen, FaPlus, FaThumbsUp, FaThumbsDown, FaHeart, FaCheck, FaTrash, FaTimes } from 'react-icons/fa';
 import { useUserBooks } from '../contexts/UserBookContext';
 import { toast } from 'react-toastify'; // You may need to install this package
 
@@ -20,6 +21,8 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
         ratings,
         addToReadingList, 
         markAsCurrentlyReading,
+        removeFromReadingList,
+        markAsFinished,
         rateBook 
     } = useUserBooks();
     
@@ -41,10 +44,30 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
         }
     };
     
+    const handleRemoveFromList = async () => {
+        try {
+            await removeFromReadingList(book._id);
+            toast.success(`"${book.title}" removed from your reading list!`);
+        } catch (error) {
+            toast.error('Failed to remove book. Please try again.');
+            console.error(error);
+        }
+    };
+    
     const handleMarkAsReading = async () => {
         try {
             await markAsCurrentlyReading(book._id);
             toast.success(`"${book.title}" marked as currently reading!`);
+        } catch (error) {
+            toast.error('Failed to update reading status. Please try again.');
+            console.error(error);
+        }
+    };
+    
+    const handleMarkAsFinished = async () => {
+        try {
+            await markAsFinished(book._id);
+            toast.success(`"${book.title}" marked as finished!`);
         } catch (error) {
             toast.error('Failed to update reading status. Please try again.');
             console.error(error);
@@ -71,12 +94,12 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
     
     // Define UI states based on user data
     const addButtonClass = isInReadingList 
-        ? "bg-green-600 hover:bg-green-700" 
+        ? "bg-red-600 hover:bg-red-700" 
         : "bg-gray-800 hover:bg-gray-600";
         
     const readButtonClass = isCurrentlyReading
-        ? "bg-blue-600 hover:bg-blue-700"
-        : "bg-gray-800 hover:bg-gray-600";
+        ? "bg-green-600 hover:bg-green-700"
+        : "bg-blue-600 hover:bg-blue-700";
         
     const thumbsDownClass = bookRating === -1
         ? "text-red-500" 
@@ -90,29 +113,30 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
         ? "text-pink-500"
         : "text-white hover:text-pink-500";
 
-    return (
-        <div 
-            className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
-                isHovered ? 'scale-105 z-20' : 'z-10'
-            } ${className}`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => {
-                setIsHovered(false);
-                setShowRatingPanel(false);
-            }}
-        >
-            {/* Cover Image */}
-            <img 
-                className="w-full h-full rounded object-cover"
-                src={coverUrl}
-                alt={`Cover of ${book.title}`}
-                loading="lazy"
-                onError={() => {
-                    console.error(`Failed to load cover for book: "${book.title}"`);
-                    setImageError(true);
+        return (
+            <div 
+                className={`relative w-full h-full rounded shadow-lg transform transition-all duration-300 ${
+                    isHovered ? 'scale-150 z-50' : 'z-10'
+                } ${className}`}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => {
+                    setIsHovered(false);
+                    setShowRatingPanel(false);
                 }}
-                decoding="async"
-            />
+                style={{ transformOrigin: 'center center' }}
+            >
+                {/* Cover Image */}
+                <img 
+                    className="w-full h-full rounded object-cover"
+                    src={coverUrl}
+                    alt={`Cover of ${book.title}`}
+                    loading="lazy"
+                    onError={() => {
+                        console.error(`Failed to load cover for book: "${book.title}"`);
+                        setImageError(true);
+                    }}
+                    decoding="async"
+                />
             
             {/* Overlay with Book Information */}
             <div 
@@ -149,24 +173,28 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
 
                 {/* Circular Buttons */}
                 <div className="flex justify-center space-x-4 pb-4">
-                    {/* Read Button */}
+                    {/* Read/Finished Button */}
                     <div className="relative">
                         <div className="group/read">
                             <button 
                                 className={`text-white p-3 rounded-full transition flex items-center justify-center ${readButtonClass}`}
-                                aria-label="Read"
-                                onClick={handleMarkAsReading}
-                                onMouseEnter={() => setShowRatingPanel(true)}
+                                aria-label={isCurrentlyReading ? "Mark as Finished" : "Read"}
+                                onClick={isCurrentlyReading ? handleMarkAsFinished : handleMarkAsReading}
+                                onMouseEnter={() => setShowRatingPanel(isCurrentlyReading)}
                             >
-                                <FaBookOpen className="w-5 h-5" />
+                                {isCurrentlyReading ? (
+                                    <FaCheck className="w-5 h-5" />
+                                ) : (
+                                    <FaBookOpen className="w-5 h-5" />
+                                )}
                             </button>
                             <span className="absolute bottom-full mb-2 hidden group-hover/read:block bg-black text-white text-xs py-1 px-2 rounded z-40">
-                                {isCurrentlyReading ? "Currently Reading" : "Read"}
+                                {isCurrentlyReading ? "Mark as Finished" : "Start Reading"}
                             </span>
                         </div>
                         
-                        {/* Rating Panel */}
-                        {showRatingPanel && (
+                        {/* Rating Panel - Only show for books being read */}
+                        {showRatingPanel && isCurrentlyReading && (
                             <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 rounded-lg p-3 flex space-x-4 z-30"
                                 onMouseLeave={() => setShowRatingPanel(false)}
                             >
@@ -215,17 +243,21 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
                         )}
                     </div>
 
-                    {/* Add to My List Button */}
+                    {/* Add/Remove from List Button */}
                     <div className="group relative">
                         <button 
                             className={`text-white p-3 rounded-full transition flex items-center justify-center ${addButtonClass}`}
-                            aria-label="Add to My List"
-                            onClick={handleAddToList}
+                            aria-label={isInReadingList ? "Remove from List" : "Add to My List"}
+                            onClick={isInReadingList ? handleRemoveFromList : handleAddToList}
                         >
-                            <FaPlus className="w-5 h-5" />
+                            {isInReadingList ? (
+                                <FaTimes className="w-5 h-5" />
+                            ) : (
+                                <FaPlus className="w-5 h-5" />
+                            )}
                         </button>
                         <span className="absolute bottom-full mb-2 hidden group-hover:block bg-black text-white text-xs py-1 px-2 rounded">
-                            {isInReadingList ? "In your reading list" : "Add to My List"}
+                            {isInReadingList ? "Remove from List" : "Add to My List"}
                         </span>
                     </div>
                 </div>

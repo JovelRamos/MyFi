@@ -1,14 +1,17 @@
-// UserBookContext.tsx
+// UserBookContext.tsx with additional functions
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import api from '../services/api';
 
 type UserBookState = {
   readingList: string[];
   currentlyReading: string[];
+  finishedBooks: string[];
   ratings: {bookId: string, rating: number}[];
   isLoading: boolean;
   addToReadingList: (bookId: string) => Promise<void>;
+  removeFromReadingList: (bookId: string) => Promise<void>;
   markAsCurrentlyReading: (bookId: string) => Promise<void>;
+  markAsFinished: (bookId: string) => Promise<void>;
   rateBook: (bookId: string, rating: number) => Promise<void>;
 };
 
@@ -17,6 +20,7 @@ const UserBookContext = createContext<UserBookState | undefined>(undefined);
 export const UserBookProvider = ({ children }: { children: ReactNode }) => {
   const [readingList, setReadingList] = useState<string[]>([]);
   const [currentlyReading, setCurrentlyReading] = useState<string[]>([]);
+  const [finishedBooks, setFinishedBooks] = useState<string[]>([]);
   const [ratings, setRatings] = useState<{bookId: string, rating: number}[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,6 +33,7 @@ export const UserBookProvider = ({ children }: { children: ReactNode }) => {
           const response = await api.get('/auth/verify');
           setReadingList(response.data.readingList || []);
           setCurrentlyReading(response.data.currentlyReading || []);
+          setFinishedBooks(response.data.finishedBooks || []);
           setRatings(response.data.ratings || []);
         }
       } catch (error) {
@@ -44,23 +49,58 @@ export const UserBookProvider = ({ children }: { children: ReactNode }) => {
   const addToReadingList = async (bookId: string) => {
     try {
       const response = await api.post('/user/reading-list', { 
-        bookId,
-        action: 'add'  // Add this parameter
+        bookId, 
+        action: 'add' 
       });
       setReadingList(response.data.readingList);
     } catch (error) {
       console.error('Failed to add book to reading list', error);
-      throw error; // Re-throw error to be caught in the component
+      throw error;
     }
   };
-  
+
+  const removeFromReadingList = async (bookId: string) => {
+    try {
+      const response = await api.post('/user/reading-list', { 
+        bookId, 
+        action: 'remove' 
+      });
+      setReadingList(response.data.readingList);
+    } catch (error) {
+      console.error('Failed to remove book from reading list', error);
+      throw error;
+    }
+  };
 
   const markAsCurrentlyReading = async (bookId: string) => {
     try {
-      const response = await api.post('/user/currently-reading', { bookId });
+      const response = await api.post('/user/currently-reading', { 
+        bookId,
+        action: 'add'
+      });
       setCurrentlyReading(response.data.currentlyReading);
+      
+      // Also add to reading list if not already there
+      if (!readingList.includes(bookId)) {
+        await addToReadingList(bookId);
+      }
     } catch (error) {
       console.error('Failed to mark book as currently reading', error);
+      throw error;
+    }
+  };
+
+  const markAsFinished = async (bookId: string) => {
+    try {
+      const response = await api.post('/user/currently-reading', { 
+        bookId,
+        action: 'finish'
+      });
+      setCurrentlyReading(response.data.currentlyReading);
+      setFinishedBooks(response.data.finishedBooks || []);
+    } catch (error) {
+      console.error('Failed to mark book as finished', error);
+      throw error;
     }
   };
 
@@ -70,17 +110,21 @@ export const UserBookProvider = ({ children }: { children: ReactNode }) => {
       setRatings(response.data.ratings);
     } catch (error) {
       console.error('Failed to rate book', error);
+      throw error;
     }
   };
 
   return (
     <UserBookContext.Provider value={{ 
       readingList, 
-      currentlyReading, 
+      currentlyReading,
+      finishedBooks,
       ratings,
       isLoading,
       addToReadingList,
+      removeFromReadingList,
       markAsCurrentlyReading,
+      markAsFinished,
       rateBook
     }}>
       {children}

@@ -432,43 +432,62 @@ app.post('/api/auth/register', async (req, res) => {
     }
   });
   
-  app.post('/api/user/reading-list', auth, async (req, res) => {
-    try {
-      const { bookId, action } = req.body; // action can be 'add' or 'remove'
-      const user = await User.findById(req.userId);
-  
-      if (!action || action === 'add') {
-        if (!user.readingList.includes(bookId)) {
-          user.readingList.push(bookId);
-        }
-      } else if (action === 'remove') {
-        user.readingList = user.readingList.filter(id => id !== bookId);
-      }
-  
-      await user.save();
-      res.json({ readingList: user.readingList });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to update reading list' });
-    }
-  });
-  
-  
-  // Mark book as currently reading
-  app.post('/api/user/currently-reading', auth, async (req, res) => {
-    try {
-      const { bookId } = req.body;
-      const user = await User.findById(req.userId);
-      
+// Update the currently-reading endpoint to handle 'finish' action
+app.post('/api/user/currently-reading', auth, async (req, res) => {
+  try {
+    const { bookId, action } = req.body;
+    const user = await User.findById(req.userId);
+    
+    if (!action || action === 'add') {
+      // Add to currently reading if not already there
       if (!user.currentlyReading.includes(bookId)) {
         user.currentlyReading.push(bookId);
       }
+    } else if (action === 'finish') {
+      // Remove from currently reading
+      user.currentlyReading = user.currentlyReading.filter(id => id !== bookId);
       
-      await user.save();
-      res.json({ currentlyReading: user.currentlyReading });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to update currently reading list' });
+      // Add to finished books if not already there
+      if (!user.finishedBooks) {
+        user.finishedBooks = [];
+      }
+      
+      if (!user.finishedBooks.includes(bookId)) {
+        user.finishedBooks.push(bookId);
+      }
     }
-  });
+    
+    await user.save();
+    res.json({ 
+      currentlyReading: user.currentlyReading,
+      finishedBooks: user.finishedBooks || []
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update reading status' });
+  }
+});
+
+// Update the reading-list endpoint to use a consistent 'action' parameter
+app.post('/api/user/reading-list', auth, async (req, res) => {
+  try {
+    const { bookId, action } = req.body;
+    const user = await User.findById(req.userId);
+    
+    if (!action || action === 'add') {
+      if (!user.readingList.includes(bookId)) {
+        user.readingList.push(bookId);
+      }
+    } else if (action === 'remove') {
+      user.readingList = user.readingList.filter(id => id !== bookId);
+    }
+    
+    await user.save();
+    res.json({ readingList: user.readingList });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update reading list' });
+  }
+});
+
   
   // Rate a book
   app.post('/api/user/rate-book', auth, async (req, res) => {
