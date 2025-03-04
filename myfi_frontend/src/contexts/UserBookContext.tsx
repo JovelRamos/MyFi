@@ -1,6 +1,7 @@
-// UserBookContext.tsx with additional functions
+// UserBookContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import api from '../services/api';
+import { useAuth } from './AuthContext';  // Import useAuth
 
 type UserBookState = {
   readingList: string[];
@@ -17,16 +18,34 @@ type UserBookState = {
 
 const UserBookContext = createContext<UserBookState | undefined>(undefined);
 
+// Create a wrapper component that doesn't use useAuth
 export const UserBookProvider = ({ children }: { children: ReactNode }) => {
+  return <UserBookProviderContent>{children}</UserBookProviderContent>;
+};
+
+// The actual provider component that uses useAuth
+const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
+  const { isAuthenticated, user } = useAuth();
   const [readingList, setReadingList] = useState<string[]>([]);
   const [currentlyReading, setCurrentlyReading] = useState<string[]>([]);
   const [finishedBooks, setFinishedBooks] = useState<string[]>([]);
   const [ratings, setRatings] = useState<{bookId: string, rating: number}[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch user data when component mounts
+    // When auth state changes, update loading state and fetch user data if authenticated
     const fetchUserData = async () => {
+      if (!isAuthenticated) {
+        // Reset all user data when not authenticated
+        setReadingList([]);
+        setCurrentlyReading([]);
+        setFinishedBooks([]);
+        setRatings([]);
+        setIsLoading(false);
+        return;
+      }
+      
+      setIsLoading(true);
       try {
         const token = localStorage.getItem('token');
         if (token) {
@@ -44,8 +63,9 @@ export const UserBookProvider = ({ children }: { children: ReactNode }) => {
     };
 
     fetchUserData();
-  }, []);
+  }, [isAuthenticated, user]); // Depend on both auth state and user
 
+  // Rest of the functions remain the same...
   const addToReadingList = async (bookId: string) => {
     try {
       const response = await api.post('/user/reading-list', { 
