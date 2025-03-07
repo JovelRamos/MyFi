@@ -15,9 +15,12 @@ interface BookButtonsProps {
 }
 
 export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
-    const [showReadPanel, setShowReadPanel] = useState(false);
-    const [showAddPanel, setShowAddPanel] = useState(false);
+    const [activePanel, setActivePanel] = useState<'read' | 'add' | null>(null);
     const [showRatingButtons, setShowRatingButtons] = useState(false);
+    
+    // Computed states for panel visibility
+    const showReadPanel = activePanel === 'read';
+    const showAddPanel = activePanel === 'add';
     
     // Refs for tooltip positioning
     const addButtonRef = useRef<HTMLButtonElement>(null);
@@ -51,6 +54,13 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
     const isInReadingList = readingList.includes(book._id);
     const isCurrentlyReading = currentlyReading.includes(book._id);
     const bookRating = ratings.find(r => r.bookId === book._id)?.rating;
+    
+    // Reset active panel when the card is no longer hovered
+    useEffect(() => {
+        if (!isHovered) {
+            setActivePanel(null);
+        }
+    }, [isHovered]);
     
     // Effect to position tooltips based on button positions
     useEffect(() => {
@@ -91,6 +101,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
             toast.error('Failed to add book. Please try again.');
             console.error(error);
         }
+        setActivePanel(null);
     };
     
     const handleRemoveFromList = async () => {
@@ -111,6 +122,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
             toast.error('Failed to update reading status. Please try again.');
             console.error(error);
         }
+        setActivePanel(null);
     };
     
     const handleMarkAsFinished = async () => {
@@ -121,7 +133,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
             toast.error('Failed to update reading status. Please try again.');
             console.error(error);
         }
-        setShowReadPanel(false);
+        setActivePanel(null);
     };
     
     const handleRateBook = async (rating: number) => {
@@ -129,9 +141,11 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
             await rateBook(book._id, rating);
             
             let message = '';
-            if (rating === 1) message = `You liked "${book.title}"!`;
-            else if (rating === 2) message = `You loved "${book.title}"!`;
-            else message = `You've rated "${book.title}".`;
+            if (rating === 1) message = `You rated "${book.title}" 1 star!`;
+            else if (rating === 2) message = `You rated "${book.title}" 2 stars!`;
+            else if (rating === 3) message = `You rated "${book.title}" 3 stars!`;
+            else if (rating === 4) message = `You rated "${book.title}" 4 stars!`;
+            else message = `You rated "${book.title}" 5 stars!`;
             
             toast.success(message);
         } catch (error) {
@@ -139,7 +153,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
             console.error(error);
         }
         
-        setShowReadPanel(false);
+        setActivePanel(null);
         setShowRatingButtons(false);
     };
     
@@ -188,51 +202,47 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
                 }}
             >
                 {/* Add Button */}
+                <div className="relative">
+                    <button 
+                        ref={addButtonRef}
+                        className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${addButtonClass}`}
+                        style={buttonSize}
+                        aria-label="Add to List"
+                        onMouseEnter={() => setActivePanel('add')}
+                    >
+                        <FaPlus className="w-6 h-6" />
+                    </button>
+                    
+                    {/* Add Options Panel */}
+                    <AddOptionsPanel 
+                        handleAddToList={handleAddToList}
+                        handleMarkAsReading={handleMarkAsReading}
+                        isOpen={showAddPanel}
+                        setIsOpen={(isOpen) => setActivePanel(isOpen ? 'add' : null)}
+                    />
+                </div>
 
-<div className="relative">
-    <button 
-        ref={addButtonRef}
-        className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${addButtonClass}`}
-        style={buttonSize}
-        aria-label="Add to List"
-        onMouseEnter={() => setShowAddPanel(true)}
-    >
-        <FaPlus className="w-6 h-6" />
-    </button>
-    
-    {/* Add Options Panel */}
-    <AddOptionsPanel 
-        handleAddToList={handleAddToList}
-        handleMarkAsReading={handleMarkAsReading}
-        isOpen={showAddPanel}
-        setIsOpen={setShowAddPanel}
-    />
-</div>
-
-{/* Read Button and Rating Buttons */}
-<div className="relative">
-    <button 
-        ref={readButtonRef}
-        className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${readButtonClass}`}
-        style={buttonSize}
-        aria-label="Read"
-        onClick={handleMarkAsFinished} // Directly mark as finished when clicking the button
-        onMouseEnter={() => setShowReadPanel(true)} // Show ratings dropdown on hover
-    >
-        <FaBookOpen className="w-6 h-6" />
-    </button>
-    
-    {/* Read Options Panel */}
-    <ReadOptionsPanel 
-        handleRateBook={handleRateBook}
-        bookRating={bookRating}
-        isOpen={showReadPanel}
-        setIsOpen={setShowReadPanel}
-    />
-</div>
-
-
-
+                {/* Read Button and Rating Buttons */}
+                <div className="relative">
+                    <button 
+                        ref={readButtonRef}
+                        className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${readButtonClass}`}
+                        style={buttonSize}
+                        aria-label="Read"
+                        onClick={handleMarkAsFinished} // Directly mark as finished when clicking the button
+                        onMouseEnter={() => setActivePanel('read')} // Show ratings dropdown on hover
+                    >
+                        <FaBookOpen className="w-6 h-6" />
+                    </button>
+                    
+                    {/* Read Options Panel */}
+                    <ReadOptionsPanel 
+                        handleRateBook={handleRateBook}
+                        bookRating={bookRating}
+                        isOpen={showReadPanel}
+                        setIsOpen={(isOpen) => setActivePanel(isOpen ? 'read' : null)}
+                    />
+                </div>
 
                 {/* More Info Button */}
                 <button 
@@ -241,6 +251,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
                     style={buttonSize}
                     aria-label="More Info"
                     onClick={() => console.log('More info clicked')}
+                    onMouseEnter={() => setActivePanel(null)} // Close other panels
                 >
                     <FaInfoCircle className="w-6 h-6" />
                 </button>
@@ -253,6 +264,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
                         style={buttonSize}
                         aria-label="Remove from List"
                         onClick={handleRemoveFromList}
+                        onMouseEnter={() => setActivePanel(null)} // Close other panels
                     >
                         <FaTimes className="w-6 h-6" />
                     </button>
