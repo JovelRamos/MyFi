@@ -68,7 +68,6 @@ export const BookPanel = ({
                     <BookButtons 
                         book={book} 
                         isHovered={isHovered} 
-                        onPanelHover={onPanelHover} // Pass the callback through to BookButtons
                     />
                     
                     {/* Right side: Book cover - No padding */}

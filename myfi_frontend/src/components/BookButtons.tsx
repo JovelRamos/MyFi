@@ -6,7 +6,6 @@ import {
 } from 'react-icons/fa';
 import { useUserBooks } from '../contexts/UserBookContext';
 import { toast } from 'react-toastify';
-import { RatingPanel } from './RatingPanel';
 import { AddOptionsPanel } from './AddOptionsPanel';
 import { ReadOptionsPanel } from './ReadOptionsPanel';
 
@@ -189,67 +188,51 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
                 }}
             >
                 {/* Add Button */}
-                <div className="relative">
-                    <button 
-                        ref={addButtonRef}
-                        className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${addButtonClass}`}
-                        style={buttonSize}
-                        aria-label="Add to List"
-                        onClick={() => setShowAddPanel(!showAddPanel)}
-                        onMouseLeave={() => setTimeout(() => setShowAddPanel(false), 300)}
-                    >
-                        <FaPlus className="w-6 h-6" />
-                    </button>
-                    
-                    {/* Add Options Panel */}
-                    {showAddPanel && (
-                        <AddOptionsPanel 
-                            handleAddToList={handleAddToList}
-                            handleMarkAsReading={handleMarkAsReading}
-                        />
-                    )}
-                </div>
 
-                {/* Read Button and Rating Buttons */}
-                <div className="relative"
+<div className="relative">
+    <button 
+        ref={addButtonRef}
+        className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${addButtonClass}`}
+        style={buttonSize}
+        aria-label="Add to List"
+        onMouseEnter={() => setShowAddPanel(true)}
+    >
+        <FaPlus className="w-6 h-6" />
+    </button>
+    
+    {/* Add Options Panel */}
+    <AddOptionsPanel 
+        handleAddToList={handleAddToList}
+        handleMarkAsReading={handleMarkAsReading}
+        isOpen={showAddPanel}
+        setIsOpen={setShowAddPanel}
+    />
+</div>
 
->
-    {/* Rating Buttons - appear above the Read button on hover */}
-    {showRatingButtons && (
-        <RatingPanel 
-            book={book}
-            bookRating={bookRating}
-            handleRateBook={handleRateBook}
-            buttonSize={buttonSize}
-            thumbsDownRef={thumbsDownRef}
-            thumbsUpRef={thumbsUpRef}
-            heartRef={heartRef}
-            readButtonRef={readButtonRef}
-            onMouseLeave={() => setShowRatingButtons(false)}
-        />
-    )}
-
+{/* Read Button and Rating Buttons */}
+<div className="relative">
     <button 
         ref={readButtonRef}
         className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${readButtonClass}`}
         style={buttonSize}
         aria-label="Read"
-        onClick={() => setShowReadPanel(!showReadPanel)}
-        onMouseEnter={() => setShowRatingButtons(true)}
-        // Remove the onMouseLeave setTimeout 
+        onClick={handleMarkAsFinished} // Directly mark as finished when clicking the button
+        onMouseEnter={() => setShowReadPanel(true)} // Show ratings dropdown on hover
     >
         <FaBookOpen className="w-6 h-6" />
     </button>
-                    
-                    {/* Read Options Panel */}
-                    {showReadPanel && (
-        <ReadOptionsPanel 
-            handleMarkAsFinished={handleMarkAsFinished}
-            handleRateBook={handleRateBook}
-            bookRating={bookRating}
-        />
-    )}
+    
+    {/* Read Options Panel */}
+    <ReadOptionsPanel 
+        handleRateBook={handleRateBook}
+        bookRating={bookRating}
+        isOpen={showReadPanel}
+        setIsOpen={setShowReadPanel}
+    />
 </div>
+
+
+
 
                 {/* More Info Button */}
                 <button 

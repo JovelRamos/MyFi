@@ -1,65 +1,61 @@
 // ReadOptionsPanel.tsx
-import { FaCheck, FaThumbsUp, FaThumbsDown, FaHeart } from 'react-icons/fa';
+import { useRef, useEffect } from 'react';
+import { FaStar } from 'react-icons/fa';
 
 interface ReadOptionsPanelProps {
-    handleMarkAsFinished: () => Promise<void>;
     handleRateBook: (rating: number) => Promise<void>;
     bookRating?: number;
+    isOpen: boolean;
+    setIsOpen: (isOpen: boolean) => void;
 }
 
 export const ReadOptionsPanel = ({ 
-    handleMarkAsFinished, 
     handleRateBook,
-    bookRating 
+    bookRating,
+    isOpen,
+    setIsOpen
 }: ReadOptionsPanelProps) => {
-    const thumbsDownClass = bookRating === -1
-        ? "text-red-500" 
-        : "text-white hover:text-red-500";
+    const panelRef = useRef<HTMLDivElement>(null);
+    
+    useEffect(() => {
+        // Handle outside clicks
+        const handleMouseLeave = () => {
+            setIsOpen(false);
+        };
         
-    const thumbsUpClass = bookRating === 1
-        ? "text-green-500"
-        : "text-white hover:text-green-500";
+        if (panelRef.current && isOpen) {
+            panelRef.current.addEventListener('mouseleave', handleMouseLeave);
+        }
         
-    const heartClass = bookRating === 2
-        ? "text-pink-500"
-        : "text-white hover:text-pink-500";
+        return () => {
+            if (panelRef.current) {
+                panelRef.current.removeEventListener('mouseleave', handleMouseLeave);
+            }
+        };
+    }, [isOpen, setIsOpen]);
+
+    // Only ratings 1-5
+    const starRatings = [1, 2, 3, 4, 5];
 
     return (
-        <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-2 bg-gray-800 rounded-lg p-3 flex flex-col gap-3 z-40 shadow-xl">
-            <button 
-                className="text-white p-2 bg-blue-700 hover:bg-blue-600 rounded flex items-center justify-center gap-2 w-40"
-                onClick={handleMarkAsFinished}
-            >
-                <FaCheck className="w-4 h-4" />
-                <span>Read</span>
-            </button>
-            
-            {/* Thumbs Down */}
-            <button 
-                className={`p-2 rounded flex items-center gap-2 w-40 ${thumbsDownClass} hover:bg-gray-700`}
-                onClick={() => handleRateBook(-1)}
-            >
-                <FaThumbsDown className="w-4 h-4" />
-                <span>Disliked it</span>
-            </button>
-            
-            {/* Thumbs Up */}
-            <button 
-                className={`p-2 rounded flex items-center gap-2 w-40 ${thumbsUpClass} hover:bg-gray-700`}
-                onClick={() => handleRateBook(1)}
-            >
-                <FaThumbsUp className="w-4 h-4" />
-                <span>Liked it</span>
-            </button>
-            
-            {/* Heart */}
-            <button 
-                className={`p-2 rounded flex items-center gap-2 w-40 ${heartClass} hover:bg-gray-700`}
-                onClick={() => handleRateBook(2)}
-            >
-                <FaHeart className="w-4 h-4" />
-                <span>Loved it!</span>
-            </button>
+        <div 
+            ref={panelRef}
+            className={`absolute left-full top-1/2 transform -translate-y-1/2 ml-2 bg-gray-800 rounded-lg py-1 flex flex-col z-40 shadow-xl transition-opacity duration-200 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            onMouseEnter={() => setIsOpen(true)}
+        >
+            {/* Star Ratings - 1 to 5 stars only */}
+            {starRatings.map((rating) => (
+                <button 
+                    key={rating}
+                    className={`px-2 py-1 rounded flex items-center justify-center
+                        ${bookRating === rating ? 'text-yellow-500 bg-gray-700' : 'text-white hover:bg-gray-700'}`}
+                    onClick={() => handleRateBook(rating)}
+                >
+                    {Array(rating).fill(0).map((_, i) => (
+                        <FaStar key={i} className="w-4 h-4 text-yellow-500" />
+                    ))}
+                </button>
+            ))}
         </div>
     );
-};
+}
