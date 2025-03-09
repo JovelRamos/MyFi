@@ -13,11 +13,7 @@ export const BookSegmentRow = ({ segment }: BookSegmentProps) => {
   const booksPerPage = 6;
   const totalPages = Math.ceil(segment.books.length / booksPerPage);
 
-  console.log('Rendering segment:', {
-    title: segment.title,
-    bookCount: segment.books.length,
-    books: segment.books
-  });
+
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

@@ -116,7 +116,7 @@ export class SegmentManager {
             }
         }
 
-        // Because You Read
+        // Because You're Reading
         if (currentlyReading.length > 0) {
             // Get the most recent book (last item in the array)
             const mostRecentBookId = currentlyReading[currentlyReading.length - 1];
@@ -146,7 +146,7 @@ export class SegmentManager {
                     if (similarBooks.length > 0) {
                         segments.push({
                             id: `because-${sourceBook._id}`,
-                            title: `Because You Read ${sourceBook.title}`,
+                            title: `Because You're Reading ${sourceBook.title}`,
                             type: 'BECAUSE_YOU_READ',
                             books: this.adjustArrayToMultipleOfSix(similarBooks),
                             priority: 4,

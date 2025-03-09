@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Book } from './types/Book';
 import { BookSegment } from './types/BookSegment';
 import { BookSegmentRow } from './components/BookSegment';
@@ -24,10 +24,20 @@ function AppContent() {
   const [isGeneratingSegments, setIsGeneratingSegments] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { currentlyReading, readingList, isLoading: userBooksLoading } = useUserBooks();
+  const { 
+    currentlyReading, 
+    readingList, 
+    isInitialLoading: userBooksInitialLoading 
+  } = useUserBooks();
+  
+  // Track if we've done the initial segment generation
+  const initialSegmentsGenerated = useRef(false);
 
-  // Calculate overall loading state
-  const isLoading = isLoadingBooks || (isAuthenticated && userBooksLoading) || isGeneratingSegments || authLoading;
+  // Calculate overall loading state - only for initial loading, not updates!
+  const isLoading = isLoadingBooks || 
+    (isAuthenticated && userBooksInitialLoading) || 
+    (!initialSegmentsGenerated.current && isGeneratingSegments) ||
+    authLoading;
 
   // First effect: Load books data
   useEffect(() => {
@@ -65,15 +75,19 @@ function AppContent() {
       // Only generate segments if books are loaded
       if (books.length === 0) return;
       
-      // If authenticated, wait until user data is loaded
-      if (isAuthenticated && userBooksLoading) return;
+      // If authenticated and during initial load, wait until user data is loaded
+      if (isAuthenticated && userBooksInitialLoading) return;
+      
+      // Don't show loading screen for updates to the lists, only initial generation
+      const isInitialGeneration = !initialSegmentsGenerated.current;
       
       try {
         setIsGeneratingSegments(true);
         console.log("Generating segments with:", {
           booksCount: books.length,
           readingList: readingList,
-          currentlyReading: currentlyReading
+          currentlyReading: currentlyReading,
+          isInitialGeneration
         });
         
         const generatedSegments = await SegmentManager.generateSegments(
@@ -84,6 +98,9 @@ function AppContent() {
         
         console.log("Segments generated:", generatedSegments.length);
         setSegments(generatedSegments);
+        
+        // Mark that we've done the initial generation
+        initialSegmentsGenerated.current = true;
       } catch (err) {
         console.error("Error generating segments:", err);
         setError(err instanceof Error ? err.message : 'Failed to generate segments');
@@ -93,7 +110,7 @@ function AppContent() {
     };
 
     generateBookSegments();
-  }, [books, isAuthenticated, userBooksLoading, readingList, currentlyReading]);
+  }, [books, isAuthenticated, userBooksInitialLoading, readingList, currentlyReading]);
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center h-screen w-screen bg-zinc-900">
@@ -101,7 +118,6 @@ function AppContent() {
         <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-600 rounded-full"></div>
         <div className="absolute top-0 left-0 w-full h-full border-4 border-t-red-600 rounded-full animate-spin"></div>
       </div>
-
     </div>
   );
   

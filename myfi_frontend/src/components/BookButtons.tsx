@@ -14,6 +14,7 @@ interface BookButtonsProps {
     isHovered: boolean;
 }
 
+
 export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
     const [activePanel, setActivePanel] = useState<'read' | 'add' | null>(null);
     const [showRatingButtons, setShowRatingButtons] = useState(false);
@@ -47,6 +48,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
         addToReadingList, 
         markAsCurrentlyReading,
         removeFromReadingList,
+        removeFromCurrentlyReading, 
         markAsFinished,
         rateBook 
     } = useUserBooks();
@@ -93,48 +95,59 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
         
     }, [isHovered, showRatingButtons, isInReadingList, isCurrentlyReading]);
     
-    const handleAddToList = async () => {
-        try {
-            await addToReadingList(book._id);
-            toast.success(`"${book.title}" added to your reading list!`);
-        } catch (error) {
-            toast.error('Failed to add book. Please try again.');
-            console.error(error);
-        }
-        setActivePanel(null);
-    };
+// BookButtons.tsx - Just update the handler functions to be more efficient
+const handleAddToList = async () => {
+    try {
+      await addToReadingList(book._id);
+      toast.success(`"${book.title}" added to your reading list!`);
+    } catch (error) {
+      toast.error('Failed to add book. Please try again.');
+      console.error(error);
+    }
+    setActivePanel(null);
+  };
+  
+
+  
     
-    const handleRemoveFromList = async () => {
-        try {
+  const handleRemoveFromList = async () => {
+    try {
+        // Check if the book is in currently reading or reading list and remove accordingly
+        if (isCurrentlyReading) {
+            await removeFromCurrentlyReading(book._id);
+            toast.success(`"${book.title}" removed from currently reading!`);
+        } else if (isInReadingList) {
             await removeFromReadingList(book._id);
             toast.success(`"${book.title}" removed from your reading list!`);
-        } catch (error) {
-            toast.error('Failed to remove book. Please try again.');
-            console.error(error);
         }
-    };
+    } catch (error) {
+        toast.error('Failed to remove book. Please try again.');
+        console.error(error);
+    }
+};
     
-    const handleMarkAsReading = async () => {
-        try {
-            await markAsCurrentlyReading(book._id);
-            toast.success(`"${book.title}" marked as currently reading!`);
-        } catch (error) {
-            toast.error('Failed to update reading status. Please try again.');
-            console.error(error);
-        }
-        setActivePanel(null);
-    };
-    
-    const handleMarkAsFinished = async () => {
-        try {
-            await markAsFinished(book._id);
-            toast.success(`"${book.title}" marked as finished!`);
-        } catch (error) {
-            toast.error('Failed to update reading status. Please try again.');
-            console.error(error);
-        }
-        setActivePanel(null);
-    };
+  
+  const handleMarkAsReading = async () => {
+    try {
+      await markAsCurrentlyReading(book._id);
+      toast.success(`"${book.title}" marked as currently reading!`);
+    } catch (error) {
+      toast.error('Failed to update reading status. Please try again.');
+      console.error(error);
+    }
+    setActivePanel(null);
+  };
+  
+  const handleMarkAsFinished = async () => {
+    try {
+      await markAsFinished(book._id);
+      toast.success(`"${book.title}" marked as finished!`);
+    } catch (error) {
+      toast.error('Failed to update reading status. Please try again.');
+      console.error(error);
+    }
+  };
+  
     
     const handleRateBook = async (rating: number) => {
         try {
@@ -155,6 +168,13 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
         
         setActivePanel(null);
         setShowRatingButtons(false);
+    };
+    
+    const handleMoreInfo = () => {
+        // Create a URL compatible for Open Library
+        const openLibraryId = book._id.replace('/works/', '');
+        window.open(`https://openlibrary.org/works/${openLibraryId}`, '_blank');
+        toast.info(`Opening details for "${book.title}"`);
     };
     
     // Define UI states based on user data
@@ -250,7 +270,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
                     className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${infoButtonClass}`}
                     style={buttonSize}
                     aria-label="More Info"
-                    onClick={() => console.log('More info clicked')}
+                    onClick={handleMoreInfo} // Open detailed info in a new tab
                     onMouseEnter={() => setActivePanel(null)} // Close other panels
                 >
                     <FaInfoCircle className="w-6 h-6" />

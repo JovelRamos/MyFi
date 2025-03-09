@@ -17,17 +17,32 @@ api.interceptors.request.use(config => {
 });
 
 export const addToReadingList = async (bookId: string) => {
-  const response = await api.post('/user/reading-list', { bookId });
+  const response = await api.post('/user/reading-list', { bookId, action: 'add' });
+  return response.data;
+};
+
+export const removeFromReadingList = async (bookId: string) => {
+  const response = await api.post('/user/reading-list', { bookId, action: 'remove' });
   return response.data;
 };
 
 export const markAsCurrentlyReading = async (bookId: string) => {
-  const response = await api.post('/user/currently-reading', { bookId });
+  const response = await api.post('/user/currently-reading', { bookId, action: 'add' });
+  return response.data;
+};
+
+export const markAsFinished = async (bookId: string) => {
+  const response = await api.post('/user/currently-reading', { bookId, action: 'finish' });
   return response.data;
 };
 
 export const rateBook = async (bookId: string, rating: number) => {
   const response = await api.post('/user/rate-book', { bookId, rating });
+  return response.data;
+};
+
+export const getBookDetails = async (bookId: string) => {
+  const response = await api.get(`/books/${bookId}`);
   return response.data;
 };
 

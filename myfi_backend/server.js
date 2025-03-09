@@ -432,40 +432,71 @@ app.post('/api/auth/register', async (req, res) => {
     }
   });
   
-// Update the currently-reading endpoint to handle 'finish' action
+
 app.post('/api/user/currently-reading', auth, async (req, res) => {
   try {
     const { bookId, action } = req.body;
+    console.log(`Processing request: ${action} book ${bookId}`);
+    
     const user = await User.findById(req.userId);
+    if (!user) {
+      console.log(`User not found: ${req.userId}`);
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Log current state before changes
+    console.log(`Before update - Currently reading: ${user.currentlyReading.length}, Finished: ${user.finishedBooks ? user.finishedBooks.length : 0}`);
     
     if (!action || action === 'add') {
       // Add to currently reading if not already there
       if (!user.currentlyReading.includes(bookId)) {
         user.currentlyReading.push(bookId);
+        console.log(`Added ${bookId} to currently reading`);
+      } else {
+        console.log(`${bookId} already in currently reading list`);
       }
+    } else if (action === 'remove') {
+      // Add this new case for removing from currently reading
+      console.log(`Removing ${bookId} from currently reading`);
+      user.currentlyReading = user.currentlyReading.filter(id => id !== bookId);
     } else if (action === 'finish') {
+      console.log(`Attempting to mark ${bookId} as finished`);
+      // Ensure the arrays exist
+      if (!user.currentlyReading) user.currentlyReading = [];
+      if (!user.finishedBooks) user.finishedBooks = [];
+      
+      // Check if book is in currently reading list
+      const isCurrentlyReading = user.currentlyReading.includes(bookId);
+      console.log(`Book is${isCurrentlyReading ? '' : ' not'} in currently reading list`);
+      
       // Remove from currently reading
       user.currentlyReading = user.currentlyReading.filter(id => id !== bookId);
       
       // Add to finished books if not already there
-      if (!user.finishedBooks) {
-        user.finishedBooks = [];
-      }
-      
       if (!user.finishedBooks.includes(bookId)) {
         user.finishedBooks.push(bookId);
+        console.log(`Added ${bookId} to finished books`);
+      } else {
+        console.log(`${bookId} already in finished books list`);
       }
     }
     
+    // Log state after changes
+    console.log(`After update - Currently reading: ${user.currentlyReading.length}, Finished: ${user.finishedBooks ? user.finishedBooks.length : 0}`);
+    
     await user.save();
+    
+    // Return the updated lists
     res.json({ 
       currentlyReading: user.currentlyReading,
       finishedBooks: user.finishedBooks || []
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update reading status' });
+    console.error('Error updating reading status:', error);
+    res.status(500).json({ error: 'Failed to update reading status', details: error.message });
   }
 });
+
 
 // Update the reading-list endpoint to use a consistent 'action' parameter
 app.post('/api/user/reading-list', auth, async (req, res) => {

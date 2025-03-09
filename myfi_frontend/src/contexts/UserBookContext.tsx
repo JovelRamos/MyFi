@@ -1,36 +1,34 @@
 // UserBookContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import api from '../services/api';
-import { useAuth } from './AuthContext';  // Import useAuth
+import { useAuth } from './AuthContext';
 
 type UserBookState = {
   readingList: string[];
   currentlyReading: string[];
   finishedBooks: string[];
   ratings: {bookId: string, rating: number}[];
-  isLoading: boolean;
+  isInitialLoading: boolean;
   addToReadingList: (bookId: string) => Promise<void>;
   removeFromReadingList: (bookId: string) => Promise<void>;
   markAsCurrentlyReading: (bookId: string) => Promise<void>;
+  removeFromCurrentlyReading: (bookId: string) => Promise<void>; // Add this
   markAsFinished: (bookId: string) => Promise<void>;
   rateBook: (bookId: string, rating: number) => Promise<void>;
 };
-
 const UserBookContext = createContext<UserBookState | undefined>(undefined);
 
-// Create a wrapper component that doesn't use useAuth
 export const UserBookProvider = ({ children }: { children: ReactNode }) => {
   return <UserBookProviderContent>{children}</UserBookProviderContent>;
 };
 
-// The actual provider component that uses useAuth
 const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, user } = useAuth();
   const [readingList, setReadingList] = useState<string[]>([]);
   const [currentlyReading, setCurrentlyReading] = useState<string[]>([]);
   const [finishedBooks, setFinishedBooks] = useState<string[]>([]);
   const [ratings, setRatings] = useState<{bookId: string, rating: number}[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(false); // Rename to clarify purpose
 
   useEffect(() => {
     // When auth state changes, update loading state and fetch user data if authenticated
@@ -41,11 +39,11 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
         setCurrentlyReading([]);
         setFinishedBooks([]);
         setRatings([]);
-        setIsLoading(false);
+        setIsInitialLoading(false);
         return;
       }
       
-      setIsLoading(true);
+      setIsInitialLoading(true);
       try {
         const token = localStorage.getItem('token');
         if (token) {
@@ -58,14 +56,14 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         console.error('Failed to load user data', error);
       } finally {
-        setIsLoading(false);
+        setIsInitialLoading(false);
       }
     };
 
     fetchUserData();
   }, [isAuthenticated, user]); // Depend on both auth state and user
 
-  // Rest of the functions remain the same...
+  // Book list management functions - these won't trigger the loading state
   const addToReadingList = async (bookId: string) => {
     try {
       const response = await api.post('/user/reading-list', { 
@@ -75,6 +73,19 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
       setReadingList(response.data.readingList);
     } catch (error) {
       console.error('Failed to add book to reading list', error);
+      throw error;
+    }
+  };
+
+  const removeFromCurrentlyReading = async (bookId: string) => {
+    try {
+      const response = await api.post('/user/currently-reading', { 
+        bookId,
+        action: 'remove'
+      });
+      setCurrentlyReading(response.data.currentlyReading);
+    } catch (error) {
+      console.error('Failed to remove book from currently reading', error);
       throw error;
     }
   };
@@ -140,10 +151,11 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
       currentlyReading,
       finishedBooks,
       ratings,
-      isLoading,
+      isInitialLoading, 
       addToReadingList,
       removeFromReadingList,
       markAsCurrentlyReading,
+      removeFromCurrentlyReading, // Add this new function
       markAsFinished,
       rateBook
     }}>
