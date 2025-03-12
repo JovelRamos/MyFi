@@ -8,16 +8,63 @@ import { useUserBooks } from '../contexts/UserBookContext';
 import { toast } from 'react-toastify';
 import { AddOptionsPanel } from './AddOptionsPanel';
 import { ReadOptionsPanel } from './ReadOptionsPanel';
+import ReactDOM from 'react-dom';
 
 interface BookButtonsProps {
     book: Book;
     isHovered: boolean;
 }
 
+interface TooltipProps {
+    text: string;
+    targetRef: React.RefObject<HTMLElement>;
+    visible: boolean;
+}
+
+// Tooltip component using portal
+const Tooltip = ({ text, targetRef, visible }: TooltipProps) => {
+    const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+    
+    useEffect(() => {
+        if (visible && targetRef.current) {
+            const rect = targetRef.current.getBoundingClientRect();
+            setTooltipPosition({
+                top: rect.top + rect.height / 2,
+                left: rect.left - 120
+            });
+        }
+    }, [visible, targetRef]);
+    
+    if (!visible) return null;
+    
+    return ReactDOM.createPortal(
+        <div 
+            style={{
+                position: 'fixed',
+                top: `${tooltipPosition.top}px`,
+                left: `${tooltipPosition.left}px`,
+                backgroundColor: 'black',
+                color: 'white',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '0.75rem',
+                whiteSpace: 'nowrap',
+                zIndex: 9999,
+                pointerEvents: 'none',
+                transform: 'translateY(-50%)'
+            }}
+        >
+            {text}
+        </div>,
+        document.body
+    );
+};
 
 export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
     const [activePanel, setActivePanel] = useState<'read' | 'add' | null>(null);
-    const [showRatingButtons, setShowRatingButtons] = useState(false);
+    
+    // Track hovering state for each button independently of panels
+    const [hoveredButtons, setHoveredButtons] = useState<Set<string>>(new Set());
     
     // Computed states for panel visibility
     const showReadPanel = activePanel === 'read';
@@ -28,18 +75,6 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
     const readButtonRef = useRef<HTMLButtonElement>(null);
     const infoButtonRef = useRef<HTMLButtonElement>(null);
     const removeButtonRef = useRef<HTMLButtonElement>(null);
-    const thumbsDownRef = useRef<HTMLButtonElement>(null);
-    const thumbsUpRef = useRef<HTMLButtonElement>(null);
-    const heartRef = useRef<HTMLButtonElement>(null);
-    
-    // Tooltip refs
-    const addTooltipRef = useRef<HTMLDivElement>(null);
-    const readTooltipRef = useRef<HTMLDivElement>(null);
-    const infoTooltipRef = useRef<HTMLDivElement>(null);
-    const removeTooltipRef = useRef<HTMLDivElement>(null);
-    const thumbsDownTooltipRef = useRef<HTMLDivElement>(null);
-    const thumbsUpTooltipRef = useRef<HTMLDivElement>(null);
-    const heartTooltipRef = useRef<HTMLDivElement>(null);
     
     const { 
         readingList, 
@@ -57,97 +92,77 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
     const isCurrentlyReading = currentlyReading.includes(book._id);
     const bookRating = ratings.find(r => r.bookId === book._id)?.rating;
     
-    // Reset active panel when the card is no longer hovered
+    // Helper functions to manage hoveredButtons Set
+    const addHoveredButton = (button: string) => {
+        setHoveredButtons(prev => new Set([...prev, button]));
+    };
+    
+    const removeHoveredButton = (button: string) => {
+        setHoveredButtons(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(button);
+            return newSet;
+        });
+    };
+    
+    const isButtonHovered = (button: string) => hoveredButtons.has(button);
+    
+    // Reset states when the card is no longer hovered
     useEffect(() => {
         if (!isHovered) {
             setActivePanel(null);
+            setHoveredButtons(new Set());
         }
     }, [isHovered]);
     
-    // Effect to position tooltips based on button positions
-    useEffect(() => {
-        if (!isHovered) return;
-        
-        const positionTooltip = (buttonRef: React.RefObject<HTMLButtonElement>, tooltipRef: React.RefObject<HTMLDivElement>, text: string) => {
-            if (buttonRef.current && tooltipRef.current) {
-                const buttonRect = buttonRef.current.getBoundingClientRect();
-                tooltipRef.current.textContent = text;
-                tooltipRef.current.style.left = `${buttonRect.left - 120}px`;
-                tooltipRef.current.style.top = `${buttonRect.top + buttonRect.height/2}px`;
-                tooltipRef.current.style.display = 'block';
+    // BookButtons.tsx - Just update the handler functions to be more efficient
+    const handleAddToList = async () => {
+        try {
+            await addToReadingList(book._id);
+            toast.success(`"${book.title}" added to your reading list!`);
+        } catch (error) {
+            toast.error('Failed to add book. Please try again.');
+            console.error(error);
+        }
+        setActivePanel(null);
+    };
+      
+    const handleRemoveFromList = async () => {
+        try {
+            // Check if the book is in currently reading or reading list and remove accordingly
+            if (isCurrentlyReading) {
+                await removeFromCurrentlyReading(book._id);
+                toast.success(`"${book.title}" removed from currently reading!`);
+            } else if (isInReadingList) {
+                await removeFromReadingList(book._id);
+                toast.success(`"${book.title}" removed from your reading list!`);
             }
-        };
-        
-        // Position tooltips
-        positionTooltip(addButtonRef, addTooltipRef, "Add to Reading List");
-        positionTooltip(readButtonRef, readTooltipRef, "Mark as Read");
-        positionTooltip(infoButtonRef, infoTooltipRef, "More Information");
-        
-        if (isInReadingList || isCurrentlyReading) {
-            positionTooltip(removeButtonRef, removeTooltipRef, "Remove from List");
+        } catch (error) {
+            toast.error('Failed to remove book. Please try again.');
+            console.error(error);
         }
+    };
         
-        if (showRatingButtons) {
-            positionTooltip(thumbsDownRef, thumbsDownTooltipRef, "Disliked it");
-            positionTooltip(thumbsUpRef, thumbsUpTooltipRef, "Liked it");
-            positionTooltip(heartRef, heartTooltipRef, "Loved it!");
+    const handleMarkAsReading = async () => {
+        try {
+            await markAsCurrentlyReading(book._id);
+            toast.success(`"${book.title}" marked as currently reading!`);
+        } catch (error) {
+            toast.error('Failed to update reading status. Please try again.');
+            console.error(error);
         }
-        
-    }, [isHovered, showRatingButtons, isInReadingList, isCurrentlyReading]);
+        setActivePanel(null);
+    };
     
-// BookButtons.tsx - Just update the handler functions to be more efficient
-const handleAddToList = async () => {
-    try {
-      await addToReadingList(book._id);
-      toast.success(`"${book.title}" added to your reading list!`);
-    } catch (error) {
-      toast.error('Failed to add book. Please try again.');
-      console.error(error);
-    }
-    setActivePanel(null);
-  };
-  
-
-  
-    
-  const handleRemoveFromList = async () => {
-    try {
-        // Check if the book is in currently reading or reading list and remove accordingly
-        if (isCurrentlyReading) {
-            await removeFromCurrentlyReading(book._id);
-            toast.success(`"${book.title}" removed from currently reading!`);
-        } else if (isInReadingList) {
-            await removeFromReadingList(book._id);
-            toast.success(`"${book.title}" removed from your reading list!`);
+    const handleMarkAsFinished = async () => {
+        try {
+            await markAsFinished(book._id);
+            toast.success(`"${book.title}" marked as finished!`);
+        } catch (error) {
+            toast.error('Failed to update reading status. Please try again.');
+            console.error(error);
         }
-    } catch (error) {
-        toast.error('Failed to remove book. Please try again.');
-        console.error(error);
-    }
-};
-    
-  
-  const handleMarkAsReading = async () => {
-    try {
-      await markAsCurrentlyReading(book._id);
-      toast.success(`"${book.title}" marked as currently reading!`);
-    } catch (error) {
-      toast.error('Failed to update reading status. Please try again.');
-      console.error(error);
-    }
-    setActivePanel(null);
-  };
-  
-  const handleMarkAsFinished = async () => {
-    try {
-      await markAsFinished(book._id);
-      toast.success(`"${book.title}" marked as finished!`);
-    } catch (error) {
-      toast.error('Failed to update reading status. Please try again.');
-      console.error(error);
-    }
-  };
-  
+    };
     
     const handleRateBook = async (rating: number) => {
         try {
@@ -167,7 +182,6 @@ const handleAddToList = async () => {
         }
         
         setActivePanel(null);
-        setShowRatingButtons(false);
     };
     
     const handleMoreInfo = () => {
@@ -184,32 +198,34 @@ const handleAddToList = async () => {
     const removeButtonClass = "bg-red-600 hover:bg-red-700";
     
     const buttonSize = { width: '3.5rem', height: '3.5rem' };
-    
-    const tooltipStyle = {
-        position: 'absolute' as 'absolute',
-        backgroundColor: 'black',
-        color: 'white',
-        padding: '4px 8px',
-        borderRadius: '4px',
-        fontSize: '0.75rem',
-        whiteSpace: 'nowrap' as 'nowrap',
-        zIndex: 9999,
-        pointerEvents: 'none' as 'none',
-        display: 'none'
-    };
 
     return (
         <>
-            {/* Tooltips */}
+            {/* Tooltips using React Portals - Always show when button is hovered, regardless of panel state */}
             {isHovered && (
                 <>
-                    <div ref={addTooltipRef} style={tooltipStyle} />
-                    <div ref={readTooltipRef} style={tooltipStyle} />
-                    <div ref={infoTooltipRef} style={tooltipStyle} />
-                    <div ref={removeTooltipRef} style={tooltipStyle} />
-                    <div ref={thumbsDownTooltipRef} style={tooltipStyle} />
-                    <div ref={thumbsUpTooltipRef} style={tooltipStyle} />
-                    <div ref={heartTooltipRef} style={tooltipStyle} />
+                    <Tooltip 
+                        text="Add to Reading List" 
+                        targetRef={addButtonRef} 
+                        visible={isButtonHovered('add')} 
+                    />
+                    <Tooltip 
+                        text="Mark as Read" 
+                        targetRef={readButtonRef} 
+                        visible={isButtonHovered('read')} 
+                    />
+                    <Tooltip 
+                        text="More Information" 
+                        targetRef={infoButtonRef} 
+                        visible={isButtonHovered('info')} 
+                    />
+                    {(isInReadingList || isCurrentlyReading) && (
+                        <Tooltip 
+                            text="Remove from List" 
+                            targetRef={removeButtonRef} 
+                            visible={isButtonHovered('remove')} 
+                        />
+                    )}
                 </>
             )}
           
@@ -228,7 +244,14 @@ const handleAddToList = async () => {
                         className={`text-white p-3 rounded-full transition flex items-center justify-center shadow-md ${addButtonClass}`}
                         style={buttonSize}
                         aria-label="Add to List"
-                        onMouseEnter={() => setActivePanel('add')}
+                        onMouseEnter={() => {
+                            addHoveredButton('add');
+                            setActivePanel('add');
+                        }}
+                        onMouseLeave={() => {
+                            removeHoveredButton('add');
+                            // Don't close panel on button leave
+                        }}
                     >
                         <FaPlus className="w-6 h-6" />
                     </button>
@@ -242,7 +265,7 @@ const handleAddToList = async () => {
                     />
                 </div>
 
-                {/* Read Button and Rating Buttons */}
+                {/* Read Button */}
                 <div className="relative">
                     <button 
                         ref={readButtonRef}
@@ -250,7 +273,14 @@ const handleAddToList = async () => {
                         style={buttonSize}
                         aria-label="Read"
                         onClick={handleMarkAsFinished} // Directly mark as finished when clicking the button
-                        onMouseEnter={() => setActivePanel('read')} // Show ratings dropdown on hover
+                        onMouseEnter={() => {
+                            addHoveredButton('read');
+                            setActivePanel('read'); // Show ratings dropdown on hover
+                        }}
+                        onMouseLeave={() => {
+                            removeHoveredButton('read');
+                            // Don't close panel on button leave
+                        }}
                     >
                         <FaBookOpen className="w-6 h-6" />
                     </button>
@@ -271,7 +301,13 @@ const handleAddToList = async () => {
                     style={buttonSize}
                     aria-label="More Info"
                     onClick={handleMoreInfo} // Open detailed info in a new tab
-                    onMouseEnter={() => setActivePanel(null)} // Close other panels
+                    onMouseEnter={() => {
+                        addHoveredButton('info');
+                        setActivePanel(null); // Close other panels
+                    }}
+                    onMouseLeave={() => {
+                        removeHoveredButton('info');
+                    }}
                 >
                     <FaInfoCircle className="w-6 h-6" />
                 </button>
@@ -284,7 +320,13 @@ const handleAddToList = async () => {
                         style={buttonSize}
                         aria-label="Remove from List"
                         onClick={handleRemoveFromList}
-                        onMouseEnter={() => setActivePanel(null)} // Close other panels
+                        onMouseEnter={() => {
+                            addHoveredButton('remove');
+                            setActivePanel(null); // Close other panels
+                        }}
+                        onMouseLeave={() => {
+                            removeHoveredButton('remove');
+                        }}
                     >
                         <FaTimes className="w-6 h-6" />
                     </button>
