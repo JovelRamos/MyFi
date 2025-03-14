@@ -1,32 +1,41 @@
 // components/Header.tsx
+import { Link, NavLink } from 'react-router-dom';
 import AuthButtons from './AuthButtons';
 
 export default function Header() {
   return (
-    <header className="bg-(--panel-bg) border-b border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex-1 flex items-center">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-indigo-600 flex items-center justify-center">
-              <span className="text-white font-bold">L</span>
-            </div>
-            <span className="text-white font-medium">Logo</span>
-          </div>
+    <header className="bg-gray-800 border-b border-gray-700">
+      <div className="max-w-[3840px] min-w-[1920px] mx-auto py-4 px-24 flex justify-between items-center">
+        <div className="flex items-center space-x-8">
+          <Link to="/" className="flex items-center space-x-4">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              MyFi Books
+            </h1>
+            <span className="px-2 py-1 text-xs font-medium bg-gray-700 rounded-full text-gray-300">
+              Beta
+            </span>
+          </Link>
+          
+          {/* Navigation items */}
+          <nav className="flex items-center space-x-8">
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => 
+                isActive ? "text-white font-medium" : "text-gray-300 hover:text-white transition-colors"
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink 
+              to="/my-books" 
+              className={({ isActive }) => 
+                isActive ? "text-white font-medium" : "text-gray-300 hover:text-white transition-colors"
+              }
+            >
+              My Books
+            </NavLink>
+          </nav>
         </div>
-        
-        {/* Navigation items could go here */}
-        <nav className="hidden md:flex items-center space-x-8 mx-6">
-          <a href="#" className="text-gray-300 hover:text-white transition-colors">
-            Home
-          </a>
-          <a href="#" className="text-gray-300 hover:text-white transition-colors">
-            Features
-          </a>
-          <a href="#" className="text-gray-300 hover:text-white transition-colors">
-            About
-          </a>
-        </nav>
         
         <AuthButtons />
       </div>
