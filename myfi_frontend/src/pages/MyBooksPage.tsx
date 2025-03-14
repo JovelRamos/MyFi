@@ -58,12 +58,6 @@ function MyBooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulated books for the different sections
-  // In a real application, you'd need to fetch the actual book objects for the IDs in the lists
-  const readingListBooks: Book[] = books.filter(book => readingList.includes(book._id));
-  const currentlyReadingBooks: Book[] = books.filter(book => currentlyReading.includes(book._id));
-  const finishedBooksArray: Book[] = books.filter(book => finishedBooks.includes(book._id));
-
   // Fetch the book details if not already available
   useEffect(() => {  
     const fetchBooks = async () => {
@@ -84,6 +78,29 @@ function MyBooksPage() {
     fetchBooks();
   }, []);
 
+  // Create book lists with newest-first order
+  // This uses the same approach as SegmentManager
+  const readingListBooks: Book[] = [];
+  for (let i = readingList.length - 1; i >= 0; i--) {
+    const bookId = readingList[i];
+    const book = books.find(b => b._id === bookId);
+    if (book) readingListBooks.push(book);
+  }
+  
+  const currentlyReadingBooks: Book[] = [];
+  for (let i = currentlyReading.length - 1; i >= 0; i--) {
+    const bookId = currentlyReading[i];
+    const book = books.find(b => b._id === bookId);
+    if (book) currentlyReadingBooks.push(book);
+  }
+  
+  const finishedBooksArray: Book[] = [];
+  for (let i = finishedBooks.length - 1; i >= 0; i--) {
+    const bookId = finishedBooks[i];
+    const book = books.find(b => b._id === bookId);
+    if (book) finishedBooksArray.push(book);
+  }
+
   // Redirect non-authenticated users to login
   if (!isAuthenticated && !isInitialLoading) {
     return (
@@ -102,8 +119,8 @@ function MyBooksPage() {
 
   if (isInitialLoading || isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="relative w-12 h-12">
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-zinc-900 bg-opacity-80">
+        <div className="relative w-16 h-16">
           <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-600 rounded-full"></div>
           <div className="absolute top-0 left-0 w-full h-full border-4 border-t-red-600 rounded-full animate-spin"></div>
         </div>
@@ -112,7 +129,7 @@ function MyBooksPage() {
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-5">
       <h1 className="text-3xl font-bold text-white mb-8">My Books</h1>
 
       <BookList 
@@ -122,7 +139,7 @@ function MyBooksPage() {
       />
       
       <BookList 
-        books={readingListBooks.filter(book => !currentlyReading.includes(book._id))} 
+        books={readingListBooks} 
         title="My Reading List" 
         emptyMessage="Your reading list is empty. Add books that you want to read later!"
       />

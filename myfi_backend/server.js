@@ -405,7 +405,8 @@ app.post('/api/auth/register', async (req, res) => {
           id: user._id,
           email: user.email,
           readingList: user.readingList,
-          currentlyReading: user.currentlyReading
+          currentlyReading: user.currentlyReading,
+          finishedBooks: user.finishedBooks
         }
       });
     } catch (error) {
@@ -498,7 +499,7 @@ app.post('/api/user/currently-reading', auth, async (req, res) => {
 });
 
 
-// Update the reading-list endpoint to use a consistent 'action' parameter
+// Update the reading-list endpoint to add items at the beginning of the array
 app.post('/api/user/reading-list', auth, async (req, res) => {
   try {
     const { bookId, action } = req.body;
@@ -506,7 +507,8 @@ app.post('/api/user/reading-list', auth, async (req, res) => {
     
     if (!action || action === 'add') {
       if (!user.readingList.includes(bookId)) {
-        user.readingList.push(bookId);
+        // Add to the beginning of the array (most recent first)
+        user.readingList.unshift(bookId);
       }
     } else if (action === 'remove') {
       user.readingList = user.readingList.filter(id => id !== bookId);
@@ -518,6 +520,7 @@ app.post('/api/user/reading-list', auth, async (req, res) => {
     res.status(500).json({ error: 'Failed to update reading list' });
   }
 });
+
 
   
   // Rate a book

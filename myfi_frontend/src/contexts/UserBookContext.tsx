@@ -31,27 +31,34 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
   const [isInitialLoading, setIsInitialLoading] = useState(false); // Rename to clarify purpose
 
   useEffect(() => {
-    // When auth state changes, update loading state and fetch user data if authenticated
     const fetchUserData = async () => {
       if (!isAuthenticated) {
-        // Reset all user data when not authenticated
-        setReadingList([]);
-        setCurrentlyReading([]);
-        setFinishedBooks([]);
-        setRatings([]);
-        setIsInitialLoading(false);
+        // Reset logic...
         return;
       }
       
       setIsInitialLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          const response = await api.get('/auth/verify');
-          setReadingList(response.data.readingList || []);
-          setCurrentlyReading(response.data.currentlyReading || []);
-          setFinishedBooks(response.data.finishedBooks || []);
-          setRatings(response.data.ratings || []);
+        // Instead of making another API call, use the user data directly if available
+        if (user && user.finishedBooks) {
+          setReadingList(user.readingList || []);
+          setCurrentlyReading(user.currentlyReading || []);
+          setFinishedBooks(user.finishedBooks || []);
+          // Handle ratings separately if needed
+          
+          console.log("Using data from auth context:", user.finishedBooks);
+        } else {
+          // Fallback to API call if user data is incomplete
+          const token = localStorage.getItem('token');
+          if (token) {
+            const response = await api.get('/auth/verify');
+            console.log("API response in fallback:", response.data);
+            
+            setReadingList(response.data.readingList || []);
+            setCurrentlyReading(response.data.currentlyReading || []);
+            setFinishedBooks(response.data.finishedBooks || []);
+            setRatings(response.data.ratings || []);
+          }
         }
       } catch (error) {
         console.error('Failed to load user data', error);
@@ -59,9 +66,9 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
         setIsInitialLoading(false);
       }
     };
-
+  
     fetchUserData();
-  }, [isAuthenticated, user]); // Depend on both auth state and user
+  }, [isAuthenticated, user]);
 
   // Book list management functions - these won't trigger the loading state
   const addToReadingList = async (bookId: string) => {

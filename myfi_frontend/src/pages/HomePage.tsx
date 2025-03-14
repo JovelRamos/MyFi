@@ -123,7 +123,7 @@ function HomePage() {
   }, [books, isAuthenticated, userBooksInitialLoading, readingList, currentlyReading]);
 
   if (isLoading) return (
-    <div className="flex flex-col items-center justify-center h-screen w-screen bg-zinc-900">
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-zinc-900 bg-opacity-80">
       <div className="relative w-16 h-16">
         <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-600 rounded-full"></div>
         <div className="absolute top-0 left-0 w-full h-full border-4 border-t-red-600 rounded-full animate-spin"></div>

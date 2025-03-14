@@ -6,6 +6,8 @@ interface User {
   email: string;
   readingList: string[];
   currentlyReading: string[];
+  finishedBooks: string[];
+  ratings?: {bookId: string, rating: number}[]; // Optional: add this too
 }
 
 interface AuthContextType {
