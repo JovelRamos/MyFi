@@ -74,7 +74,8 @@ function MyBooksPage() {
         setIsLoading(false);
       }
     };
-    
+    console.log("Current finishedBooks:", finishedBooks);
+
     fetchBooks();
   }, []);
 

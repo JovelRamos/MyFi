@@ -26,6 +26,15 @@ export const removeFromReadingList = async (bookId: string) => {
   return response.data;
 };
 
+export const removeFromCurrentlyReading = async (bookId: string) => {
+  const response = await api.post('/user/currently-reading', { 
+    bookId, 
+    action: 'remove' 
+  });
+  return response.data;
+};
+
+
 export const markAsCurrentlyReading = async (bookId: string) => {
   const response = await api.post('/user/currently-reading', { bookId, action: 'add' });
   return response.data;

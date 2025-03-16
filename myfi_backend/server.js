@@ -426,7 +426,8 @@ app.post('/api/auth/register', async (req, res) => {
         id: user._id,
         email: user.email,
         readingList: user.readingList,
-        currentlyReading: user.currentlyReading
+        currentlyReading: user.currentlyReading,
+        finishedBooks: user.finishedBooks
       });
     } catch (error) {
       res.status(500).json({ error: 'Verification failed' });

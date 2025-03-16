@@ -1,13 +1,14 @@
 // BookPanel.tsx with seamless cover transition
 import { Book } from '../types/Book';
-import { BookButtons } from './BookButtons'; // Import the BookButtons component
+import { BookButtons } from './BookButtons';
+import { useRef, useEffect } from 'react';
 
 interface BookPanelProps {
     book: Book;
     isHovered: boolean;
     cardDimensions: { width: number; height: number };
     scaleFactor: number;
-    onPanelHover?: (isHovered: boolean) => void; // Add this prop
+    onPanelHover?: (isHovered: boolean) => void;
 }
 
 export const BookPanel = ({ 
@@ -20,11 +21,36 @@ export const BookPanel = ({
     // Calculate dimensions for the larger panel
     const panelWidth = cardDimensions.width * scaleFactor;
     const panelHeight = cardDimensions.height * scaleFactor;
+    const panelRef = useRef<HTMLDivElement>(null);
     
     // Cover URL for the right panel
     const coverUrl = book.cover_id
         ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
         : '../assets/placeholder-book.png';
+
+    // Use mouseout event listener to ensure all exits are captured
+    useEffect(() => {
+        const panel = panelRef.current;
+        if (!panel) return;
+
+        const handleMouseOut = (e: MouseEvent) => {
+            // Only trigger if the mouse is leaving the panel, not entering a child element
+            if (!panel.contains(e.relatedTarget as Node)) {
+                onPanelHover && onPanelHover(false);
+            }
+        };
+
+        panel.addEventListener('mouseout', handleMouseOut);
+        
+        return () => {
+            panel.removeEventListener('mouseout', handleMouseOut);
+        };
+    }, [onPanelHover]);
+
+    // Handle mouse enter to inform parent component
+    const handleMouseEnter = () => {
+        onPanelHover && onPanelHover(true);
+    };
 
     return (
         <div 
@@ -34,6 +60,7 @@ export const BookPanel = ({
             }}
         >
             <div 
+                ref={panelRef}
                 className={`absolute transform-gpu transition-all duration-300 ease-out pointer-events-auto
                            overflow-hidden shadow-lg ${
                     isHovered ? 'opacity-100' : 'opacity-0'
@@ -46,6 +73,7 @@ export const BookPanel = ({
                     borderRadius: '0.375rem',
                     backfaceVisibility: 'hidden',
                 }}
+                onMouseEnter={handleMouseEnter}
             >
                 {/* Top horizontal section - Title and Author */}
                 <div className="bg-black bg-opacity-90 p-3 w-full"
