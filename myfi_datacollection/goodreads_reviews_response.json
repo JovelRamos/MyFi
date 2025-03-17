@@ -1,0 +1,1412 @@
+{
+  "data": {
+    "getReviews": {
+      "totalCount": 270,
+      "edges": [
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.n2qG76xWWnXnljmp41ETIQ",
+            "creator": {
+              "id": 31534854,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1696311046i/31534854._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 186,
+              "__typename": "User",
+              "textReviewsCount": 318,
+              "name": "Carol Mola",
+              "webUrl": "https://www.goodreads.com/user/show/31534854-carol-mola",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1490444097756.0,
+            "createdAt": 1428831760000.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1431075924000.0,
+            "text": "<a target=\"_blank\" rel=\"noopener nofollow\" href=\"http://blondestorm.blogspot.com.es/2015/05/leyendas-de-dune-brian-herbert-kevin-j.html\">http://blondestorm.blogspot.com.es/20...</a>",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/31534854?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [
+                {
+                  "tag": {
+                    "name": "2015",
+                    "webUrl": "https://www.goodreads.com/review/list/31534854?shelf=2015",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                },
+                {
+                  "tag": {
+                    "name": "favorites",
+                    "webUrl": "https://www.goodreads.com/review/list/31534854?shelf=favorites",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                },
+                {
+                  "tag": {
+                    "name": "ciencia-ficción",
+                    "webUrl": "https://www.goodreads.com/review/list/31534854?shelf=ciencia-ficci%C3%B3n",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                }
+              ],
+              "webUrl": "https://www.goodreads.com/review/show/1252721856",
+              "__typename": "Shelving"
+            },
+            "likeCount": 1,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.UytmaD-AJ9DjD-DbzeyS1A",
+            "creator": {
+              "id": 82364537,
+              "imageUrlSquare": "",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 67,
+              "name": "Naveen",
+              "webUrl": "https://www.goodreads.com/user/show/82364537-naveen",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1737720972921.0,
+            "createdAt": 1737720913183.0,
+            "spoilerStatus": true,
+            "lastRevisionAt": 1737720972752.0,
+            "text": "Enjoyed this book as it lays foundations for the entire Dune series based on Frank Herbert’s notes. <br /><br />Spoilers below from Wikipedia:<br /><br />The novel introduces a generation of characters whose families will later become the most significant in the universe: the Atreides, the Corrinos and the Harkonnens. Serena Butler, daughter of the viceroy of the League of Nobles, is a strong voice for the human rebellion. Her paramour Xavier Harkonnen leads the military force on the current League capital world of Salusa Secundus. As the story begins, Xavier is repelling an attack on the planet by Omnius' army of cymeks. The cymeks are former humans whose brains have been implanted in preservation canisters, which in turn can be installed into a variety of fearsome mechanical bodies, to extend their lives indefinitely and make them nearly unstoppable. The original twenty cymeks (calling themselves the Titans) had conquered the complacent universe by exploiting humanity's reliance and dependency on machines, yet the Titans were later overthrown themselves by Omnius, an artificial intelligence of their design. Seeking to replace human chaos with machine order, Omnius thus ignited the war between machine and humanity. Vorian Atreides is the son and subordinate of the leading cymek Titan Agamemnon (whose last name, Atreides, originates with House Atreus, from the ancient Greek epic the Iliad).<br />Meanwhile, the Sorceresses of Rossak, a matriarchal order, are perfecting their destructive psychic powers for use against the machines, and maintaining a breeding program to create more powerful telepaths. Pharmaceutical magnate Aurelius Venport is about to discover an interesting new substance, the spice melange, and the famous inventor Tio Holtzman accepts the diminutive genius Norma Cenva into his employ.<br />Serena is captured by the Titan Barbarossa and put under the watch of Erasmus, an independent robot who seeks to understand humans completely so that the thinking machines may be truly superior. His methods of study often entail human vivisection and torture in his slave pens. Erasmus takes a liking to Serena, as does the young Vorian Atreides. Serena realizes she is pregnant with Xavier's child, and later gives birth to a baby boy whom she names Manion (after her father). Erasmus finds this distraction inconvenient, and not only removes Serena's uterus but kills her young son in front of her.<br />This single event incites the entire Jihad, and young Manion is soon labelled the first martyr, Manion the Innocent. Vorian, learning about the murder and realizing the lie he lives as a machine trustee, betrays his machine masters and flees with Serena. They are joined by another trustee, Iblis Ginjo, a slave leader who masterminds the rebellion on Synchronized Earth.<br />The first human victory of the so-called Butlerian Jihad is the destruction of Earth and the Earth Omnius using atomics. Iblis (now Grand Patriarch of the Holy Jihad) and Serena (Priestess of the Jihad) are the religious leaders of the human rebellion, and Xavier and Vorian its two generals. The brutal Titans are desperate to break free of their machine masters and wage their own techno-misanthropic war, and Omnius and Erasmus are determined to conquer and destroy all of humanity once and for all.<br />A subplot of the novel focuses on the Zensunni slave Ishmael who is captured by slavers and taken to Poritrin. He and a Zenshiite slave named Aliid attempt to sabotage one of Holtzmann's experiments. The two are influenced by the charismatic slave leader Bel Moulay, who inspires a slave uprising. Lord Niko Bludd's Dragoons suppress the revolt. While the slaves receive an amnesty due to the pressing war with Omnius, Moulay is mutilated and executed.<br />And on a lonely desert planet known as Arrakis, the seeds of legend are sown with Selim Wormrider, an outcast from his tribe, who sees the future of Shai-Hulud and makes it his mission to save his god from those who would wish to take the spice.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/82364537?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/7111220432",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.8mc8Xy-dcdtALidPwFP6-w",
+            "creator": {
+              "id": 26551955,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1387456027i/26551955._UY200_CR33,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 11,
+              "__typename": "User",
+              "textReviewsCount": 536,
+              "name": "Gbolahan",
+              "webUrl": "https://www.goodreads.com/user/show/26551955-gbolahan",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1591902877299.0,
+            "createdAt": 1591902834282.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1591902876917.0,
+            "text": "Read book 3 of this series about 10 years ago, thought I'd start it from the beginning formally now.<br /><br />Writing is at many times childishly simplistic <b>(the violence could get really vicious and very horrific at sudden times though)</b>. The short chapters (or...sections, whatever) used to introduce each character and develop POVs seemed like a tentative attempt by the authors to assemble a large ensemble of characters. The repetions were virtually endless (Selim's troubles and how he was betrayed! Zufa Cenva's pointless tantrums! The reason why the AIs couldn't kill the Titans! The reason for Tuk Keedair's dark long braid of hair! Erastus' pliable flowmetal face! Xerxes lazy stupidity! Aurelius' work with chemicals! Selim's troubles and how he was betrayed! Zufa Cenva's pointless tantrums! The reason why the AIs couldn't kill the Titans! The reason for Tuk Keedair's dark long braid of hair! Erastus' pliable flowmetal face! Xerxes lazy stupidity! Aurelius' work with chemicals! <br />Selim's troubles and how he was betrayed! Zufa Cenva's pointless tantrums! The reason why the AIs couldn't kill the Titans! The reason for Tuk Keedair's dark long braid of hair! Erastus' pliable flowmetal face! Xerxes lazy stupidity! Aurelius' work with chemicals! Damn! Over and over and over and over and over and over again! ).<br /><br /><b>YOU SEE??</b><br /><br />Some of the chapters seemed to be space fillers. That chapter where the robot <input type=\"checkbox\" class=\"spoiler__control\" aria-label=\"The following text has been marked spoiler. Toggle checkbox to reveal or hide.\" onchange=\"this.labels[0].setAttribute('aria-hidden', !this.checked);\" id=\"ccbc42fe-44e1-43de-a527-ecf24aad7057\" /><label aria-hidden=\"true\" class=\"spoiler\" for=\"ccbc42fe-44e1-43de-a527-ecf24aad7057\">landed on Arrakis, killed Ebrahim and then got swallowed by a</label> worm. What was all that.<br /><br />Although, despite all its faults, by page 360 of 616, I had started getting back that feeling of awe of the scope and depth of the world, the same I got some 15 or so years ago when I read book 2, <a href=\"https://goodreads.com/book/show/99218.The_Machine_Crusade__Legends_of_Dune___2_\" title=\"The Machine Crusade (Legends of Dune, #2) by Brian Herbert\" rel=\"noopener\"> The Machine Crusade</a>, first. I loved that interplay of unpredictability and grey shades of all characters. No one was perfectly good or perfectly evil in this book. Except maybe Ajax, that dude was straight up psycho. The story was filled with multiple consciousnesses, robot and human, Vorian and Seurat, simply trying to make sense of their existences and awarenesses, trying to simply make it to their respective tomorrows. I loved the GOT vibe also: anyone of these people (and robots, don't forget the robots) could die at any time.<br />Loved, loved, loved the per-chapter \"historical\" quotes. <br /><br />Erasmus reminds me of Michael in <b>The Good Place</b>.<br /><br />I think I'll read <a href=\"https://goodreads.com/book/show/99218.The_Machine_Crusade__Legends_of_Dune___2_\" title=\"The Machine Crusade (Legends of Dune, #2) by Brian Herbert\" rel=\"noopener\"> The Machine Crusade</a> again. Before going on to book 3.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/26551955?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/3386776879",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.TmLjWpGkKJPCXD0oEvMi2Q",
+            "creator": {
+              "id": 104664131,
+              "imageUrlSquare": "",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 1,
+              "__typename": "User",
+              "textReviewsCount": 1,
+              "name": "Mareq",
+              "webUrl": "https://www.goodreads.com/user/show/104664131-mareq",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1603276015309.0,
+            "createdAt": 1603273582830.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1603276015309.0,
+            "text": "I can not really decide, I would say that being at the very beginning of the Duniverse timeline, it should be the first one to be read - even before the original Frank Herbert's Dune. The reason being that there are a lot of spoilers there in the original Dune, so the reader already knows ending of many things. This often leads to just being curious how the authors will manage to get to that known resolution, instead of (arguably preferable) thrill of unspoiled story.<br /><br />The story is quite enjoyable, starting with isolated, seemingly independent events, which come together at the end. It may benefit from higher number of characters, because they end up being involved in too many things, creating such a big random coincidence that it is starting to be hard to believe to be possible (SPOILER1 - see below)<br /><br />At points, I would prefer the story indirectly imply the point the authors are making, instead of explicitly stating it (SPOILER2 - see below).<br /><br />The book blends well with the original Duniverse, full of all the plazstones, flowsteels and flowing metalic films providing ships with invisibility. It also gives the story about how the major inventions of the Duniverse came to the being, which is very satisfactory. Again, it is a bit unbelievable that all those things have come to be in span of just a couple of years as described in the book and then they have been preserved, without any major additions/improvements for tens of millennia.<br /><br />Do not get put off by all the objections above though, overall, the book was really very enjoyable and I would full heartedly recommend it.<br /><br /><br />== SPOILERS BELOW ==<br /><br />SPOILER1: e.g. Naib Dhartha is involved in too many things. What is the chance that the same tribe produces Selim the Wormrider as well as will be the exact one met by Tuk Keedair? Moreover Tuk Keedair starting the melange business together with Aurelius Venport, the adoptive father of the great inventor Norma Cenva, who happens to work with slaves delivered by no one else than Tuk Keedair again?<br /><br />SPOILER2: e.g. The hypocrisy of slavery, while dedicating massive resources towards fight against the thinking machines being explicitly stated by Norma Cenva's internal dialogue instead of letting reader to arrive at that conclusion implicitly by following events in the story - which was already quite sufficiently already there without the need to explicitly state the obvious.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/104664131?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [
+                {
+                  "tag": {
+                    "name": "fiction",
+                    "webUrl": "https://www.goodreads.com/review/list/104664131?shelf=fiction",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                }
+              ],
+              "webUrl": "https://www.goodreads.com/review/show/3597360553",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.ikkBTArjH45RKZApNbCDuA",
+            "creator": {
+              "id": 100126715,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1643156179i/100126715._UY200_CR80,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 26,
+              "name": "Jason",
+              "webUrl": "https://www.goodreads.com/user/show/100126715-jason",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1568254496453.0,
+            "createdAt": 1568254496155.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1568254496155.0,
+            "text": "Would make a great action film. <br /><br />Like the other BH + KJA books, I didn’t expect to like this as much as I did. It had its cringe passages of lazy exposition that would be better placed in the trash or in a hastily written screenplay, but the story was engaging, given my lower expectations. <br /><br />I wonder how much of Frank’s unearthed notes dealt with these prequel books. Haven’t looked into it that closely. I find it a little strange that this book, which kicks off another series, had no introduction from BH or KJA discussing how this book came to be. I know Dune 7 ended up becoming the last two Dune installments: (e.g. Hunters of Dune, Sandworms of Dune) and had at least one introduction.<br /><br />Again, these books will never equal what I think are Frank Herbert’s masterworks (e.g. Dune, Dune Messiah, Children of Dune, God Emperor of Dune). I almost passed on the Legends of Dune series, but my curiosity about the often referenced Butlerian Jihad got the better of me. <br /><br />I think the spirit of this first entry in the Legends of Dune series will stick with me longer than any specific story beats or hacky writing I may dislike. It was fun to read about the fate of Earth, especially. <br /><br />I will say The Butlerian Jihad would make a far better movie than what Hollywood has been pumping out lately. <br /><br />I enjoyed the plot and the portrayal of the thinking machines for what they were. I didn’t go into this looking for a deeply layered, philosophical theorem on what it means to be a thinking machine vs human. That would require Frank Herbert’s pen and his trademark exhaustive research. <br /><br />The thinking machines are essentially cold, sociopathic, amoral human beings obsessed with efficiency and control. Ok. And, the Titans, with their human brains inside machine bodies are power mad, psychotic human beings. Fine. Not super cerebral yet not a deal breaker for me to read this either.<br /><br />Serena Butler’s storyline was, quite frankly, disturbing in all the right ways. So, mission accomplished on that front. Erasmus pissed me off too. It seems Serena learned her lesson the hard way and would’ve been better off settling down for a more trad life with Xavier rather than flex her girl power trying to save the galaxy as a rogue soldier. <br /><br />On to The Machine Crusade… <br />",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/100126715?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/2902749772",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.cJ7kBse_ymz17YNtRJuINQ",
+            "creator": {
+              "id": 39799527,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1648238552i/39799527._UX200_CR0,56,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 4,
+              "__typename": "User",
+              "textReviewsCount": 70,
+              "name": "Juan Areiza Gallego",
+              "webUrl": "https://www.goodreads.com/user/show/39799527-juan-areiza-gallego",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1720486771657.0,
+            "createdAt": 1720486747117.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1720486771510.0,
+            "text": "Miles de años antes de que Paul Atreides caminara por las arenas de Arrakis, la humanidad se encuentra bajo la opresión de máquinas inteligentes. Los Titanes, antiguos humanos que han transferido sus mentes a cuerpos mecánicos, han esclavizado a la mayoría de la humanidad. Sin embargo, un grupo de valientes líderes humanos, entre ellos Serena Butler y Xavier Harkonnen, se levantan para luchar por la libertad en una guerra que será conocida como la Yihad Butleriana.<br />Tiene algunos puntos fuertes como:<br />• Exploración del origen del universo de Dune: La novela profundiza en los eventos que llevaron a la prohibición de las máquinas pensantes y al surgimiento de una sociedad donde la tecnología avanzada es vista con sospecha. Esto añade una capa de profundidad al universo de Dune, explicando muchos de los fundamentos de la saga original.<br />• Personajes complejos: Serena Butler, una de las protagonistas, es presentada como una líder carismática y apasionada, cuya tragedia personal impulsa a los humanos a levantarse contra las máquinas. Xavier Harkonnen, otro personaje central, muestra la lucha interna entre el deber y el amor, añadiendo una dimensión humana a la épica guerra.<br />• Temas filosóficos y morales: El libro aborda temas como la dependencia tecnológica, la autonomía humana y las consecuencias de jugar a ser dioses con la inteligencia artificial. Estas cuestiones son tratadas de manera que invitan al lector a reflexionar sobre nuestra propia relación con la tecnología.<br />• Ritmo y acción: La narrativa está llena de acción y momentos tensos que mantienen al lector enganchado. Las batallas entre humanos y máquinas están descritas con vívido detalle, creando una atmósfera de constante peligro y heroísmo.<br />El final queda muy abierto lo que te lleva a querer leer los demás.<br />Mi calificación se debe a que el libro me gustó la historia me pareció con un buen libro conductor y los personajes de Serena y Vorian me gustaron mucho, quiero leerme los otros dos para saber en que termina toda está guerra humanos vs inteligencia artificial.<br />Hubo capítulos que me parecieron relleno y me aburrieron pero eran pocos, y claramente en Colombia solo se consigue en edición debolsillo que no me gusta para nada el formato.<br />",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/39799527?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [
+                {
+                  "tag": {
+                    "name": "sci-fi",
+                    "webUrl": "https://www.goodreads.com/review/list/39799527?shelf=sci-fi",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                }
+              ],
+              "webUrl": "https://www.goodreads.com/review/show/6597755905",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.FdRMWZNvhgEkZEohlXHcgg",
+            "creator": {
+              "id": 132789665,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1712012620i/132789665._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 1,
+              "__typename": "User",
+              "textReviewsCount": 89,
+              "name": "NadeClow ",
+              "webUrl": "https://www.goodreads.com/user/show/132789665-nadeclow",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1740943138424.0,
+            "createdAt": 1740882281873.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1740943138424.0,
+            "text": "Ok buckle up people because I am high in caffeine and the love-hate I have for this book, sorry in advance for my English because it's not my first and not the best.<br /><br />So let's start with the book... This book is crazy Braian fudging exaggerated with the adjectives. AND I AM NOT EVEN EXAGERATING. The descriptions of certain places are understandable but the abuse of the adjectives is so obvious that if you take them from the book it will reduce almost half of it. I'm not even kidding 695 pages would easily go to 300 if you take the unnecessary super descriptions that use not common adjectives. It was almost as if the editor told the author \"hey you have to do over 600 pages ok' and he wanted to fill the spaces to get to that number. Yes the descriptions of the places would look lovely for the fanarts and easy for the artists if they decide to make art but it is unnecessary for almost every single thing.<br />This makes the book tedious to read, I had to stop for days because it was difficult to read if you as me start this book because you wanted to understand what happened before in the Dune universe, you will have to have a lot of patience. Now you would say ¿Then you hate the book? The answer is no but is annoying. I loved that it explains a lot of things in the universe of dune, the spice, why the houses and not imperium, the origins of the houses and the frenen and where does humanity come from, a lot of the questions are answered here and is so refreshing to now know something that for a noob in Dune universe like me didn't know. The problem is that you have to search for the answers UNDER ALL THAT UNNECESSARY USE OF NOT SO COMMON WORDS. So yeah if you want to read it take this in mind. It's this the only thing about this book that you have to be wear of? NO! IT IS NOT. Each chapter sees different perspectives and characters easily the point of minimum 6 to 8 of them so if you are like me and have bad memory have a notepad by your side because Jesus Christ you will need it.<br />If you are a new dune fan don't read this book as your first one and if you are a fan and have read the books by Frank and were thinking in reading this just separate the author and think of this just as more context for the universe.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/132789665?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/7235426959",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v2.2024121110.e260bffd-42d4-4443-98fe-c84b03d662f6",
+            "creator": {
+              "id": 184237635,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1733373570i/184237635._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 14,
+              "name": "Hayden Fretwell",
+              "webUrl": "https://www.goodreads.com/user/show/184237635-hayden-fretwell",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1733914161037.0,
+            "createdAt": 1733914137902.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1733914160868.0,
+            "text": "Legends of Dune:The Butlerian Jihad It began in the Time of Tyrants, when ambitious men and women used high-powered computers to seize control of the heart of the Old Empire including Earth itself. The tyrants translated their brains into mobile mechanical bodies and created a new race, the immortal man-machine hybrids called cymeks. Then the cymeks' world-controlling planetary computers, each known as Omnius, seized control from their overlords and a thousand years of brutal rule by the thinking machines began.<br /><br />The human race still clings to life. Some, like idealistic Serena Butler of the free planet Salusa Secundus and her betrothed, the soldier Xavier Harkonnen, even dream of overthrowing the machines and freeing their human slaves. Others, like Vorian Atreides, bastard son of the cymek Agamemnon, are proud to serve the machines. But their world faces disaster. Impatient with human beings' endless disobedience and the cymeks' continual plotting to regain their power, Omnius has decided that it no longer needs them. Only victory can save the human race from extermination.<br /><br /><br />Decades after Herbert’s original novels, the Dune saga was continued by Frank Herbert’s son, Brian Herbert, in collaboration with Kevin J. Anderson. Working from Frank Herbert’s own notes, the acclaimed authors reveal the chapter of the Dune saga most eagerly anticipated by readers: the Dune prequel...Legends of Dune: The Butlerian Jihad.<br /><br />Throughout the Dune novels, Frank Herbert frequently referred to the war in which humans wrested their freedom from “thinking machines.” In Dune: The Butlerian Jihad, Brian Herbert and Kevin J. Anderson bring to life the story of that war, a tale previously seen only in tantalizing hints and clues.<br /><br />Finally, we see how Serena Butler’s passionate grief ignites the struggle that will liberate humans from their machine masters; here is the amazing tale of the Zensunni Wanderers, who escape bondage to flee to the desert world where they will declare themselves the Free Men of Dune. And here is the backward, nearly forgotten planet of Arrakis, where traders have discovered the remarkable properties of the spice melange....",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/184237635?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/7075993419",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.IejcrVmhrgqvjY8tPtZ6UA",
+            "creator": {
+              "id": 137363352,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1719291815i/137363352._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 1,
+              "__typename": "User",
+              "textReviewsCount": 84,
+              "name": "KC✨&#x1f4d6;",
+              "webUrl": "https://www.goodreads.com/user/show/137363352-kc-x1f4d6",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1689569496663.0,
+            "createdAt": 1689305597503.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1689569496476.0,
+            "text": "4 STARS: I want to preface this with saying that I have mixed feelings. I initially didn’t want to read this prequel series because I felt that it was a money grab from Brian Herbert, taking his dad’s passion project and gaining profit off of it. Now maybe that’s true or maybe he just wanted to share his dad’s passion with his readers. But nonetheless, I ended up starting this journey. Now, I’ve read some reviews saying that this book is absolutely terrible. I think that it’s important to remind yourselves that this is a Frank Herbert writing it. It’s Brian Hebert, and co-author. While the essence of the book follows the main series, it does have its own unique voice. It’s also important to note that while this is a science fiction, it also clearly states that it is a space opera. And that it truly is. This book is very dramatic and has the perspective of several characters and you’re able to see multiple perspectives of what’s going on around the universe and in different scenarios. Some parts of the book come from slaves, the “Titans”, and other important voices. <br />This book starts the groundwork for a war that will create a ripple effect. For several thousands of years. We are several thousands of years prior to Paul Atredies. This book has several big names such a Butler, Harkonnen, and Atredies. This book reads very much like a prequel, and you see several connections from this book to the main Dune series. One of the funniest parts of the book was when a smuggler was trying out space for the first time, and it goes on to say that it’s a curiosity, but won’t be much more than that little did he know that he would become addicted, and the entire universe would become addicted. The only thing I really had a trouble with during this book was the harming of a child. While there are several scenes in this book that talk about human torture and other odd scientific experiments, this didn’t seem incredibly different than the original Dune series. However, it’s a little emotional to hear a child being harmed, and when it is written in detail, can be a bit difficult. Overall, this book did read old but again it is good for the expectation that I have for it. I would suggest this book to anyone that is interested in the history behind Dune, but otherwise wouldn’t suggest it to friends that don’t like science-fiction. ",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/137363352?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/5650522686",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.b-CT79wposso0sTQpVuZww",
+            "creator": {
+              "id": 92134111,
+              "imageUrlSquare": "",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 2,
+              "__typename": "User",
+              "textReviewsCount": 19,
+              "name": "Brian",
+              "webUrl": "https://www.goodreads.com/user/show/92134111-brian",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1632618153800.0,
+            "createdAt": 1632618012226.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1632618153449.0,
+            "text": "I have, like most avid readers of SciFi, read the Dune Trilogy, but many do not realize that a complete history of the Dune universe, stretching across ten thousand years of time in a dozen or more books, exists, compliments of Frank Herbert’s son Brian Herbert, and K. J. Anderson.<br />This book is the very first of the history, covering the events leading up to the start of the Butlerian Jihad, when humanity takes up the fight against the computer Evermind, Omnious, and the intelligent machines that have conquered dozens of once human worlds and slaughtered billions of humans.<br />This story is more of an introduction, establishing the beginnings of the three great houses of the Dune Universe, House Atreides, House Harkonen and House Corino. <br />Herbert and Anderson do an admirable job of recreating and clarifying the universe created by Frank Herbert. Their writing is apparently based on Frank Herbert’s notes, discovered after his death. If I have any criticism of this book it is this is more a day-in-the-life of sort of story, with the real action not occurring until the very end. That is, however, acceptable, because this is the first in a long history series, and is all about the events leading up to the Butlerian Jihad, which begins with a strike on the Evermind’s stronghold, the planet Earth, in the closing chapters of the story.<br />This is a great classic story, and I thoroughly recommend it to any SciFi reader. If you have already read the Dune Trilogy, this story will begin the process of understanding Herbert’s world view. Otherwise, just read this as it is, but accept that you will become hooked, and will have no choice but to progress to the next book, as have I already.<br />",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/92134111?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/4257021957",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.8qsMTjt64gG_1UYR50eabg",
+            "creator": {
+              "id": 7666256,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1426232053i/7666256._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 16,
+              "__typename": "User",
+              "textReviewsCount": 253,
+              "name": "Jorge de la Vega",
+              "webUrl": "https://www.goodreads.com/user/show/7666256-jorge-de-la-vega",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1532987150522.0,
+            "createdAt": 1532986469178.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1532987149889.0,
+            "text": "I will concede that this book deviates noticeably in styles fromthe original Herbert books. That being said, it nowhere near deserves all the passionate hatred it gets. Indeed its one major flaw is to be linked to a franchise wherein purists abound, and any word not written by the master Frank Herbert himself is heresy. By itself, this is a decent start to an exciting new series about the struggles of humanity against the horrors inflicted by thinking machines. It is, in fact, in the portrayal of these machines that this series differentiates itself from the normal Man VS Machine SF story. Whereas in most SF artificial intelligence is perceived as unfeeling, \"logical\" in their own regard and completely ruthless, the thinking machines in this universe are all but dull clankers, as they're capable of a wide range of simulated emotions they approach to through the perversion of human nature within their over-analytical minds. The cruelty, arrogance and utter disregard for human life they display is nothing short of an analogy of, indeed, the worst aspects of humankind, mirrored by the archetypal other. And, at the same time, the authors focus on these same characteristics within human beings, and how they measure to the machines. It makes for a complex analysis, as well for a well-thought-of prelude to the \"homo superior\" of sorts that humanity will become 10,000 years into the future of this universe, once thinking machines are done away with. Like the Prelude to Dune trilogy, we know how this ends... but the journey there is what matters.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/7666256?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/2433302164",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.BuiDVhtM27pUypKHZxgaBA",
+            "creator": {
+              "id": 42516895,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1430026150i/42516895.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 30,
+              "name": "Mike Hayes",
+              "webUrl": "https://www.goodreads.com/user/show/42516895-mike-hayes",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1713978033742.0,
+            "createdAt": 1713976747755.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1713978033590.0,
+            "text": "Here's where the movies get it wrong. The book Dune is not 10,000 years in our future.<br /><br />Humans had faster than light travel for enough years to populate 3-4000 worlds with travel times between stars with habitable planet of a few days to several months. Since at the speed of light it would take 4 to 4,000,000 or more years to reach them otherwise.<br />So this book is thousands if not hundreds of thousands of years in our future.<br />(continued in a last spoiler paragraph)<br /><br />I'm a nerd, so I'm thankful to get the details of world of Dune (Dune multiverse in current nerd jargon) from Brian Herbert giving us the details in stories based on his father's notes is great.<br />He doesn't make the major leaps in time, he doesn't gloss over the details the way his father's books did. That made them better page turners, easier to digest and fire the reader's imagination. <br />Brian's books are blessing in disguise for those eager to get more details of world of Dune<br /><br />Spoiler<br /><br />The break through of folding space, making travel instantaneous, happens towards the end of the Jihad against the machines, and is key to their final defeat. But without the Navigators, 10-15% of all ships are lost. <br />The creation of the Navigators is the birth of the spacing guild.<br />The dates in Dune are based on the founding of the guild, A.G. - after guild. So 10,000 years after the defeat of the machines.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/42516895?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/6453564481",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.f_YAwMFGW0uYfzUQYlJAug",
+            "creator": {
+              "id": 177081142,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1713975324i/177081142._UY200_CR33,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 18,
+              "name": "Christian Van Boven",
+              "webUrl": "https://www.goodreads.com/user/show/177081142-christian-van-boven",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1714395247955.0,
+            "createdAt": 1714394654008.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1714395247786.0,
+            "text": "I actually really enjoyed this book. This is the first of Brian Herbert and Kevin J Anderson’s Dune novels that I’ve read, and going into it I was very curious how I would feel considering the mixed reception amongst fans. While I definitely acknowledge that the style of writing in this novel is completely different from Frank Herbert’s writing, I still found myself invested in the story and was able to finish this book in about a week which is fast for me considering the number of pages. <br /><br />My main draw to the Dune universe has always been the lore and world building. There’s something about Arrakis and the Bene Gesserit and all of the mythology of Dune that makes me want to keep learning more. In that regard, I think this book does a great job of laying some foundations and building upon my love of the mythology. However, I do completely understand why someone would not like this book if their draw to Dune was Frank Herbert’s highly stylized form of writing. This book has none of that and for that reason I would never disagree with someone who says this book is not for them.<br /><br />Overall, if you aren’t committed to Frank’s style and are just looking for a fun, easy to read novel to suck you back into the universe of Dune, than I would recommend this book. I’m excited to start The Machine Crusade to see where it goes!",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/177081142?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/6453558230",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.c2iRrtaXJ5fcfPc4X9woGw",
+            "creator": {
+              "id": 60871256,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1514753996i/60871256._UY200_CR2,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 26,
+              "__typename": "User",
+              "textReviewsCount": 527,
+              "name": "Florin Constantinescu",
+              "webUrl": "https://www.goodreads.com/user/show/60871256-florin-constantinescu",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1502378766056.0,
+            "createdAt": 1502375593653.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1502378765696.0,
+            "text": "The \"Legends of Dune\" trilogy is one long novel split into three for publication purposes, so this review will apply to all.<br />The \"sons\" of Frank Herbert decide to write just one more prequel trilogy before tackling on the long-expected \"book 7\" that should wrap up the original sequence. Did we really need this one? They claim we do. And I tend to concur.<br /><br />So previous \"House\" trilogy was decently written, enjoyable, but didn't bring anything useful or new to the universe. Only managed to dilute it. How about this one? Well, surprisingly, this is better. It would actually be pretty close to a 5* if it weren't set in the Duniverse. Yeap, very entertaining <b>old-school space opera</b>. I mean, isn't that what we're all here for?<br /><br />Sure, you won't find the sophistication of the original Dune or some other space opera series, and you might cringe at the sight of Transformers-like robots in the Duniverse, but if you don't like the multiple planet setting, multiple point-of-view style, starship battles, robots, galactic plots, then you're clearly not into space opera. It's even got some interesting characters: I certainly liked Serena, Norma Cenva, and especially the robot Erasmus whose arc is worthy of Frank Herbert's legacy.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/60871256?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/2088350605",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.S6SNPvQ5VxHJDTFLFzawWQ",
+            "creator": {
+              "id": 110124103,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1707371072i/110124103._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 48,
+              "name": "Rice Paper Reads",
+              "webUrl": "https://www.goodreads.com/user/show/110124103-rice-paper-reads",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1737249761043.0,
+            "createdAt": 1737249705792.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1737249760895.0,
+            "text": "The Butlerian Jihad, the chronological starting point of the Dune saga, sets the foundation for the epic world of Dune, answering many questions left lingering for those familiar with the movies and TV adaptations. As the first of 24 books in the Dune series, it merely scratches the surface of this richly woven intergalactic universe. Yet, even as a standalone work, it offers a gripping narrative filled with twists and turns that left me eager to pick up the next installment.<br /><br />The book delves deep into the struggle between free human societies and the oppressive thinking machine worlds. The story introduces the ancestors of two of Dune’s most iconic families—House Atreides and House Harkonnen—offering an intriguing glimpse into their complex origins. Readers will witness monumental events such as the rise of the first worm rider on Arrakis, the invention of the famous personal shields, and the early discovery of spice and its transformative uses.<br /><br />The authors masterfully blend action, political intrigue, and the deep philosophical undertones that make the Dune series so epic. While the scale of the universe might seem daunting, The Butlerian Jihad manages to maintain an engaging pace, providing both context and momentum for the adventures that lie ahead.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/110124103?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/7230788934",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.wB4VxxJCJS89_9S6CngvmA",
+            "creator": {
+              "id": 134580925,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1711775424i/134580925._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 10,
+              "name": "Nick m",
+              "webUrl": "https://www.goodreads.com/user/show/134580925-nick-m",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1624350370424.0,
+            "createdAt": 1624349907368.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1624350370214.0,
+            "text": "I could go on endlessly about how it’s so different from Frank’s books, how the writing style is different and so on. But, I will judge this book in two ways… it’s merit as it’s own entity and how it fits into the Dune universe.<br /><br />1. On its own merit, this is a quality book. It’s well written and tells a very compelling narrative with a huge but great cast of interesting characters. It manages to balance all these characters as their stories all start to slowly connect. The thinking machines make for a great villain, as they are menacing and extremely powerful but they aren’t just evil for evils sake. The machines were the result of the dulling of humanity, the reliance on machines was the platform in which the machines sprung from. The Titans are mustache-twirling villains with only a dash of humanity, and Evermind/Omnius are cold—calculated. They make for great villains. <br /><br />2. I think it fits very well into Frank’s books. There are some inconsistencies but I very much enjoyed the telling of the Jihad/the development of the technology and institutions that are present in Dune. <br /><br />7.5/10. Flawed, but I very much enjoyed it. ",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/134580925?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [
+                {
+                  "tag": {
+                    "name": "2021",
+                    "webUrl": "https://www.goodreads.com/review/list/134580925?shelf=2021",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                }
+              ],
+              "webUrl": "https://www.goodreads.com/review/show/4043101383",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.HQes7QQg1xIljyQdvxmclA",
+            "creator": {
+              "id": 79501983,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1609952983i/79501983._UX200_CR0,17,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 6,
+              "__typename": "User",
+              "textReviewsCount": 355,
+              "name": "Roberto",
+              "webUrl": "https://www.goodreads.com/user/show/79501983-roberto",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1641225569255.0,
+            "createdAt": 1641225562035.0,
+            "spoilerStatus": true,
+            "lastRevisionAt": 1641225569006.0,
+            "text": "Ó, ez igazán remek volt!<br />Tele izgalommal, fordulatokkal, cselekménnyel.<br />És, ami a legfontosabb, megvilágított, és helyre tett rengeteg olyan dolgot, amit nem nagyon lehetett érteni A Dűne1-6-ban. Ezzel a könyvvel már igen, és kicsit bánom is, hogy nem ezzel (és folytatásaival) kezdtem, mert könnyebb dolgom lett volna később.<br />Ebben a történetben is sok a filozófiai fejtegetés, de mégsem olyan sok, ami megfeküdné az olvasó gyomrát, és nem olyan sok, ami ne lenne kényelmesen és JÓL fogyasztható. És kell is hozzá, különösen annak fejtegetése, hogy {{a gondolkodó gépek és az emberek közötti különbség miben is áll, miben állhat.}}<br />Rengeteg a szereplő, rengeteg a helyszín, nagyon észnél kell lenni, és figyelni kell, hogy tudja az olvasó, mikor, hol, kivel van, de miután A Dűne egészére jellemző ez a szerteágazás, így, a kilencedik könyv táján, ez már smafu volt.<br />Külön örültem annak, hogy rájöhettem: hogyan ered az egész sztori a Földről, és nagy üdvözlettel fogadtam a korábban ismert neveket: {{Serana Butler, Harkonnen, Atreides.}}<br />Olvasd el, ha A Dűne világa érdekel és izgalmas számodra!<br />De...enélkül is akár.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/79501983?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/4420949650",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.trgKdc19wfRnxd5L1tDSXA",
+            "creator": {
+              "id": 5870375,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1312242627i/5870375._UX200_CR0,33,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 7,
+              "__typename": "User",
+              "textReviewsCount": 587,
+              "name": "Patrick Hayes",
+              "webUrl": "https://www.goodreads.com/user/show/5870375-patrick-hayes",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1624839113771.0,
+            "createdAt": 1624838419090.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1624839113771.0,
+            "text": "If you've read the Herbert novels, this book is full of Easter eggs that set the stage for the events in those novels. <br /><br />The \"thinking machines\" have begun war with humans in earnest after a thousand years of leaving them alone, setting in motion a series of events that will change the galaxy. The book covers several characters simultaneously, including the machines, making all interesting. Some are more enjoyable to read than others, among them Xavier, Serena, Erasmus, and Selim. <br /><br />My only grouse about the book is that \"Jihad\" comes so close to end of the novel as to be anticlimactic, given I expected it to be the majority of the book--as it is in the title, but it didn't really \"wow\" me. Granted the majority of the events lead to it, but it begins and ends in an incredibly short amount of time. <br /><br />I would recommend this book to others who are interested in Dune or have the original novels. It's a solid fleshing out of that universe.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/5870375?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/4082058149",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.G5p-L3_6dijb1YDc-Vs3Ag",
+            "creator": {
+              "id": 1110530,
+              "imageUrlSquare": "",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 1,
+              "__typename": "User",
+              "textReviewsCount": 53,
+              "name": "Heidi",
+              "webUrl": "https://www.goodreads.com/user/show/1110530-heidi",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1643212099972.0,
+            "createdAt": 1643211686667.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1643212099654.0,
+            "text": "This was an entertaining and moving book. I got emotionally involved with the characters and enthralled with the action. After reading The Butlerian Jihad, I don't understand why there's such hate for Brian Herber's Dune books. Years ago I tried to read Dune, and I just couldn't get into it. I love the movies and mini series, but I just couldn't stomach going any further with Dune the book. But The Butlerian Jihad had me hooked from the beginning. Brian Herbert sets up the universe extremely well. I am SO glad there are a ton of books in this series. The book left me wanting more and I immediately continued on to the next one in the series. I may try to read Dune again, but I'm reading the background stories first. Maybe knowing the history will help me get more interested in reading the main books.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/1110530?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/4467725307",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.4y1oMTVbzp7EGXxVXiKWDw",
+            "creator": {
+              "id": 177042919,
+              "imageUrlSquare": "",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 3,
+              "name": "Anthony Eggert",
+              "webUrl": "https://www.goodreads.com/user/show/177042919-anthony-eggert",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1717812842497.0,
+            "createdAt": 1717812505397.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1717812842336.0,
+            "text": "Dune The Butlerian Jihad was a surprising discovery. I had long heard of the distaste the community had towards Brian Herbert but I feel as though I’ve been misled. While maybe not as good as dune itself it is a complex novel detailing the war between machines and humanity well before the events of dune. One of the,y particularly favorite arcs of the book involves a character on Arrakis known as Selim Wormrider who as his name suggests becomes the first person to ride the legendary sandworms. I also enjoyed the story involving Norma who seems to be an early mentant who works with the renowned scientist Holdsman to develop various technologies we see during the original series such as the famous floating lights and the shielding technology.<br /><br />I very much recommend this book to fans of the series and urge you not to be put off by the Brian Herbert slander!",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/177042919?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/6568860784",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.IR-oo2Untbk4VNGtEu94Tg",
+            "creator": {
+              "id": 26912893,
+              "imageUrlSquare": "",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 8,
+              "name": "Hal DeVore",
+              "webUrl": "https://www.goodreads.com/user/show/26912893-hal-devore",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1610146065054.0,
+            "createdAt": 1610144949269.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1610146064716.0,
+            "text": "<strong>Better than expected but slow to unfold</strong><br /><br />I did not have great expectations on starting this. But I was pleasantly surprised. <br /><br />I am a little tired of books that use multiple viewpoint characters, jumping among them with each chapter. It stretches out and slows down the story. Without going back thru the book, I can think of nine POV characters.<br /><br />It's been a number of years since I last read Dune so I can't say for sure that this is consistent with the original work. It shows the origin stories of several of the major elements of Dune. The few bits thrown in regarding Arrakis were unsatisfying and totally irrelevant to the central story. Those chapters could have been left out with zero effect on the book.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/26912893?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/3708405785",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.RZYi2CWGoHj6BO3TbjvKvA",
+            "creator": {
+              "id": 15692969,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1478439365i/15692969._UY200_CR33,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 47,
+              "name": "Aleksandar Veskov",
+              "webUrl": "https://www.goodreads.com/user/show/15692969-aleksandar-veskov",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1657825233587.0,
+            "createdAt": 1657824312409.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1657825233390.0,
+            "text": "More like 3,8*<br />Dune Saga is by far my favorite, the one written by Frank Herbert.<br />This however... I'm conflicted.<br />Is it a good book? - Yes.<br />Does it feel like Dune book? - Sometimes, but most of the time, no.<br />Starting 10 thousand years before the original Dune, Brian Herbert and Kevin J. Anderson try to tell stories of how it all began. Inception and birth of the Dune universe we all know and love. <br />If they wrote this as any other SF world, not connected to Dune, it would be great.<br />They try to match writing style but with not much success. More action and frequent change of scenes, less philosophical brain bombs. <br />The most simple way to describe it (at least how it felt to me): Screenplay for the first season of high budget TV series.<br />On to season 2.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/15692969?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/4755730152",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.4M5PfvCj1Igh4IM7-8efBg",
+            "creator": {
+              "id": 137486481,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1634519429i/137486481._UX200_CR0,24,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 4,
+              "__typename": "User",
+              "textReviewsCount": 171,
+              "name": "Pablo",
+              "webUrl": "https://www.goodreads.com/user/show/137486481-pablo",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1709508925868.0,
+            "createdAt": 1708816687554.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1709508925738.0,
+            "text": "Esta obra escrita por Brian Herbert y Kevin J. Anderson nos presenta el universo de Dune, 10.000 años antes de lo acontecido en las obras escritas por Frank Herbert y nos muestra un universo completamente distinto al que conocemos si somos lectores de su obra principal. Las máquinas pensantes se han apoderado de casi todo y la raza humana lucha por sobrevivir a la extinción.<br /><br />Por ser el comienzo de un trilogía que en definitiva va a definir los inicios de los distintos actores presentes en la obra principal de su padre, la cantidad de detalles y personajes es bastante amplia. Puede ser algo complicado de leer ya que hay varias líneas argumentales pero la forma de separarlo por capítulos casi episódicos ayuda a que la lectura sea un poco más amigable. Lamentablemente a mi parecer aunque la disfrute creo que hay exceso de detalles o ideas que se van a ir desarrollando a lo largo de toda la trilogía, hay esbozos de todo, como queriendo tratar de mostrar en un solo libro todo lo que planean desarrollar más adelante, es un poco agotador por momentos. <br /><br />Algunos personajes me parecieron bien desarrollados e interesantes, Serena Butler y Vorian Atreides por ejemplo, mientras que otros quedaron en la nebulosa, Xavier Harkonnen. El desarrollo <br />del robot Erasmus, como uno de los antagonistas, me pareció de lo mejor, completamente odiable y despreciable.<br /><br />Seguiré con el próximo, me entretuvo y su final estuvo dentro de los esperado.<br /><br /><blockquote>\n  <i>No creo que exista eso que llaman una «causa perdida». Tan solo gente que carece de seguidores fanáticos. </i>\n</blockquote>",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/137486481?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/6106193616",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.A3tRPPIymhVZf_1X27RaPQ",
+            "creator": {
+              "id": 25695459,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1384632753i/25695459.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 2,
+              "__typename": "User",
+              "textReviewsCount": 958,
+              "name": "James Murphy",
+              "webUrl": "https://www.goodreads.com/user/show/25695459-james-murphy",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1711941341436.0,
+            "createdAt": 1711941313635.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1711941341283.0,
+            "text": "Brian Herbert and Kevin J. Anderson's \"Legends of Dune\" trilogy begins with \"Dune: The Butlerian Jihad.\" This novel examines the enmity between enslaved humans and their thinking machine enslavers. Omnius, the thinking machines' overlord, rules the Synchronized Worlds, ensuring dominance over enslaved people. Opposing Omnius is the League of Nobles, a human-led confederation. The Titans, Omnius' lieutenants, have attacked League of Nobles planets. The League of Nobles responded by mobilizing their military forces. However, the wanton killing of a human baby by a robot sparks a revolt, a revolt that evolves into the Butlerian Jihad. Herbert and Anderson do an excellent job of worldbuilding and tell an entertaining and engaging story.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/25695459?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/6379316472",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.oK1O7NNQ6CK3YShHliserA",
+            "creator": {
+              "id": 106136842,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1578944208i/106136842._UX200_CR0,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 58,
+              "name": "Tuttu",
+              "webUrl": "https://www.goodreads.com/user/show/106136842-tuttu",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1681927549491.0,
+            "createdAt": 1681927488932.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1681927549314.0,
+            "text": "L'histoire est très touffue et promet de grossir dans les deux tomes suivants. Cela dit, il est plaisant d'en apprendre plus sur l'univers de D'une et, comme on me l'avait suggéré, il est important de lire cette trilogie avant de lire Sandworms and Hunters of Dune car certains éléments sont plus facilement compréhensibles ainsi.<br />-----------------------------<br />The story is very dense and promises to grow in the next two volumes. That said, it is fun to learn more about the universe of Dune and, as someone suggested to me, it is important to read this trilogy before reading Sandworms and Hunters of Dune because certain elements are more easily understandable this way.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/106136842?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/5313662550",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.Lljus-fhnMvOIMaInYRAig",
+            "creator": {
+              "id": 43448368,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1432730987i/43448368._UX200_CR0,77,200,200_.jpg",
+              "isAuthor": true,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 28,
+              "__typename": "User",
+              "textReviewsCount": 326,
+              "name": "Doug Brunell",
+              "webUrl": "https://www.goodreads.com/user/show/43448368-doug-brunell",
+              "contributor": {
+                "id": "kca://author/amzn1.gr.author.v1.hPRPOZg-Qhj1re5JcZEgnA",
+                "works": {
+                  "totalCount": 32,
+                  "__typename": "ContributorWorksConnection"
+                },
+                "__typename": "Contributor"
+              }
+            },
+            "recommendFor": null,
+            "updatedAt": 1621177354948.0,
+            "createdAt": 1621177193732.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1621177354700.0,
+            "text": "If you go into this not expecting it to be \"Dune,\" it is an enjoyable prequel to what is to come. A lot of the things we know and love about \"Dune\" are set into motion here, and while it sometimes seems rushed, one can easily forgive that when those emotional and foreshadowing moments occur. <br /><br />This is not Frank Herbert's \"Dune.\" It is his son's vision working with Kevin J. Anderson and Frank's notes. This is ultimately their vision, and not Frank's. If that is a problem for you, stay away. Stay far away.",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/43448368?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [
+                {
+                  "tag": {
+                    "name": "sci-fi",
+                    "webUrl": "https://www.goodreads.com/review/list/43448368?shelf=sci-fi",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                }
+              ],
+              "webUrl": "https://www.goodreads.com/review/show/3951934165",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.y0nBX6lfIq3vOQREBvQkiQ",
+            "creator": {
+              "id": 99888964,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1662719545i/99888964._CR0,1,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 14,
+              "name": "Gary Davies",
+              "webUrl": "https://www.goodreads.com/user/show/99888964-gary-davies",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1630148538550.0,
+            "createdAt": 1630147261752.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1630148538350.0,
+            "text": "I decided to read this while still making my way through the Dune series, just so I can make the main event last. I've only read Dune and Dune Messiah (and now Butlerian Jihad) and the writing is, understandably, completely different. And that's not a bad thing! <br /><br />Though I wasn't a fan of the vague explanations (and there were many) and little dialogue, I still thoroughly enjoyed the book. I've just started reading book 2 of the Trilogy (Machine Crusade), only 30 pages in and the writing style has improved greatly - I just hope it continuous and I may give book 2 a 5 star rating!",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/99888964?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/4203689696",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v2.2024022820.5172bd66-2101-43a6-bbff-c3aa439335e9",
+            "creator": {
+              "id": 79119277,
+              "imageUrlSquare": "",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 0,
+              "__typename": "User",
+              "textReviewsCount": 6,
+              "name": "Nina M",
+              "webUrl": "https://www.goodreads.com/user/show/79119277-nina-m",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1709154036270.0,
+            "createdAt": 1709153788857.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1709154036109.0,
+            "text": "this was an entertaining read. It didn't quite cover all the marks that are referred to in Dune;<br />though I didn't realize until I got to the end that there is another prequel to follow this book.<br />Brian's writing is not quite up to his father's, and that is to be expected, I did like the book and the descriptions of the origins of the \"thinking machines\". Character building is a weak spot: could have just followed Serena Butler throughout the whole story and it would have made more sense.<br /><br />too many characters and storylines trying to compete. <br /><br />",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/79119277?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/6044109545",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v2.2025020321.9580346f-70f3-42b3-b411-3466566634db",
+            "creator": {
+              "id": 187301682,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1738618428i/187301682._UY200_CR2,0,200,200_.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 1,
+              "__typename": "User",
+              "textReviewsCount": 14,
+              "name": "Emma Miller",
+              "webUrl": "https://www.goodreads.com/user/show/187301682-emma-miller",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1738618767429.0,
+            "createdAt": 1738618751053.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1738618767270.0,
+            "text": "I read The Butlerian Jihad, and it was an epic deep dive into the origins of the Dune universe. The scale of this story is massive—from the brutal war against thinking machines to the rise of iconic factions like the Bene Gesserit and the Mentats. Seeing how humanity fought for survival and independence before the events of Dune made the lore even richer. It’s got action, politics, and some truly unforgettable characters. If you’re a Dune fan and want to explore how it all began, this is definitely worth the read! #TheButlerianJihad #DuneUniverse #SciFiEpic",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/187301682?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [],
+              "webUrl": "https://www.goodreads.com/review/show/7287416766",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        },
+        {
+          "node": {
+            "__typename": "Review",
+            "id": "kca://review:goodreads/amzn1.gr.review:goodreads.v1.Lt-hm-KlACQe0C6T3U9VGQ",
+            "creator": {
+              "id": 13492994,
+              "imageUrlSquare": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/users/1349746818i/13492994.jpg",
+              "isAuthor": false,
+              "viewerRelationshipStatus": {
+                "isFollowing": false,
+                "isFriend": false,
+                "__typename": "ViewerRelationshipStatus",
+                "isBlockedByViewer": false
+              },
+              "followersCount": 1,
+              "__typename": "User",
+              "textReviewsCount": 153,
+              "name": "Brian Harrison",
+              "webUrl": "https://www.goodreads.com/user/show/13492994-brian-harrison",
+              "contributor": null
+            },
+            "recommendFor": null,
+            "updatedAt": 1509294393482.0,
+            "createdAt": 1509294270161.0,
+            "spoilerStatus": false,
+            "lastRevisionAt": 1509294392936.0,
+            "text": "It took a while to get into all the characters and all the planets to understand why they were important and what it was all leading to. By half-way through the book though you started to tie it all into the Dune universe and what made the original story so compelling. It was a great start to a great universe and I am looking forward to the many other books that lead up to the stories of Paul and Arakis. ",
+            "rating": 4,
+            "shelving": {
+              "shelf": {
+                "name": "read",
+                "webUrl": "https://www.goodreads.com/review/list/13492994?shelf=read",
+                "__typename": "Shelf"
+              },
+              "taggings": [
+                {
+                  "tag": {
+                    "name": "scifi",
+                    "webUrl": "https://www.goodreads.com/review/list/13492994?shelf=scifi",
+                    "__typename": "Tag"
+                  },
+                  "__typename": "Tagging"
+                }
+              ],
+              "webUrl": "https://www.goodreads.com/review/show/2029862320",
+              "__typename": "Shelving"
+            },
+            "likeCount": 0,
+            "viewerHasLiked": false,
+            "commentCount": 0
+          },
+          "__typename": "BookReviewsEdge"
+        }
+      ],
+      "pageInfo": {
+        "prevPageToken": "MTAxLDE0Mjg4MzE3NjAwMDA",
+        "nextPageToken": "NTQsMTUwOTI5NDI3MDE2MQ",
+        "__typename": "PageInfo"
+      },
+      "__typename": "BookReviewsConnection"
+    }
+  }
+}
