@@ -8,7 +8,8 @@ import requests
 from tqdm import tqdm
 import pymongo
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
+import random
 
 class StoryGraphScraper:
     def __init__(self, csv_path, mongo_uri):
@@ -189,6 +190,98 @@ class StoryGraphScraper:
         except requests.RequestException as e:
             print(f"Error accessing {url}: {e}")
             return [], False, True  # Mark as completed on error to prevent endless retries
+        
+    def batch_scrape(self, max_books_per_day=20, max_pages_per_book=None, 
+                    delay_between_books=120, start_from_book=None):
+        """
+        Scrape multiple books with rate limiting.
+        
+        Args:
+            max_books_per_day: Maximum number of books to scrape per day
+            max_pages_per_book: Maximum pages to scrape per book (None for all)
+            delay_between_books: Delay in seconds between books (minimum 60 seconds)
+            start_from_book: Book ID to start from (useful for resuming)
+        """
+        # Ensure minimum delay between books
+        if delay_between_books < 60:
+            delay_between_books = 60
+            print("Setting minimum delay between books to 60 seconds")
+            
+        # Get all books that need to be scraped or continued
+        books_to_scrape = []
+        start_processing = False if start_from_book else True
+        
+        print("Analyzing books to scrape...")
+        for book_id in self.book_ids:
+            # If start_from_book is specified, skip books until we find it
+            if start_from_book and not start_processing:
+                if book_id == start_from_book:
+                    start_processing = True
+                else:
+                    continue
+            
+            # Get the book's progress
+            progress = self.get_book_progress(book_id)
+            
+            # If the book is not completed, add it to our list
+            if not progress["completed"]:
+                books_to_scrape.append(book_id)
+        
+        print(f"Found {len(books_to_scrape)} books to process")
+        
+        # If no books to scrape, exit
+        if not books_to_scrape:
+            print("No books to scrape. All books may be completed.")
+            return
+        
+        # Calculate how many days this will take
+        estimated_days = len(books_to_scrape) / max_books_per_day
+        print(f"Estimated time to complete: {estimated_days:.1f} days")
+        print(f"Processing {max_books_per_day} books per day with {delay_between_books} seconds between books")
+        
+        # Create a progress bar for the entire process
+        with tqdm(total=len(books_to_scrape), desc="Overall Progress", unit="book") as overall_pbar:
+            books_today = 0
+            day_start = datetime.now()
+            
+            for book_id in books_to_scrape:
+                # Check if we've hit our daily limit
+                now = datetime.now()
+                day_elapsed = (now - day_start).total_seconds() / 3600  # in hours
+                
+                if books_today >= max_books_per_day and day_elapsed < 24:
+                    # Calculate time to wait until next day
+                    hours_to_wait = 24 - day_elapsed
+                    wait_seconds = hours_to_wait * 3600
+                    
+                    print(f"\nReached limit of {max_books_per_day} books for today.")
+                    print(f"Waiting {hours_to_wait:.1f} hours before continuing...")
+                    
+                    # Sleep until tomorrow
+                    time.sleep(wait_seconds)
+                    
+                    # Reset counters for the new day
+                    books_today = 0
+                    day_start = datetime.now()
+                
+                # Scrape the book
+                print(f"\nProcessing book {book_id} ({books_today+1}/{max_books_per_day} for today)")
+                try:
+                    self.scrape_book(book_id, max_pages_per_book)
+                    books_today += 1
+                    overall_pbar.update(1)
+                except Exception as e:
+                    print(f"Error scraping book {book_id}: {e}")
+                    # Continue with next book despite errors
+                
+                # Add jitter to delay between books (±30%)
+                jitter = random.uniform(0.7, 1.3)
+                actual_delay = delay_between_books * jitter
+                
+                if books_today < max_books_per_day and book_id != books_to_scrape[-1]:
+                    print(f"Waiting {actual_delay:.1f} seconds before the next book...")
+                    time.sleep(actual_delay)
+
     
     def save_ratings_to_mongodb(self, ratings):
         """Save ratings to MongoDB using the new structure."""
@@ -492,6 +585,14 @@ if __name__ == "__main__":
                         help='List all available books and their scraping status')
     parser.add_argument('--stats', action='store_true',
                         help='Show recommendation system statistics')
+    parser.add_argument('--batch', action='store_true',
+                        help='Run batch scraping of all books with rate limiting')
+    parser.add_argument('--books-per-day', type=int, default=20,
+                        help='Maximum number of books to scrape per day (default: 20)')
+    parser.add_argument('--delay', type=int, default=120,
+                        help='Delay in seconds between books (default: 120)')
+    parser.add_argument('--start-from', type=str, default=None,
+                        help='Book ID to start from (useful for resuming)')
     
     args = parser.parse_args()
     
@@ -507,6 +608,13 @@ if __name__ == "__main__":
             scraper.get_recommendation_stats()
         elif args.book:
             scraper.scrape_book(args.book, args.pages)
+        elif args.batch:
+            scraper.batch_scrape(
+                max_books_per_day=args.books_per_day,
+                max_pages_per_book=args.pages,
+                delay_between_books=args.delay,
+                start_from_book=args.start_from
+            )
         else:
             parser.print_help()
             
@@ -515,3 +623,4 @@ if __name__ == "__main__":
     finally:
         if 'scraper' in locals():
             scraper.close()
+
