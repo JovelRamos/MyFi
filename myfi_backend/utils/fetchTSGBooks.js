@@ -5,7 +5,7 @@ const csv = require('csv-parser');
 const path = require('path');
 
 // Create more conservative rate-limited axios instance
-const http = rateLimit(axios.create(), { maxRequests: 5, perMilliseconds: 1000 });
+const http = rateLimit(axios.create(), { maxRequests: 2, perMilliseconds: 1000 });
 
 const Book = require('../models/Book');
 
@@ -37,6 +37,36 @@ async function fetchBookDescription(workId) {
         }
         console.error(`Error fetching description for work ${workId}:`, error.message);
         return null;
+    }
+}
+
+async function fetchCoverDetails(workId) {
+    try {
+        await delay(100 + Math.random() * 200);
+        
+        const response = await http.get(`https://openlibrary.org/works/${workId}.json`);
+        let coverId = null;
+        let coverEditionKey = null;
+        
+        if (response.data.covers && response.data.covers.length > 0) {
+            coverId = response.data.covers[0];
+        }
+        
+        // Try to get a cover edition key if available
+        if (response.data.cover_edition) {
+            coverEditionKey = response.data.cover_edition.split('/').pop();
+        }
+        
+        return { coverId, coverEditionKey };
+    } catch (error) {
+        if (error.response && error.response.status === 429) {
+            console.log("Rate limit hit, waiting 3 seconds before retrying...");
+            await delay(3000);
+            // Recursively retry
+            return fetchCoverDetails(workId);
+        }
+        console.error(`Error fetching cover details for work ${workId}:`, error.message);
+        return { coverId: null, coverEditionKey: null };
     }
 }
 
@@ -99,14 +129,21 @@ async function fetchTopScifiBooks() {
                 // Fetch description from works API
                 const description = await fetchBookDescription(workId);
                 
+                // Fetch cover details from works API
+                const { coverId, coverEditionKey } = await fetchCoverDetails(workId);
+                
+                if (!coverId) {
+                    console.log(`⚠️ No cover found for book: ${bookData.title || response.data.title}`);
+                }
+                
                 // Create book document
                 const bookDocument = {
                     _id: workKey,
                     title: bookData.title || response.data.title,
                     description: description,
                     author_names: bookData.author ? [bookData.author] : [],
-                    cover_edition_key: bookData.cover_edition_key || null,
-                    cover_id: bookData.cover_i || null,
+                    cover_edition_key: coverEditionKey || response.data.key.split('/').pop(),
+                    cover_id: coverId,
                     first_publish_year: bookData.first_publish_year || null,
                     languages: ['eng'], // Assuming English as default
                     edition_count: 1,
@@ -121,12 +158,12 @@ async function fetchTopScifiBooks() {
                 if (existingBook) {
                     // Update existing record
                     await Book.findByIdAndUpdate(existingBook._id, bookDocument);
-                    console.log(`Updated book: ${bookDocument.title}`);
+                    console.log(`Updated book: ${bookDocument.title} (Cover ID: ${coverId || 'None'})`);
                 } else {
                     // Create new record
                     const newBook = new Book(bookDocument);
                     await newBook.save();
-                    console.log(`Saved new book: ${bookDocument.title}`);
+                    console.log(`Saved new book: ${bookDocument.title} (Cover ID: ${coverId || 'None'})`);
                 }
             } catch (error) {
                 console.error(`Error processing ISBN ${isbn}:`, error.message);
