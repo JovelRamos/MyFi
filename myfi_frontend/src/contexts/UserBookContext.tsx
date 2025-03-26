@@ -117,11 +117,7 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
         action: 'add'
       });
       setCurrentlyReading(response.data.currentlyReading);
-      
-      // Also add to reading list if not already there
-      if (!readingList.includes(bookId)) {
-        await addToReadingList(bookId);
-      }
+    
     } catch (error) {
       console.error('Failed to mark book as currently reading', error);
       throw error;
