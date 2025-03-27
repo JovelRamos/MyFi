@@ -174,7 +174,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
             else if (rating === 3) message = `You rated "${book.title}" 3 stars!`;
             else if (rating === 4) message = `You rated "${book.title}" 4 stars!`;
             else message = `You rated "${book.title}" 5 stars!`;
-            
+            await markAsFinished(book._id);
             toast.success(message);
         } catch (error) {
             toast.error('Failed to rate book. Please try again.');
