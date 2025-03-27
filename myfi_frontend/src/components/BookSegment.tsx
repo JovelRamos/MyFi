@@ -1,6 +1,8 @@
+// BookSegmentRow.tsx
 import { useState, useRef, useEffect } from "react";
 import { BookSegment } from "../types/BookSegment";
 import { BookCard } from "./BookCard";
+import { useMemo } from 'react';
 
 interface BookSegmentProps {
   segment: BookSegment;
@@ -12,8 +14,9 @@ export const BookSegmentRow = ({ segment }: BookSegmentProps) => {
   const segmentRef = useRef<HTMLDivElement>(null);
   const booksPerPage = 6;
   const totalPages = Math.ceil(segment.books.length / booksPerPage);
-
-
+  
+  // Generate a unique ID for this segment
+  const segmentId = useMemo(() => `segment-${segment.id || Math.random().toString(36).substring(2, 9)}`, [segment]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -77,15 +80,14 @@ export const BookSegmentRow = ({ segment }: BookSegmentProps) => {
           </button>
         )}
 
-{/* Books Grid */}
-<div className="grid grid-cols-6 gap-8 w-full">
-    {getCurrentPageBooks().map((book) => (
-        <div key={book._id} className="aspect-[2/3] relative">
-                <BookCard book={book} />
+        {/* Books Grid */}
+        <div className="grid grid-cols-6 gap-8 w-full">
+          {getCurrentPageBooks().map((book) => (
+            <div key={book._id} className="aspect-[2/3] relative">
+              <BookCard book={book} containerId={segmentId} />
+            </div>
+          ))}
         </div>
-    ))}
-</div>
-
 
         {/* Next Button */}
         {showControls && currentPage < totalPages - 1 && (

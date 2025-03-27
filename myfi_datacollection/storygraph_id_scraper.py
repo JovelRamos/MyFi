@@ -6,6 +6,11 @@ import pandas as pd
 import os
 import re
 
+#fails 'How to Live Safely in a Sci-Fi Universe' by Charles Yu
+#fails 'The Butlerian Jihad' by Brian Herbert
+#fails 'Dangerous Visions' by Harlan Ellison
+
+
 def scrape_storygraph(title, author):
     """Send GET request to TheStoryGraph and extract book information."""
     search_term = f"{title}+{author}"

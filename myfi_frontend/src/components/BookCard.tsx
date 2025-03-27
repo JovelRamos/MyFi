@@ -2,18 +2,25 @@
 import { Book } from '../types/Book';
 import { useState, useRef, useEffect } from 'react';
 import { BookPanel } from './BookPanel';
+import { useHoverContext } from '../contexts/HoverContext';
 
 interface BookCardProps {
     book: Book;
     className?: string;
+    containerId: string; // Add containerId prop to uniquely identify which container this book belongs to
 }
 
-export const BookCard = ({ book, className = '' }: BookCardProps) => {
-    const [isHovered, setIsHovered] = useState(false);
+export const BookCard = ({ book, className = '', containerId }: BookCardProps) => {
+    const { hoveredBook, setHoveredBook } = useHoverContext();
     const [isPanelHovered, setIsPanelHovered] = useState(false);
     const [imageError, setImageError] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
     const [cardDimensions, setCardDimensions] = useState({ width: 0, height: 0 });
+    
+    // Determine if this specific card is hovered
+    const isHovered = hoveredBook !== null && 
+                      hoveredBook.bookId === book._id && 
+                      hoveredBook.containerId === containerId;
     
     // Calculate and store card dimensions when mounted and on resize
     useEffect(() => {
@@ -56,9 +63,9 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
             
             // Only set not hovered if panel is not hovered
             if (!isInside && !isPanelHovered) {
-                setIsHovered(false);
+                setHoveredBook(null);
             } else if (isInside) {
-                setIsHovered(true);
+                setHoveredBook({ bookId: book._id, containerId });
             }
         }
     };
@@ -67,12 +74,12 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
     const handlePanelHover = (hovering: boolean) => {
         setIsPanelHovered(hovering);
         if (hovering) {
-            setIsHovered(true);
+            setHoveredBook({ bookId: book._id, containerId });
         } else {
             // Check if mouse is still over the card after leaving panel
             const isCardHovered = cardRef.current?.matches(':hover') || false;
             if (!isCardHovered) {
-                setIsHovered(false);
+                setHoveredBook(null);
             }
         }
     };
@@ -81,7 +88,7 @@ export const BookCard = ({ book, className = '' }: BookCardProps) => {
         <div 
             className={`relative w-full h-full ${className}`}
             onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
+            onMouseEnter={() => setHoveredBook({ bookId: book._id, containerId })}
             ref={cardRef}
         >
             {/* BookPanel positioned on hover */}
