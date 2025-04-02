@@ -101,6 +101,15 @@ The system uses two data import utilities:
 
 Data is normalized and saved to MongoDB for quick access.
 
+## Recommendation System
+
+The recommendation engine uses two approaches:
+
+1. **Content-Based**: Using TF-IDF vectorization of book descriptions
+2. **Collaborative Filtering**: Provides item-based recommendations using user ratings
+
+The system uses Python ML libraries for computation and communicates with the Node.js backend via child processes.
+
 ## Authentication
 
 JWT-based authentication with token verification middleware to protect user-specific endpoints.

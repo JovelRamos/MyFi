@@ -1,4 +1,4 @@
-# item_collaborative_filtering.py
+#myfi_backend/services/item_collaborative_filtering.py
 from pymongo import MongoClient
 import numpy as np
 from scipy.sparse import csr_matrix
