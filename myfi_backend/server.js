@@ -82,10 +82,6 @@ app.get('/api/books', async (req, res) => {
     }
 });
 
-
-
-
-
 app.get('/api/recommendations/:bookId', async (req, res) => {
     try {
         let { bookId } = req.params;
@@ -104,8 +100,33 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
             return res.status(404).json({ error: 'Book not found in database' });
         }
         
+        // Check if the user has 10 or more books rated by looking at the auth header
+        let useCollaborativeFiltering = false;
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                const user = await User.findById(decoded.userId);
+                if (user && user.ratings && user.ratings.length >= 10) {
+                    useCollaborativeFiltering = true;
+                    console.log(`User has ${user.ratings.length} ratings, using collaborative filtering`);
+                }
+            } catch (error) {
+                console.log('Token verification failed:', error);
+                // Continue without collaborative filtering
+            }
+        }
+        
+        // Choose which recommender to use
+        const pythonScript = useCollaborativeFiltering ? 
+            'services/item_collaborative_filtering.py' : 
+            'services/recommendation_service.py';
+            
+        console.log(`Using recommendation script: ${pythonScript}`);
+        
         // Spawn Python process
-        const python = spawn('python', ['services/recommendation_service.py', bookId]);
+        const python = spawn('python', [pythonScript, bookId]);
         
         let dataString = '';
         let errorString = '';
@@ -237,9 +258,34 @@ app.get('/api/recommendations_multiple', async (req, res) => {
             }
         }
         
+        // Check if the user has 10 or more books rated by looking at the auth header
+        let useCollaborativeFiltering = false;
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (token) {
+            try {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                const user = await User.findById(decoded.userId);
+                if (user && user.ratings && user.ratings.length >= 10) {
+                    useCollaborativeFiltering = true;
+                    console.log(`User has ${user.ratings.length} ratings, using collaborative filtering`);
+                }
+            } catch (error) {
+                console.log('Token verification failed:', error);
+                // Continue without collaborative filtering
+            }
+        }
+        
+        // Choose which recommender to use
+        const pythonScript = useCollaborativeFiltering ? 
+            'services/item_collaborative_filtering.py' : 
+            'services/recommendation_service.py';
+            
+        console.log(`Using recommendation script: ${pythonScript}`);
+        
         // Spawn Python process with multiple book IDs
         const python = spawn('python', [
-            'services/recommendation_service.py',
+            pythonScript,
             ...bookIdArray
         ]);
         
@@ -292,7 +338,7 @@ app.get('/api/recommendations_multiple', async (req, res) => {
 app.get('/api/debug/recommendations_multiple', async (req, res) => {
     try {
         // Test with some sample book IDs
-        const testBookIds = ['/works/OL82536W', '/works/OL27482W'];
+        const testBookIds = ['/works/OL82536W','/works/OL27482W'];
         
         console.log('Testing multiple recommendations for:', testBookIds);
         

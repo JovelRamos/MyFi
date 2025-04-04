@@ -12,6 +12,7 @@ interface ApiResponse {
   userData?: {
     currentlyReading: string[];
     readingList: string[];
+    finishedBooks: string[];
   };
 }
 
@@ -24,7 +25,8 @@ function HomePage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const { 
     currentlyReading, 
-    readingList, 
+    readingList,
+    finishedBooks, 
     isInitialLoading: userBooksInitialLoading 
   } = useUserBooks();
   
@@ -95,6 +97,7 @@ function HomePage() {
           booksCount: books.length,
           readingList: isAuthenticated ? readingList : [],
           currentlyReading: isAuthenticated ? currentlyReading : [],
+          finishedBooks: isAuthenticated ? finishedBooks : [],
           isAuthenticated,
           isInitialGeneration
         });
@@ -103,7 +106,8 @@ function HomePage() {
         const generatedSegments = await SegmentManager.generateSegments(
           books,
           isAuthenticated ? readingList : [],
-          isAuthenticated ? currentlyReading : []
+          isAuthenticated ? currentlyReading : [],
+          isAuthenticated ? finishedBooks : []
         );
         
         console.log("Segments generated:", generatedSegments.length);
@@ -120,7 +124,7 @@ function HomePage() {
     };
 
     generateBookSegments();
-  }, [books, isAuthenticated, userBooksInitialLoading, readingList, currentlyReading]);
+  }, [books, isAuthenticated, userBooksInitialLoading, readingList, currentlyReading, finishedBooks]);
 
   if (isLoading) return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-zinc-900 bg-opacity-80">

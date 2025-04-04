@@ -32,7 +32,8 @@ export class SegmentManager {
     static async generateSegments(
         books: Book[],
         userReadingList: string[] = [],
-        currentlyReading: string[] = []
+        currentlyReading: string[] = [],
+        finishedBooks: string[] = []
     ): Promise<BookSegment[]> {
         const segments: BookSegment[] = [];
 
@@ -88,12 +89,12 @@ export class SegmentManager {
             }
         }
 
-        // ML-based recommendations
-        if (currentlyReading.length > 0) {
+        // ML-based recommendations based on finished books
+        if (finishedBooks.length > 0) {
             try {
-                console.log('Getting ML recommendations for:', currentlyReading[0]);
+                console.log('Getting ML recommendations for finished books:', finishedBooks);
                 const recommendedBooks = await this.getMLRecommendations(
-                    currentlyReading,
+                    finishedBooks,
                     books
                 );
                 console.log('Number of recommended books:', recommendedBooks.length);
@@ -102,7 +103,7 @@ export class SegmentManager {
                 if (recommendedBooks.length > 0) {
                     segments.push({
                         id: 'ml-recommendations',
-                        title: 'Recommended For You',
+                        title: 'Because You\'ve Read',
                         type: 'RECOMMENDED_FOR_YOU',
                         books: this.adjustArrayToMultipleOfSix(recommendedBooks),
                         priority: 3,
@@ -114,9 +115,31 @@ export class SegmentManager {
             } catch (error) {
                 console.error('Failed to get ML recommendations:', error);
             }
+        } else if (currentlyReading.length > 0) {
+            // Fallback to currently reading if no finished books
+            try {
+                console.log('Falling back to currently reading for recommendations:', currentlyReading[0]);
+                const recommendedBooks = await this.getMLRecommendations(
+                    currentlyReading,
+                    books
+                );
+                
+                if (recommendedBooks.length > 0) {
+                    segments.push({
+                        id: 'ml-recommendations',
+                        title: 'Recommended For You',
+                        type: 'RECOMMENDED_FOR_YOU',
+                        books: this.adjustArrayToMultipleOfSix(recommendedBooks),
+                        priority: 3,
+                        isPersonalized: true
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to get ML recommendations fallback:', error);
+            }
         }
 
-        // Because You're Reading
+        // Because You're Reading (using the most recent currently reading book)
         if (currentlyReading.length > 0) {
             // Get the most recent book (last item in the array)
             const mostRecentBookId = currentlyReading[currentlyReading.length - 1];
