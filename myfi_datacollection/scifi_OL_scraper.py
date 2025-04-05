@@ -81,6 +81,12 @@ def author_match(csv_author, api_authors):
         # Return true if all CSV authors were matched in the API authors list
         return matches == len(csv_author_list)
 
+def clean_work_key(work_key):
+    """Extract just the identifier part of the work key."""
+    if work_key and work_key.startswith('/works/'):
+        return work_key[7:]  # Remove '/works/' prefix
+    return work_key
+
 def fetch_book_data(title, author):
     """Fetch book data from OpenLibrary based on title and author."""
     debug_info = {}
@@ -138,12 +144,13 @@ def fetch_book_data(title, author):
 def extract_isbns_from_html(work_url):
     """Extract ISBNs by scraping the OpenLibrary work page."""
     debug_info = {}
+    work_key = clean_work_key(work_url.replace("https://openlibrary.org", ""))
     
     try:
         response = requests.get(work_url)
         
         if response.status_code != 200:
-            return None, None, debug_info
+            return None, None, work_key, debug_info
         
         soup = BeautifulSoup(response.text, 'html.parser')
         
@@ -154,6 +161,7 @@ def extract_isbns_from_html(work_url):
             isbn_10_dd = isbn_10_dt.find_next_sibling('dd', class_='object', itemprop='isbn')
             if isbn_10_dd:
                 isbn_10 = isbn_10_dd.text.strip()
+                print(f"Found ISBN-10: {isbn_10} from work_key: {work_key}")
         
         # Look for ISBN-13
         isbn_13 = None
@@ -162,15 +170,17 @@ def extract_isbns_from_html(work_url):
             isbn_13_dd = isbn_13_dt.find_next_sibling('dd', class_='object', itemprop='isbn')
             if isbn_13_dd:
                 isbn_13 = isbn_13_dd.text.strip()
+                print(f"Found ISBN-13: {isbn_13} from work_key: {work_key}")
         
-        return isbn_10, isbn_13, debug_info
+        return isbn_10, isbn_13, work_key, debug_info
     except Exception as e:
         print(f"Error scraping HTML: {e}")
-        return None, None, debug_info
+        return None, None, work_key, debug_info
 
 def fetch_work_data(work_key):
     """Fetch book data using the work key."""
     debug_info = {}
+    clean_key = clean_work_key(work_key)
     
     url = f"https://openlibrary.org{work_key}.json"
     
@@ -178,7 +188,7 @@ def fetch_work_data(work_key):
     
     if response.status_code != 200:
         print(f"Error fetching work data for {work_key}: {response.status_code}")
-        return None, None, debug_info
+        return None, None, clean_key, debug_info
     
     data = response.json()
     
@@ -190,10 +200,11 @@ def fetch_work_data(work_key):
                 edition_url = link["url"]
                 # If it's an internal OpenLibrary link, fetch it
                 if edition_url.startswith("/books/"):
-                    isbn_10, isbn_13, edition_debug = fetch_isbn_data(edition_url.split("/")[-1].rstrip(".json"))
-                    return isbn_10, isbn_13, debug_info
+                    edition_key = edition_url.split("/")[-1].rstrip(".json")
+                    isbn_10, isbn_13, _, edition_debug = fetch_isbn_data(edition_key, work_key)
+                    return isbn_10, isbn_13, clean_key, debug_info
     
-    return None, None, debug_info
+    return None, None, clean_key, debug_info
 
 def fetch_isbns_from_work_editions(work_key, title):
     """
@@ -204,9 +215,10 @@ def fetch_isbns_from_work_editions(work_key, title):
         title (str): Book title to match against
     
     Returns:
-        tuple: (isbn_10, isbn_13, debug_info)
+        tuple: (isbn_10, isbn_13, work_key, debug_info)
     """
     debug_info = {}
+    clean_key = clean_work_key(work_key)
     
     url = f"https://openlibrary.org{work_key}/editions.json"
     print(f"Fetching editions from: {url}")
@@ -216,12 +228,12 @@ def fetch_isbns_from_work_editions(work_key, title):
         
         if response.status_code != 200:
             print(f"Error fetching editions: {response.status_code}")
-            return None, None, debug_info
+            return None, None, clean_key, debug_info
         
         data = response.json()
         if "entries" not in data or not data["entries"]:
             print("No entries found in editions data")
-            return None, None, debug_info
+            return None, None, clean_key, debug_info
         
         # Normalize the title for matching
         normalized_title = normalize_text(title)
@@ -234,8 +246,8 @@ def fetch_isbns_from_work_editions(work_key, title):
                 isbn_13 = entry.get("isbn_13", [None])[0] if "isbn_13" in entry and entry["isbn_13"] else None
                 
                 if isbn_10 or isbn_13:
-                    print(f"Found matching edition with ISBNs: {isbn_10 or 'None'}, {isbn_13 or 'None'}")
-                    return isbn_10, isbn_13, debug_info
+                    print(f"Found matching edition with ISBNs: {isbn_10 or 'None'}, {isbn_13 or 'None'} from work_key: {clean_key}")
+                    return isbn_10, isbn_13, clean_key, debug_info
         
         # If no matching title found, just take the first entry with ISBNs
         for entry in data["entries"]:
@@ -243,23 +255,24 @@ def fetch_isbns_from_work_editions(work_key, title):
             isbn_13 = entry.get("isbn_13", [None])[0] if "isbn_13" in entry and entry["isbn_13"] else None
             
             if isbn_10 or isbn_13:
-                print(f"Using first available edition with ISBNs: {isbn_10 or 'None'}, {isbn_13 or 'None'}")
-                return isbn_10, isbn_13, debug_info
+                print(f"Using first available edition with ISBNs: {isbn_10 or 'None'}, {isbn_13 or 'None'} from work_key: {clean_key}")
+                return isbn_10, isbn_13, clean_key, debug_info
         
         print("No editions with ISBNs found")
-        return None, None, debug_info
+        return None, None, clean_key, debug_info
             
     except Exception as e:
         print(f"Error processing editions data: {str(e)}")
-        return None, None, debug_info
+        return None, None, clean_key, debug_info
 
 
-def fetch_isbn_data(cover_edition_key):
+def fetch_isbn_data(cover_edition_key, work_key=None):
     """
     Fetch ISBN data using the cover edition key with multiple fallback methods.
-    Returns tuple: (isbn_10, isbn_13, error_message, debug_info)
+    Returns tuple: (isbn_10, isbn_13, work_key, error_message, debug_info)
     """
     debug_info = {}
+    clean_work_key_value = clean_work_key(work_key) if work_key else None
     
     # First attempt: Direct edition lookup
     url = f"https://openlibrary.org/books/{cover_edition_key}.json"
@@ -269,7 +282,7 @@ def fetch_isbn_data(cover_edition_key):
     if response.status_code != 200:
         error_msg = f"Error fetching ISBN data for {cover_edition_key}: {response.status_code}"
         print(error_msg)
-        return None, None, error_msg, debug_info
+        return None, None, clean_work_key_value, error_msg, debug_info
     
     data = response.json()
     
@@ -279,42 +292,49 @@ def fetch_isbn_data(cover_edition_key):
     # Check for ISBNs in the edition data
     if "isbn_10" in data and data["isbn_10"]:
         isbn_10 = data["isbn_10"][0]
+        print(f"Found ISBN-10: {isbn_10} from edition_key: {cover_edition_key}")
     
     if "isbn_13" in data and data["isbn_13"]:
         isbn_13 = data["isbn_13"][0]
+        print(f"Found ISBN-13: {isbn_13} from edition_key: {cover_edition_key}")
+    
+    # Update work key if it's in the data and none was provided
+    if not clean_work_key_value and "works" in data and len(data["works"]) > 0:
+        work_key_from_data = data["works"][0]["key"]
+        clean_work_key_value = clean_work_key(work_key_from_data)
     
     # If ISBNs found, return them
     if isbn_10 or isbn_13:
-        return isbn_10, isbn_13, None, debug_info
+        return isbn_10, isbn_13, clean_work_key_value, None, debug_info
     
     # Second attempt: Use the work key if available
     if "works" in data and len(data["works"]) > 0:
-        work_key = data["works"][0]["key"]
-        print(f"No ISBNs in edition data, trying work key: {work_key}")
+        work_key_from_edition = data["works"][0]["key"]
+        print(f"No ISBNs in edition data, trying work key: {work_key_from_edition}")
         
         # Fetch data using the work key
-        work_isbn_10, work_isbn_13, work_debug = fetch_work_data(work_key)
+        work_isbn_10, work_isbn_13, work_key_value, work_debug = fetch_work_data(work_key_from_edition)
         
         if work_isbn_10 or work_isbn_13:
-            return work_isbn_10, work_isbn_13, None, debug_info
+            return work_isbn_10, work_isbn_13, work_key_value, None, debug_info
         
         # Second-to-last resort: Fetch editions data from work editions API
         if "title" in data:
             print(f"Trying to fetch ISBNs from work editions API")
-            editions_isbn_10, editions_isbn_13, editions_debug = fetch_isbns_from_work_editions(work_key, data["title"])
+            editions_isbn_10, editions_isbn_13, editions_work_key, editions_debug = fetch_isbns_from_work_editions(work_key_from_edition, data["title"])
             
             if editions_isbn_10 or editions_isbn_13:
-                return editions_isbn_10, editions_isbn_13, None, debug_info
+                return editions_isbn_10, editions_isbn_13, editions_work_key, None, debug_info
         
         # Last resort: Scrape the HTML page
         print(f"No ISBNs in work API data, attempting to scrape HTML page")
-        work_url = f"https://openlibrary.org{work_key}"
-        html_isbn_10, html_isbn_13, html_debug = extract_isbns_from_html(work_url)
+        work_url = f"https://openlibrary.org{work_key_from_edition}"
+        html_isbn_10, html_isbn_13, html_work_key, html_debug = extract_isbns_from_html(work_url)
         
         if html_isbn_10 or html_isbn_13:
-            return html_isbn_10, html_isbn_13, None, debug_info
+            return html_isbn_10, html_isbn_13, html_work_key, None, debug_info
     
-    return None, None, "No ISBNs found after all attempts", debug_info
+    return None, None, clean_work_key_value, "No ISBNs found after all attempts", debug_info
 
 def fetch_alternative_book_data(title, author):
     """Try alternative API endpoint for book data with multiple fallback methods."""
@@ -329,17 +349,18 @@ def fetch_alternative_book_data(title, author):
     if response.status_code != 200:
         error_msg = f"Error fetching alternative data for {title}: {response.status_code}"
         print(error_msg)
-        return None, None, error_msg, debug_info
+        return None, None, None, error_msg, debug_info
     
     data = response.json()
     
     if "docs" not in data or len(data["docs"]) == 0:
         error_msg = f"No results found in alternative search for {title}"
         print(error_msg)
-        return None, None, error_msg, debug_info
+        return None, None, None, error_msg, debug_info
     
     isbn_10 = None
     isbn_13 = None
+    work_key = None
     
     # Look for a doc that matches both title and author
     for doc in enumerate(data["docs"]):
@@ -350,31 +371,39 @@ def fetch_alternative_book_data(title, author):
             author_matches = author_match(author, doc["author_name"])
             
             if title_matches and author_matches:
+                # Get the work key if available
+                if "key" in doc:
+                    work_key = clean_work_key(doc["key"])
+                
                 # First attempt: If we have cover_edition_key, use it to get ISBNs
-                if "cover_edition_key" in doc:
-                    isbn_10, isbn_13, _, edition_debug = fetch_isbn_data(doc["cover_edition_key"])
+                if "cover_edition_key" in doc:                    
+                    isbn_10, isbn_13, key_from_edition, _, edition_debug = fetch_isbn_data(doc["cover_edition_key"], doc.get("key"))
                     
                     if isbn_10 or isbn_13:
-                        return isbn_10, isbn_13, None, debug_info
+                        work_key = key_from_edition or work_key
+                        return isbn_10, isbn_13, work_key, None, debug_info
                 
                 # Second attempt: Check if doc directly contains ISBNs
                 if "isbn" in doc and doc["isbn"]:
                     for isbn in doc["isbn"]:
                         if len(isbn) == 10 and not isbn_10:
                             isbn_10 = isbn
+                            print(f"Found ISBN-10: {isbn_10} from search doc with work_key: {work_key or 'unknown'}")
                         elif len(isbn) == 13 and not isbn_13:
                             isbn_13 = isbn
+                            print(f"Found ISBN-13: {isbn_13} from search doc with work_key: {work_key or 'unknown'}")
                     
                     if isbn_10 or isbn_13:
-                        return isbn_10, isbn_13, None, debug_info
+                        return isbn_10, isbn_13, work_key, None, debug_info
                 
                 # Third attempt: Use the work key if available
                 if "key" in doc:
-                    work_key = doc["key"]
+                    work_key = clean_work_key(doc["key"])
+                    full_work_key = doc["key"]
                     print(f"Trying work key: {work_key}")
                     
                     # Fetch data using the work key
-                    work_url = f"https://openlibrary.org{work_key}.json"
+                    work_url = f"https://openlibrary.org{full_work_key}.json"
                     work_response = requests.get(work_url)
                     
                     if work_response.status_code == 200:
@@ -384,28 +413,28 @@ def fetch_alternative_book_data(title, author):
                         if "editions" in work_data:
                             for edition in work_data["editions"]:
                                 edition_key = edition["key"]
-                                e_isbn_10, e_isbn_13, _, edition_debug = fetch_isbn_data(edition_key.split("/")[-1])
+                                e_isbn_10, e_isbn_13, e_work_key, _, edition_debug = fetch_isbn_data(edition_key.split("/")[-1], full_work_key)
                                 
                                 if e_isbn_10 or e_isbn_13:
-                                    return e_isbn_10, e_isbn_13, None, debug_info
+                                    return e_isbn_10, e_isbn_13, e_work_key or work_key, None, debug_info
                                 
                     # Second-to-last resort: Fetch editions data from work editions API
                     print(f"Trying to fetch ISBNs from work editions API")
-                    editions_isbn_10, editions_isbn_13, editions_debug = fetch_isbns_from_work_editions(work_key, title)
+                    editions_isbn_10, editions_isbn_13, editions_work_key, editions_debug = fetch_isbns_from_work_editions(full_work_key, title)
                     
                     if editions_isbn_10 or editions_isbn_13:
-                        return editions_isbn_10, editions_isbn_13, None, debug_info
+                        return editions_isbn_10, editions_isbn_13, editions_work_key or work_key, None, debug_info
                     
                     # Last resort: Scrape the HTML page
                     print(f"Attempting to scrape HTML page for {work_key}")
-                    work_url = f"https://openlibrary.org{work_key}"
-                    html_isbn_10, html_isbn_13, html_debug = extract_isbns_from_html(work_url)
+                    work_url = f"https://openlibrary.org{full_work_key}"
+                    html_isbn_10, html_isbn_13, html_work_key, html_debug = extract_isbns_from_html(work_url)
                     
                     if html_isbn_10 or html_isbn_13:
-                        return html_isbn_10, html_isbn_13, None, debug_info
+                        return html_isbn_10, html_isbn_13, html_work_key or work_key, None, debug_info
     
     error_msg = f"No matching ISBNs found in alternative search for {title} by {author}"
-    return None, None, error_msg, debug_info
+    return None, None, work_key, error_msg, debug_info
 
 def process_books():
     """Main function to process the books data."""
@@ -428,6 +457,7 @@ def process_books():
     enriched_books = []
     success_count = 0
     total_books = len(books)
+    failed_books = []
     
     # Process each book
     for book in books:
@@ -436,18 +466,24 @@ def process_books():
         
         isbn_10 = None
         isbn_13 = None
+        work_key = None
         
         # Fetch book data from OpenLibrary search endpoint
         book_data, error, search_debug = fetch_book_data(title, author)
         
         if book_data:
+            # Get work key for CSV
+            if "key" in book_data:
+                work_key = clean_work_key(book_data["key"])
+            
             # First try cover_edition_key if available
             if "cover_edition_key" in book_data:
                 cover_edition_key = book_data["cover_edition_key"]
-                print(f"Found cover edition key: {cover_edition_key}")
+                print(f"Found cover edition key: {cover_edition_key} for work_key: {work_key or 'unknown'}")
                 
                 # Fetch ISBN data
-                isbn_10, isbn_13, isbn_error, isbn_debug = fetch_isbn_data(cover_edition_key)
+                isbn_10, isbn_13, key_from_isbn, isbn_error, isbn_debug = fetch_isbn_data(cover_edition_key, book_data.get("key"))
+                work_key = key_from_isbn or work_key
             
             # If no ISBNs found and work key is available, try that
             if (not isbn_10 and not isbn_13) and "key" in book_data:
@@ -455,26 +491,29 @@ def process_books():
                 
                 # Last resort: Scrape the HTML page
                 work_url = f"https://openlibrary.org{book_data['key']}"
-                html_isbn_10, html_isbn_13, html_debug = extract_isbns_from_html(work_url)
+                html_isbn_10, html_isbn_13, html_work_key, html_debug = extract_isbns_from_html(work_url)
                 
                 if html_isbn_10 or html_isbn_13:
                     isbn_10 = html_isbn_10 or isbn_10
                     isbn_13 = html_isbn_13 or isbn_13
+                    work_key = html_work_key or work_key
         
         # If no ISBNs found, try alternative endpoint
         if not isbn_10 and not isbn_13:
             print(f"No ISBNs found for {title}, trying alternative endpoint...")
-            isbn_10, isbn_13, alt_error, alt_debug = fetch_alternative_book_data(title, author)
+            isbn_10, isbn_13, alt_work_key, alt_error, alt_debug = fetch_alternative_book_data(title, author)
+            work_key = alt_work_key or work_key
         
         # Record success if either ISBN is found
         if isbn_10 or isbn_13:
             success_count += 1
             print(f"Successfully retrieved ISBNs for {title}")
         else:
+            failed_books.append((author, title))
             print(f"Failed to retrieve ISBNs for {title}")
         
         # Add to enriched books list
-        enriched_books.append([author, title, isbn_10, isbn_13])
+        enriched_books.append([author, title, isbn_10, isbn_13, work_key])
         
         # Be nice to the API - small delay between requests
         time.sleep(1)
@@ -482,13 +521,19 @@ def process_books():
     # Write to new CSV
     with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(['Author', 'Title', 'ISBN-10', 'ISBN-13'])
+        writer.writerow(['Author', 'Title', 'ISBN-10', 'ISBN-13', 'OpenLibrary Work ID'])
         writer.writerows(enriched_books)
     
     # Calculate and log success percentage
     success_percentage = (success_count / total_books) * 100 if total_books > 0 else 0
     print(f"\nProcessing complete. Results written to {output_file}")
     print(f"ISBN retrieval success rate: {success_count} out of {total_books} books ({success_percentage:.2f}%)")
+    
+    # Output list of titles that didn't get ISBNs
+    if failed_books:
+        print("\nBooks without ISBNs:")
+        for author, title in failed_books:
+            print(f"- {title} by {author}")
 
 if __name__ == "__main__":
     process_books()

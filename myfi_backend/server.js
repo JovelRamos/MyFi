@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const { fetchTopScifiBooks } = require('./utils/fetchBaseBooks');
+const { fetchTopScifiBooks } = require('./utils/fetchTSGBooks.js');
 const Book = require('./models/Book');
 const User = require('./models/User');
 const auth = require('./middleware/auth');
