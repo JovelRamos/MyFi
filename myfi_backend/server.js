@@ -96,8 +96,8 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
         // Check if the book exists in the database first
         const book = await Book.findById(bookId);
         if (!book) {
-            console.log('Book not found in database:', bookId);
-            return res.status(404).json({ error: 'Book not found in database' });
+            console.log('recc Book not found in database:', bookId);
+            return res.status(404).json({ error: 'recc Book not found in database' });
         }
         
         // Check if the user has 10 or more books rated by looking at the auth header
@@ -119,9 +119,7 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
         }
         
         // Choose which recommender to use
-        const pythonScript = useCollaborativeFiltering ? 
-            'services/item_collaborative_filtering.py' : 
-            'services/recommendation_service.py';
+        const pythonScript = 'services/item_collaborative_filtering.py';
             
         console.log(`Using recommendation script: ${pythonScript}`);
         
@@ -244,7 +242,7 @@ app.get('/api/recommendations_multiple', async (req, res) => {
             // Remove any existing '/works/' prefix and trim whitespace
             id = id.trim().replace('/works/', '');
             // Add '/works/' prefix
-            return `/works/${id}`;
+            return `${id}`;
         });
         
         console.log('Processing recommendation request for books:', bookIdArray);
@@ -253,8 +251,8 @@ app.get('/api/recommendations_multiple', async (req, res) => {
         for (const bookId of bookIdArray) {
             const book = await Book.findById(bookId);
             if (!book) {
-                console.log('Book not found in database:', bookId);
-                return res.status(404).json({ error: `Book not found in database: ${bookId}` });
+                console.log('recc_mul Book not found in database:', bookId);
+                return res.status(404).json({ error: `recc_mul Book not found in database: ${bookId}` });
             }
         }
         
@@ -277,10 +275,8 @@ app.get('/api/recommendations_multiple', async (req, res) => {
         }
         
         // Choose which recommender to use
-        const pythonScript = useCollaborativeFiltering ? 
-            'services/item_collaborative_filtering.py' : 
-            'services/recommendation_service.py';
-            
+        const pythonScript = 'services/item_collaborative_filtering.py';
+        
         console.log(`Using recommendation script: ${pythonScript}`);
         
         // Spawn Python process with multiple book IDs

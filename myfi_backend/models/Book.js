@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const BookSchema = new mongoose.Schema({
     _id: { type: String }, // This will be your OpenLibrary key (/works/...)
+    book_id: String,
     title: String,
     description: String,
     author_names: [String],

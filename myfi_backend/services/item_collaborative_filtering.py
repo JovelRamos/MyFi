@@ -7,6 +7,7 @@ import sys
 import json
 from collections import defaultdict
 import time
+import re
 
 class ItemBasedCF:
     def __init__(self, mongo_uri=None):
@@ -20,6 +21,35 @@ class ItemBasedCF:
             self.users_collection = self.db.users
             self.books_collection = self.db.books
             self.test_books_collection = self.client.test.books  # For book metadata
+            
+            # Create ID mapping between OpenLibrary IDs and StoryGraph IDs
+            print("Building ID mapping between OpenLibrary and StoryGraph...", file=sys.stderr)
+            self.ol_to_sg_mapping = {}
+            self.sg_to_ol_mapping = {}
+            
+            # Get all books from test database (OpenLibrary format)
+            ol_books = list(self.test_books_collection.find({}, {"_id": 1, "book_id": 1}))
+            for book in ol_books:
+                ol_id = book["_id"]
+                if "book_id" in book:
+                    sg_id = book["book_id"]
+                    self.ol_to_sg_mapping[ol_id] = sg_id
+                    self.sg_to_ol_mapping[sg_id] = ol_id
+            
+            # If we didn't get enough mapping, try to extract from StoryGraph collection
+            sg_books = list(self.books_collection.find({}, {"book_id": 1}))
+            for book in sg_books:
+                sg_id = book["book_id"]
+                # Try to extract OpenLibrary ID from StoryGraph ID if it contains '/works/OL'
+                if '/works/' in sg_id:
+                    match = re.search(r'\/works\/(OL\d+W)', sg_id)
+                    if match:
+                        ol_id = match.group(1)
+                        ol_full_id = f"/works/{ol_id}"
+                        self.ol_to_sg_mapping[ol_full_id] = sg_id
+                        self.sg_to_ol_mapping[sg_id] = ol_full_id
+            
+            print(f"Built mapping between {len(self.ol_to_sg_mapping)} OpenLibrary and StoryGraph IDs", file=sys.stderr)
             
             # Load book IDs and create mappings
             print("Loading book data...", file=sys.stderr)
@@ -40,7 +70,7 @@ class ItemBasedCF:
             }))
             
             for book in test_books:
-                book_id = str(book["_id"])
+                book_id = book["_id"]
                 self.metadata[book_id] = {
                     "title": book.get("title", "Unknown"),
                     "author_names": book.get("author_names", []),
@@ -168,39 +198,65 @@ class ItemBasedCF:
         self.similarity_matrix = similarity_matrix
         return similarity_matrix
     
-    def get_item_recommendations(self, book_ids, n_recommendations=6, min_similarity=0.2):
+    def get_item_recommendations(self, book_ids, n_recommendations=6, min_similarity=0.05):  # Lower threshold to 0.05
         """Get recommendations based on one or more book IDs"""
         try:
             # Ensure book_ids is a list
             if isinstance(book_ids, str):
                 book_ids = [book_ids]
-                
-            # Format book IDs
-            book_ids = [f'/works/{id}' if not id.startswith('/works/') else id for id in book_ids]
             
+            print(f"Input book IDs: {book_ids}", file=sys.stderr)
+            
+            # Convert OpenLibrary IDs to StoryGraph IDs for lookup
+            sg_book_ids = []
+            for book_id in book_ids:
+                # Normalize input book_id format (ensure it has /works/ prefix)
+                book_id
+                
+                # Try to find corresponding StoryGraph ID
+                if book_id in self.ol_to_sg_mapping:
+                    sg_id = self.ol_to_sg_mapping[book_id]
+                    sg_book_ids.append(sg_id)
+                    print(f"Mapped OpenLibrary ID {book_id} to StoryGraph ID {sg_id}", file=sys.stderr)
+                else:
+                    # Try direct matching or pattern matching
+                    found = False
+                    ol_key = None
+                    
+                    # Extract the OL part if it's in /works/OL format
+                    match = re.search(r'\/works\/(OL\d+W)', book_id)
+                    if match:
+                        ol_key = match.group(1)
+                    
+                    for sg_id in self.book_id_to_index.keys():
+                        if book_id in sg_id or (ol_key and ol_key in sg_id):
+                            sg_book_ids.append(sg_id)
+                            print(f"Found match for {book_id} in StoryGraph ID {sg_id}", file=sys.stderr)
+                            found = True
+                            break
+                    
+                    if not found:
+                        print(f"Could not find StoryGraph ID for OpenLibrary ID {book_id}", file=sys.stderr)
+            
+            if not sg_book_ids:
+                print("No input books could be mapped to StoryGraph IDs", file=sys.stderr)
+                return []
+                
             # If similarity matrix doesn't exist, compute it
             if self.similarity_matrix is None:
                 self.compute_similarity()
-                
-            print(f"Finding recommendations for {len(book_ids)} books", file=sys.stderr)
+            
+            print(f"Finding recommendations for {len(sg_book_ids)} mapped books", file=sys.stderr)
             
             # Get indices for input books
             indices = []
-            for book_id in book_ids:
-                # First try in our metadata
-                found = False
-                for sg_id, idx in self.book_id_to_index.items():
-                    if book_id in sg_id:  # Partial match since formats might differ
-                        indices.append(idx)
-                        found = True
-                        print(f"Found match for {book_id}: {sg_id}", file=sys.stderr)
-                        break
-                
-                if not found:
-                    print(f"Book ID {book_id} not found in similarity matrix", file=sys.stderr)
+            for sg_id in sg_book_ids:
+                if sg_id in self.book_id_to_index:
+                    indices.append(self.book_id_to_index[sg_id])
+                    print(f"Found index {self.book_id_to_index[sg_id]} for StoryGraph ID {sg_id}", file=sys.stderr)
             
             if not indices:
-                print("No input books found in database", file=sys.stderr)
+                print("No input books found in similarity matrix", file=sys.stderr)
                 return []
                 
             # Get combined similarity score for all input books
@@ -208,8 +264,21 @@ class ItemBasedCF:
             for idx in indices:
                 combined_similarity += self.similarity_matrix[idx]
                 
+                # Add detailed logging for the top similar items
+                print(f"Top 10 similarity scores for input book index {idx}:", file=sys.stderr)
+                top_scores = sorted([(i, self.similarity_matrix[idx][i]) 
+                                for i in range(len(self.similarity_matrix[idx]))
+                                if i != idx], key=lambda x: x[1], reverse=True)[:10]
+                for book_idx, score in top_scores:
+                    book_id = self.index_to_book_id[book_idx]
+                    print(f"  Book {book_idx} (ID: {book_id}): {score:.4f}", file=sys.stderr)
+                
             # Average the similarities
             combined_similarity /= len(indices)
+            
+            # Add logging for similarity threshold
+            above_threshold = sum(combined_similarity > min_similarity)
+            print(f"Number of books with similarity > {min_similarity}: {above_threshold}", file=sys.stderr)
                 
             # Sort by similarity and get top N+len(indices) (to exclude input books later)
             similar_indices = combined_similarity.argsort()[::-1]
@@ -225,34 +294,34 @@ class ItemBasedCF:
                 if combined_similarity[idx] < min_similarity:
                     continue
                 
-                # Get book_id and retrieve metadata
-                book_id = self.index_to_book_id[idx]
+                # Get StoryGraph book_id
+                sg_book_id = self.index_to_book_id[idx]
                 
-                # Format the book_id to match test database format
-                formatted_book_id = None
+                # Map back to OpenLibrary ID format for the response
+                ol_book_id = None
                 
-                # Try to extract the works ID if it exists in the StoryGraph book_id
-                match = None
-                if '/work' in book_id:
-                    # Use simple string extraction 
-                    parts = book_id.split('/')
-                    for part in parts:
-                        if part.startswith('OL') and part.endswith('W'):
-                            formatted_book_id = f"/works/{part}"
-                            break
+                # Try to find in our mapping
+                if sg_book_id in self.sg_to_ol_mapping:
+                    ol_book_id = self.sg_to_ol_mapping[sg_book_id]
+                    print(f"Mapped StoryGraph ID {sg_book_id} to OpenLibrary ID {ol_book_id}", file=sys.stderr)
+                else:
+                    # Try to extract OpenLibrary ID from StoryGraph ID
+                    match = re.search(r'\/works\/(OL\d+W)', sg_book_id)
+                    if match:
+                        ol_key = match.group(1)
+                        ol_book_id = f"/works/{ol_key}"
+                        print(f"Extracted OpenLibrary ID {ol_book_id} from StoryGraph ID {sg_book_id}", file=sys.stderr)
+                    else:
+                        # No mapping found, use StoryGraph ID as-is
+                        ol_book_id = sg_book_id
+                        print(f"No OpenLibrary ID found for {sg_book_id}, using as-is", file=sys.stderr)
                 
-                if formatted_book_id is None:
-                    # No direct match, try looking it up in metadata
-                    for meta_id in self.metadata:
-                        if book_id in meta_id:
-                            formatted_book_id = meta_id
-                            break
-                
-                if formatted_book_id and formatted_book_id in self.metadata:
+                # Look up metadata for this book
+                if ol_book_id and ol_book_id in self.metadata:
                     # Use existing metadata
-                    meta = self.metadata[formatted_book_id]
+                    meta = self.metadata[ol_book_id]
                     recommendations.append({
-                        "id": formatted_book_id,
+                        "id": ol_book_id,
                         "title": meta.get("title", "Unknown"),
                         "author_names": meta.get("author_names", []),
                         "description": meta.get("description", ""),
@@ -263,7 +332,7 @@ class ItemBasedCF:
                 else:
                     # Basic entry if no metadata
                     recommendations.append({
-                        "id": book_id,
+                        "id": ol_book_id or sg_book_id,
                         "title": "Unknown",
                         "author_names": [],
                         "similarity_score": float(combined_similarity[idx]),
@@ -274,6 +343,9 @@ class ItemBasedCF:
                 if len(recommendations) >= n_recommendations:
                     break
             
+            if not recommendations:
+                print(f"No recommendations found that meet the threshold. Consider lowering min_similarity (currently {min_similarity})", file=sys.stderr)
+                
             return recommendations
                 
         except Exception as e:
@@ -281,6 +353,7 @@ class ItemBasedCF:
             import traceback
             traceback.print_exc(file=sys.stderr)
             return []
+
             
     def close(self):
         """Close MongoDB connection"""
