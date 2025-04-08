@@ -1,5 +1,5 @@
 import { Book } from '../types/Book';
-import { BookSegment} from '../types/BookSegment';
+import { BookSegment, SegmentType } from '../types/BookSegment';
 
 interface Recommendation {
     id: string;
@@ -195,36 +195,129 @@ export class SegmentManager {
             }
         }
 
-        // Other segments
-        segments.push(
-            {
-                id: 'trending-scifi',
-                title: 'Trending in Science Fiction',
-                type: 'TRENDING_SCIFI',
-                books: this.adjustArrayToMultipleOfSix(
-                    this.filterAndSortByRating(books, 'Science Fiction')
-                ),
-                priority: 5
-            },
-            {
-                id: 'pre-2000',
-                title: 'Classic Sci-Fi (Pre 2000s)',
-                type: 'PRE_2000',
-                books: this.adjustArrayToMultipleOfSix(
-                    books.filter(book => book.first_publish_year < 2000)
-                ),
-                priority: 6
-            },
-            {
-                id: 'post-2000',
-                title: 'Modern Sci-Fi (Post 2000s)',
-                type: 'POST_2000',
-                books: this.adjustArrayToMultipleOfSix(
-                    books.filter(book => book.first_publish_year >= 2000)
-                ),
-                priority: 7
+        // Create a pool of remaining books for generic segments
+        // Track the books we've used to avoid duplicates
+        const usedBookIds = new Set<string>();
+        
+        // Helper function to collect unique books
+        const getUniqueBooks = (
+            sourceBooks: Book[],
+            sortFn: (a: Book, b: Book) => number,
+            limit: number
+        ): Book[] => {
+            const result: Book[] = [];
+            for (const book of [...sourceBooks].sort(sortFn)) {
+                if (result.length >= limit) break;
+                if (!usedBookIds.has(book._id)) {
+                    result.push(book);
+                    usedBookIds.add(book._id);
+                }
             }
+            return result;
+        };
+
+        // 1. Trending Books - highest ratings average
+        const trendingBooks = getUniqueBooks(
+            books,
+            (a, b) => ((b.ratings_average || 0) - (a.ratings_average || 0)),
+            this.SEGMENT_SIZES.TRENDING_SCIFI
         );
+        
+        if (trendingBooks.length > 0) {
+            segments.push({
+                id: 'trending-books',
+                title: 'Trending Books',
+                type: 'TRENDING_SCIFI', // Reusing the existing type
+                books: this.adjustArrayToMultipleOfSix(trendingBooks),
+                priority: 5
+            });
+        }
+        
+        // 2. Popular Reads - highest ratings count
+        const popularBooks = getUniqueBooks(
+            books,
+            (a, b) => ((b.ratings_count || 0) - (a.ratings_count || 0)),
+            this.SEGMENT_SIZES.TRENDING_FANTASY
+        );
+        
+        if (popularBooks.length > 0) {
+            segments.push({
+                id: 'popular-reads',
+                title: 'Popular Reads',
+                type: 'TRENDING_FANTASY', // Reusing the existing type
+                books: this.adjustArrayToMultipleOfSix(popularBooks),
+                priority: 6
+            });
+        }
+        
+        // 3. Critically Acclaimed - high ratings but lower counts (hidden gems)
+        const criticallyAcclaimed = getUniqueBooks(
+            books.filter(b => (b.ratings_average || 0) > 4.0 && (b.ratings_count || 0) < 10000),
+            (a, b) => ((b.ratings_average || 0) - (a.ratings_average || 0)),
+            this.SEGMENT_SIZES.EPIC_SAGAS
+        );
+        
+        if (criticallyAcclaimed.length > 0) {
+            segments.push({
+                id: 'critically-acclaimed',
+                title: 'Critically Acclaimed',
+                type: 'EPIC_SAGAS', // Reusing the existing type
+                books: this.adjustArrayToMultipleOfSix(criticallyAcclaimed),
+                priority: 7
+            });
+        }
+        
+        // For author-based segments, get authors with multiple books
+        const authorBooks = new Map<string, Book[]>();
+        books.forEach(book => {
+            if (book.author_names && book.author_names.length > 0) {
+                const author = book.author_names[0]; // Use first author
+                if (!authorBooks.has(author)) {
+                    authorBooks.set(author, []);
+                }
+                authorBooks.get(author)?.push(book);
+            }
+        });
+        
+        // 4. Featured Authors - authors with multiple books
+        const featuredAuthors = [...authorBooks.entries()]
+            .filter(([_, books]) => books.length >= 3)
+            .sort((a, b) => b[1].length - a[1].length)
+            .slice(0, 3); // Take top 3 authors with most books
+        
+        for (const [author, authorBookList] of featuredAuthors) {
+            // Only include books that haven't been used yet
+            const unusedAuthorBooks = authorBookList.filter(book => !usedBookIds.has(book._id));
+            if (unusedAuthorBooks.length >= 6) { // Ensure we have at least one row
+                // Mark these books as used
+                unusedAuthorBooks.forEach(book => usedBookIds.add(book._id));
+                
+                segments.push({
+                    id: `author-${author.replace(/\s+/g, '-').toLowerCase()}`,
+                    title: `Books by ${author}`,
+                    type: 'PRE_2000', // Reusing the existing type 
+                    books: this.adjustArrayToMultipleOfSix(unusedAuthorBooks),
+                    priority: 8
+                });
+            }
+        }
+        
+        // 5. More to Explore - remaining books
+        const remainingBooks = books.filter(book => !usedBookIds.has(book._id));
+        
+        if (remainingBooks.length > 0) {
+            // Sort by rating to put better books first
+            remainingBooks.sort((a, b) => (b.ratings_average || 0) - (a.ratings_average || 0));
+            
+            segments.push({
+                id: 'more-to-explore',
+                title: 'More to Explore',
+                type: 'POST_2000', // Reusing the existing type
+                books: this.adjustArrayToMultipleOfSix(remainingBooks.slice(0, this.SEGMENT_SIZES.POST_2000)),
+                priority: 9
+            });
+        }
+
         console.log('Final segments:', segments);
 
         // Filter out any segments that ended up with zero books
@@ -233,7 +326,7 @@ export class SegmentManager {
             .sort((a, b) => a.priority - b.priority);
     }
   
-    private static filterAndSortByRating(books: Book[], genre?: string): Book[] {
+    private static filterAndSortByRating(books: Book[]): Book[] {
       return [...books]
         .sort((a, b) => (b.ratings_average || 0) - (a.ratings_average || 0))
         .slice(0, this.SEGMENT_SIZES.TRENDING_SCIFI);
