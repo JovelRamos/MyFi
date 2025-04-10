@@ -4,7 +4,7 @@ import { FaStar } from 'react-icons/fa';
 
 interface ReadOptionsPanelProps {
     handleRateBook: (rating: number) => Promise<void>;
-    bookRating?: number;
+    bookRating: number | null | undefined;
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
 }

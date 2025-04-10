@@ -79,7 +79,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
     const { 
         readingList, 
         currentlyReading, 
-        ratings,
+        finishedBooks,
         addToReadingList, 
         markAsCurrentlyReading,
         removeFromReadingList,
@@ -90,7 +90,8 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
     
     const isInReadingList = readingList.includes(book._id);
     const isCurrentlyReading = currentlyReading.includes(book._id);
-    const bookRating = ratings.find(r => r.bookId === book._id)?.rating;
+    const finishedBook = finishedBooks.find(item => item.bookId === book._id);
+    const bookRating = finishedBook ? finishedBook.rating : null;
     
     // Helper functions to manage hoveredButtons Set
     const addHoveredButton = (button: string) => {
@@ -174,7 +175,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
             else if (rating === 3) message = `You rated "${book.title}" 3 stars!`;
             else if (rating === 4) message = `You rated "${book.title}" 4 stars!`;
             else message = `You rated "${book.title}" 5 stars!`;
-            await markAsFinished(book._id);
+            
             toast.success(message);
         } catch (error) {
             toast.error('Failed to rate book. Please try again.');
@@ -288,7 +289,7 @@ export const BookButtons = ({ book, isHovered }: BookButtonsProps) => {
                     {/* Read Options Panel */}
                     <ReadOptionsPanel 
                         handleRateBook={handleRateBook}
-                        bookRating={bookRating}
+                        bookRating={bookRating}  // This is fine now that ReadOptionsPanel accepts null
                         isOpen={showReadPanel}
                         setIsOpen={(isOpen) => setActivePanel(isOpen ? 'read' : null)}
                     />

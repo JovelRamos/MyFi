@@ -16,10 +16,9 @@ const UserSchema = new mongoose.Schema({
   },
   readingList: [String],
   currentlyReading: [String],
-  finishedBooks: [String], // Add this new field
-  ratings: [{
+  finishedBooks: [{
     bookId: String,
-    rating: Number
+    rating: { type: Number, default: null }
   }],
   createdAt: {
     type: Date,

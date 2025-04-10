@@ -417,66 +417,66 @@ app.post('/api/auth/register', async (req, res) => {
     }
   });
   
-  // Login endpoint
-  app.post('/api/auth/login', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-  
-      // Find user
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-  
-      // Verify password
-      const isMatch = await user.comparePassword(password);
-      if (!isMatch) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-  
-      // Generate token
-      const token = jwt.sign(
-        { userId: user._id },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRATION }
-      );
-  
-      res.json({
-        token,
-        user: {
-          id: user._id,
-          email: user.email,
-          readingList: user.readingList,
-          currentlyReading: user.currentlyReading,
-          finishedBooks: user.finishedBooks
-        }
-      });
-    } catch (error) {
-      res.status(500).json({ error: 'Login failed' });
+ // Login endpoint update
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
-  });
-  
-  // Verify token endpoint
-  app.get('/api/auth/verify', auth, async (req, res) => {
-    try {
-      const user = await User.findById(req.userId);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      res.json({
+
+    // Verify password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Generate token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRATION }
+    );
+
+    res.json({
+      token,
+      user: {
         id: user._id,
         email: user.email,
         readingList: user.readingList,
         currentlyReading: user.currentlyReading,
-        finishedBooks: user.finishedBooks
-      });
-    } catch (error) {
-      res.status(500).json({ error: 'Verification failed' });
-    }
-  });
-  
+        finishedBooks: user.finishedBooks || []
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
 
+// Verify token endpoint
+app.get('/api/auth/verify', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      id: user._id,
+      email: user.email,
+      readingList: user.readingList,
+      currentlyReading: user.currentlyReading,
+      finishedBooks: user.finishedBooks || []
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Verification failed' });
+  }
+});
+
+// Currently reading endpoint update
 app.post('/api/user/currently-reading', auth, async (req, res) => {
   try {
     const { bookId, action } = req.body;
@@ -488,8 +488,12 @@ app.post('/api/user/currently-reading', auth, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
     
+    // Ensure arrays exist
+    if (!user.currentlyReading) user.currentlyReading = [];
+    if (!user.finishedBooks) user.finishedBooks = [];
+    
     // Log current state before changes
-    console.log(`Before update - Currently reading: ${user.currentlyReading.length}, Finished: ${user.finishedBooks ? user.finishedBooks.length : 0}`);
+    console.log(`Before update - Currently reading: ${user.currentlyReading.length}, Finished: ${user.finishedBooks.length}`);
     
     if (!action || action === 'add') {
       // Add to currently reading if not already there
@@ -500,14 +504,11 @@ app.post('/api/user/currently-reading', auth, async (req, res) => {
         console.log(`${bookId} already in currently reading list`);
       }
     } else if (action === 'remove') {
-      // Add this new case for removing from currently reading
+      // Remove from currently reading
       console.log(`Removing ${bookId} from currently reading`);
       user.currentlyReading = user.currentlyReading.filter(id => id !== bookId);
     } else if (action === 'finish') {
       console.log(`Attempting to mark ${bookId} as finished`);
-      // Ensure the arrays exist
-      if (!user.currentlyReading) user.currentlyReading = [];
-      if (!user.finishedBooks) user.finishedBooks = [];
       
       // Check if book is in currently reading list
       const isCurrentlyReading = user.currentlyReading.includes(bookId);
@@ -516,30 +517,60 @@ app.post('/api/user/currently-reading', auth, async (req, res) => {
       // Remove from currently reading
       user.currentlyReading = user.currentlyReading.filter(id => id !== bookId);
       
-      // Add to finished books if not already there
-      if (!user.finishedBooks.includes(bookId)) {
-        user.finishedBooks.push(bookId);
-        console.log(`Added ${bookId} to finished books`);
+      // Check if book is already in finished books
+      const existingIndex = user.finishedBooks.findIndex(item => item.bookId === bookId);
+      
+      if (existingIndex === -1) {
+        // Add to finished books if not already there
+        user.finishedBooks.push({ bookId, rating: null });
+        console.log(`Added ${bookId} to finished books with null rating`);
       } else {
         console.log(`${bookId} already in finished books list`);
       }
     }
     
     // Log state after changes
-    console.log(`After update - Currently reading: ${user.currentlyReading.length}, Finished: ${user.finishedBooks ? user.finishedBooks.length : 0}`);
+    console.log(`After update - Currently reading: ${user.currentlyReading.length}, Finished: ${user.finishedBooks.length}`);
     
     await user.save();
     
     // Return the updated lists
     res.json({ 
       currentlyReading: user.currentlyReading,
-      finishedBooks: user.finishedBooks || []
+      finishedBooks: user.finishedBooks
     });
   } catch (error) {
     console.error('Error updating reading status:', error);
     res.status(500).json({ error: 'Failed to update reading status', details: error.message });
   }
 });
+
+// Rate a book endpoint update
+app.post('/api/user/rate-book', auth, async (req, res) => {
+  try {
+    const { bookId, rating } = req.body;
+    const user = await User.findById(req.userId);
+    
+    if (!user.finishedBooks) user.finishedBooks = [];
+    
+    // Find if the book is already in finished books
+    const bookIndex = user.finishedBooks.findIndex(item => item.bookId === bookId);
+    
+    if (bookIndex !== -1) {
+      // Update existing book's rating
+      user.finishedBooks[bookIndex].rating = rating;
+    } else {
+      // Add new finished book with rating
+      user.finishedBooks.push({ bookId, rating });
+    }
+    
+    await user.save();
+    res.json({ finishedBooks: user.finishedBooks });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to rate book' });
+  }
+});
+
 
 
 // Update the reading-list endpoint to add items at the beginning of the array
@@ -565,31 +596,7 @@ app.post('/api/user/reading-list', auth, async (req, res) => {
 });
 
 
-  
-  // Rate a book
-  app.post('/api/user/rate-book', auth, async (req, res) => {
-    try {
-      const { bookId, rating } = req.body;
-      const user = await User.findById(req.userId);
-      
-      // Find if the book is already rated
-      const ratingIndex = user.ratings.findIndex(item => item.bookId === bookId);
-      
-      if (ratingIndex !== -1) {
-        // Update existing rating
-        user.ratings[ratingIndex].rating = rating;
-      } else {
-        // Add new rating
-        user.ratings.push({ bookId, rating });
-      }
-      
-      await user.save();
-      res.json({ ratings: user.ratings });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to rate book' });
-    }
-  });
-  
+
 
 
 

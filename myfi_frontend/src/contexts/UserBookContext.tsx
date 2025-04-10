@@ -3,16 +3,16 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import api from '../services/api';
 import { useAuth } from './AuthContext';
 
+
 type UserBookState = {
   readingList: string[];
   currentlyReading: string[];
-  finishedBooks: string[];
-  ratings: {bookId: string, rating: number}[];
+  finishedBooks: {bookId: string, rating: number | null}[];
   isInitialLoading: boolean;
   addToReadingList: (bookId: string) => Promise<void>;
   removeFromReadingList: (bookId: string) => Promise<void>;
   markAsCurrentlyReading: (bookId: string) => Promise<void>;
-  removeFromCurrentlyReading: (bookId: string) => Promise<void>; // Add this
+  removeFromCurrentlyReading: (bookId: string) => Promise<void>;
   markAsFinished: (bookId: string) => Promise<void>;
   rateBook: (bookId: string, rating: number) => Promise<void>;
 };
@@ -26,14 +26,16 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, user } = useAuth();
   const [readingList, setReadingList] = useState<string[]>([]);
   const [currentlyReading, setCurrentlyReading] = useState<string[]>([]);
-  const [finishedBooks, setFinishedBooks] = useState<string[]>([]);
-  const [ratings, setRatings] = useState<{bookId: string, rating: number}[]>([]);
-  const [isInitialLoading, setIsInitialLoading] = useState(false); // Rename to clarify purpose
+  const [finishedBooks, setFinishedBooks] = useState<{bookId: string, rating: number | null}[]>([]);
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (!isAuthenticated) {
-        // Reset logic...
+        // Reset states when not authenticated
+        setReadingList([]);
+        setCurrentlyReading([]);
+        setFinishedBooks([]);
         return;
       }
       
@@ -43,8 +45,26 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
         if (user && user.finishedBooks) {
           setReadingList(user.readingList || []);
           setCurrentlyReading(user.currentlyReading || []);
-          setFinishedBooks(user.finishedBooks || []);
-          // Handle ratings separately if needed
+          
+          // Handle legacy data structure or new structure
+          if (Array.isArray(user.finishedBooks) && 
+              user.finishedBooks.length > 0 && 
+              typeof user.finishedBooks[0] === 'string') {
+            // Convert old format to new format
+            const oldFinishedBooks = user.finishedBooks as unknown as string[];
+            const ratings = user.ratings || [];
+            
+            // Map old format to new format
+            const newFinishedBooks = oldFinishedBooks.map(bookId => {
+              const rating = ratings.find(r => r.bookId === bookId)?.rating || null;
+              return { bookId, rating };
+            });
+            
+            setFinishedBooks(newFinishedBooks);
+          } else {
+            // New format
+            setFinishedBooks(user.finishedBooks as unknown as {bookId: string, rating: number | null}[] || []);
+          }
           
           console.log("Using data from auth context:", user.finishedBooks);
         } else {
@@ -56,8 +76,25 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
             
             setReadingList(response.data.readingList || []);
             setCurrentlyReading(response.data.currentlyReading || []);
-            setFinishedBooks(response.data.finishedBooks || []);
-            setRatings(response.data.ratings || []);
+            
+            // Handle potential legacy data structure
+            if (Array.isArray(response.data.finishedBooks) && 
+                response.data.finishedBooks.length > 0 && 
+                typeof response.data.finishedBooks[0] === 'string') {
+              // Convert old format to new format
+              const oldFinishedBooks = response.data.finishedBooks as string[];
+              const ratings = response.data.ratings || [];
+              
+              const newFinishedBooks = oldFinishedBooks.map(bookId => {
+                const rating = ratings.find((r: {bookId: string, rating: number}) => r.bookId === bookId)?.rating || null;
+                return { bookId, rating };
+              });
+              
+              setFinishedBooks(newFinishedBooks);
+            } else {
+              // Already in new format
+              setFinishedBooks(response.data.finishedBooks as {bookId: string, rating: number | null}[] || []);
+            }
           }
         }
       } catch (error) {
@@ -141,7 +178,28 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
   const rateBook = async (bookId: string, rating: number) => {
     try {
       const response = await api.post('/user/rate-book', { bookId, rating });
-      setRatings(response.data.ratings);
+      
+      // Update finishedBooks with the new rating
+      if (response.data.finishedBooks) {
+        setFinishedBooks(response.data.finishedBooks);
+      } else if (response.data.ratings) {
+        // Handle legacy response format
+        const updatedFinishedBooks = [...finishedBooks];
+        const bookIndex = updatedFinishedBooks.findIndex(book => book.bookId === bookId);
+        
+        if (bookIndex !== -1) {
+          // Update existing book
+          updatedFinishedBooks[bookIndex] = { 
+            ...updatedFinishedBooks[bookIndex],
+            rating 
+          };
+        } else {
+          // Add new book to finished books
+          updatedFinishedBooks.push({ bookId, rating });
+        }
+        
+        setFinishedBooks(updatedFinishedBooks);
+      }
     } catch (error) {
       console.error('Failed to rate book', error);
       throw error;
@@ -153,12 +211,11 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
       readingList, 
       currentlyReading,
       finishedBooks,
-      ratings,
       isInitialLoading, 
       addToReadingList,
       removeFromReadingList,
       markAsCurrentlyReading,
-      removeFromCurrentlyReading, // Add this new function
+      removeFromCurrentlyReading,
       markAsFinished,
       rateBook
     }}>

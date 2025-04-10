@@ -5,8 +5,7 @@ import { useUserBooks } from '../contexts/UserBookContext';
 import { Book } from '../types/Book';
 import { useNavigate } from 'react-router-dom'; 
 
-
-// src/pages/MyBooksPage.tsx - Updated BookCover component
+// BookCover component remains the same
 function BookCover({ book }: { book: Book }) {
     return (
       <div className="w-48 relative group">
@@ -23,9 +22,7 @@ function BookCover({ book }: { book: Book }) {
         </div>
       </div>
     );
-  }
-  
-  
+}
 
 function BookList({ books, title, emptyMessage }: { 
   books: Book[], 
@@ -80,7 +77,6 @@ function MyBooksPage() {
   }, []);
 
   // Create book lists with newest-first order
-  // This uses the same approach as SegmentManager
   const readingListBooks: Book[] = [];
   for (let i = readingList.length - 1; i >= 0; i--) {
     const bookId = readingList[i];
@@ -97,7 +93,9 @@ function MyBooksPage() {
   
   const finishedBooksArray: Book[] = [];
   for (let i = finishedBooks.length - 1; i >= 0; i--) {
-    const bookId = finishedBooks[i];
+    const finishedBook = finishedBooks[i];
+    // Extract bookId from the finishedBooks object
+    const bookId = finishedBook.bookId;
     const book = books.find(b => b._id === bookId);
     if (book) finishedBooksArray.push(book);
   }

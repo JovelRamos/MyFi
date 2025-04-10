@@ -107,7 +107,7 @@ function HomePage() {
           books,
           isAuthenticated ? readingList : [],
           isAuthenticated ? currentlyReading : [],
-          isAuthenticated ? finishedBooks : []
+          isAuthenticated ? finishedBooks.map(fb => fb.bookId) : []
         );
         
         console.log("Segments generated:", generatedSegments.length);
