@@ -332,66 +332,84 @@ export class SegmentManager {
         .slice(0, this.SEGMENT_SIZES.TRENDING_SCIFI);
     }
 
-    private static async getMLRecommendations(
-        bookIds: string[],
-        allBooks: Book[]
-    ): Promise<Book[]> {
-        try {
-            // Ensure we have valid book IDs
-            if (!bookIds.length) {
-                console.error('No book IDs provided');
-                return [];
-            }
-    
-            // Clean and format book IDs
-            const cleanBookIds = bookIds.map(id => {
-                const cleaned = id.replace('/works/', '').trim();
-                console.log('Cleaned book ID:', cleaned);
-                return cleaned;
-            });
-    
-            console.log('Requesting recommendations for:', cleanBookIds);
-    
-            // Construct the query string
-            const queryString = cleanBookIds.join(',');
-            const url = `http://localhost:8000/api/recommendations_multiple?books=${queryString}`;
-            console.log('Making request to:', url);
-    
-            const response = await fetch(url);
-    
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-    
-            const recommendations = await response.json();
-            console.log('Received recommendations:', recommendations);
-    
-            // Map recommendations to books
-            const mappedBooks = recommendations
-                .map((rec: Recommendation) => {
-                    const recId = rec.id.replace('/works/', '');
-                    const book = allBooks.find(b => 
-                        b._id.replace('/works/', '') === recId
-                    );
-    
-                    if (book) {
-                        console.log('Found matching book:', book.title);
-                        return book;
-                    } else {
-                        console.log('No matching book found for ID:', recId);
-                        return null;
-                    }
-                })
-                .filter((book: Book | null): book is Book => book !== null);
-    
-            console.log(`Mapped ${mappedBooks.length} books successfully`);
-            return mappedBooks;
-    
-        } catch (error) {
-            console.error('Error in getMLRecommendations:', error);
+private static async getMLRecommendations(
+    bookIds: string[],
+    allBooks: Book[]
+): Promise<Book[]> {
+    try {
+        // Ensure we have valid book IDs
+        if (!bookIds.length) {
+            console.error('No book IDs provided');
             return [];
         }
+
+        // Clean and format book IDs
+        const cleanBookIds = bookIds
+            .filter(id => id !== undefined && id !== null) // Filter out undefined/null values
+            .map(id => {
+                // Safely handle the ID - check if it exists before using replace
+                const cleaned = id ? id.replace('/works/', '').trim() : '';
+                if (!cleaned) {
+                    console.warn('Found empty book ID after cleaning:', id);
+                }
+                console.log('Cleaned book ID:', cleaned);
+                return cleaned;
+            })
+            .filter(id => id); // Filter out any empty strings after cleaning
+
+        // Check if we have any valid IDs after filtering
+        if (!cleanBookIds.length) {
+            console.error('No valid book IDs to process after cleaning');
+            return [];
+        }
+
+        console.log('Requesting recommendations for:', cleanBookIds);
+
+        // Construct the query string
+        const queryString = cleanBookIds.join(',');
+        const url = `http://localhost:8000/api/recommendations_multiple?books=${queryString}`;
+        console.log('Making request to:', url);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const recommendations = await response.json();
+        console.log('Received recommendations:', recommendations);
+
+        // Map recommendations to books
+        const mappedBooks = recommendations
+            .map((rec: Recommendation) => {
+                if (!rec || !rec.id) {
+                    console.warn('Received recommendation without valid ID:', rec);
+                    return null;
+                }
+
+                const recId = rec.id.replace('/works/', '');
+                const book = allBooks.find(b => 
+                    b._id.replace('/works/', '') === recId
+                );
+
+                if (book) {
+                    console.log('Found matching book:', book.title);
+                    return book;
+                } else {
+                    console.log('No matching book found for ID:', recId);
+                    return null;
+                }
+            })
+            .filter((book: Book | null): book is Book => book !== null);
+
+        console.log(`Mapped ${mappedBooks.length} books successfully`);
+        return mappedBooks;
+
+    } catch (error) {
+        console.error('Error in getMLRecommendations:', error);
+        return [];
     }
+}
 }

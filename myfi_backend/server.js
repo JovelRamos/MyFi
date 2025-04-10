@@ -28,9 +28,9 @@ async function connect(){
         await mongoose.connect(uri);
         console.log("Successful connection to MongoDB");
         
-        // Import books after successful connection
-        console.log("Starting book import...");
-        await fetchTopScifiBooks();
+        // // Import books after successful connection
+        // console.log("Starting book import...");
+        // await fetchTopScifiBooks();
     } catch(error) {
         console.log(error);
     }
@@ -83,94 +83,227 @@ app.get('/api/books', async (req, res) => {
 });
 
 app.get('/api/recommendations/:bookId', async (req, res) => {
-    try {
-        let { bookId } = req.params;
-        
-        // Add '/works/' prefix back if it's not present
-        if (!bookId.startsWith('/works/')) {
-            bookId = `/works/${bookId}`;
-        }
-        
-        console.log('Processing recommendation request for book:', bookId);
-        
-        // Check if the book exists in the database first
-        const book = await Book.findById(bookId);
-        if (!book) {
-            console.log('recc Book not found in database:', bookId);
-            return res.status(404).json({ error: 'recc Book not found in database' });
-        }
-        
-        // Check if the user has 10 or more books rated by looking at the auth header
-        let useCollaborativeFiltering = false;
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        
-        if (token) {
-            try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                const user = await User.findById(decoded.userId);
-                if (user && user.ratings && user.ratings.length >= 10) {
-                    useCollaborativeFiltering = true;
-                    console.log(`User has ${user.ratings.length} ratings, using collaborative filtering`);
-                }
-            } catch (error) {
-                console.log('Token verification failed:', error);
-                // Continue without collaborative filtering
-            }
-        }
-        
-        // Choose which recommender to use
-        const pythonScript = 'services/item_collaborative_filtering.py';
-            
-        console.log(`Using recommendation script: ${pythonScript}`);
-        
-        // Spawn Python process
-        const python = spawn('python', [pythonScript, bookId]);
-        
-        let dataString = '';
-        let errorString = '';
+  try {
+      let { bookId } = req.params;
+      
+      
+      console.log('Processing recommendation request for book:', bookId);
+      
+      // Check if the book exists in the database first
+      const book = await Book.findById(bookId);
+      if (!book) {
+          console.log('recc Book not found in database:', bookId);
+          return res.status(404).json({ error: 'recc Book not found in database' });
+      }
+      
+      // Check if the user has 10 or more books with ratings
+      let useCollaborativeFiltering = false;
+      const token = req.header('Authorization')?.replace('Bearer ', '');
+      
+      if (token) {
+          try {
+              const decoded = jwt.verify(token, process.env.JWT_SECRET);
+              const user = await User.findById(decoded.userId);
+              
+              // Check if finishedBooks array exists and contains at least 10 books with ratings
+              if (user && user.finishedBooks && Array.isArray(user.finishedBooks)) {
+                  // Count books that have an actual rating (not null)
+                  const ratedBooksCount = user.finishedBooks.filter(book => 
+                      book.rating !== null && book.rating !== undefined
+                  ).length;
+                  
+                  console.log(`User has ${ratedBooksCount} rated books (need 10+ for collaborative filtering)`);
+                  
+                  if (ratedBooksCount >= 10) {
+                      useCollaborativeFiltering = true;
+                      console.log(`Using collaborative filtering`);
+                  } else {
+                      console.log(`Not enough ratings, using content-based filtering`);
+                  }
+              } else {
+                  console.log('User has no finished books or not in expected format');
+              }
+          } catch (error) {
+              console.log('Token verification failed:', error);
+              // Continue without collaborative filtering
+          }
+      }
+      
+      // Choose which recommender to use based on the number of rated books
+      const pythonScript = useCollaborativeFiltering 
+          ? 'services/item_collaborative_filtering.py'
+          : 'services/recommendation_service.py';
+          
+      console.log(`Using recommendation script: ${pythonScript}`);
+      
+      // Spawn Python process
+      const python = spawn('python', [pythonScript, bookId]);
+      
+      let dataString = '';
+      let errorString = '';
 
-        // Collect data from script
-        python.stdout.on('data', function (data) {
-            dataString += data.toString();
-            console.log(`Python stdout: ${data}`);
-        });
+      // Collect data from script
+      python.stdout.on('data', function (data) {
+          dataString += data.toString();
+          console.log(`Python stdout: ${data}`);
+      });
 
-        // Handle errors
-        python.stderr.on('data', (data) => {
-            errorString += data.toString();
-            console.error(`Python stderr: ${data}`);
-        });
+      // Handle errors
+      python.stderr.on('data', (data) => {
+          errorString += data.toString();
+          console.error(`Python stderr: ${data}`);
+      });
 
-        python.on('close', (code) => {
-            if (code !== 0) {
-                console.error(`Python process failed with code ${code}`);
-                console.error(`Error output: ${errorString}`);
-                return res.status(500).json({ 
-                    error: 'Failed to get recommendations',
-                    details: errorString
-                });
-            }
+      python.on('close', (code) => {
+          if (code !== 0) {
+              console.error(`Python process failed with code ${code}`);
+              console.error(`Error output: ${errorString}`);
+              return res.status(500).json({ 
+                  error: 'Failed to get recommendations',
+                  details: errorString
+              });
+          }
 
-            try {
-                const recommendations = JSON.parse(dataString.trim());
-                res.json(recommendations);
-            } catch (error) {
-                console.error('Failed to parse recommendations:', error);
-                res.status(500).json({ 
-                    error: 'Failed to parse recommendations',
-                    details: error.message
-                });
-            }
-        });
+          try {
+              const recommendations = JSON.parse(dataString.trim());
+              res.json(recommendations);
+          } catch (error) {
+              console.error('Failed to parse recommendations:', error);
+              res.status(500).json({ 
+                  error: 'Failed to parse recommendations',
+                  details: error.message
+              });
+          }
+      });
 
-    } catch (error) {
-        console.error('Endpoint error:', error);
-        res.status(500).json({ 
-            error: 'Failed to get recommendations',
-            details: error.message
-        });
-    }
+  } catch (error) {
+      console.error('Endpoint error:', error);
+      res.status(500).json({ 
+          error: 'Failed to get recommendations',
+          details: error.message
+      });
+  }
 });
+
+// Multiple book recommendations endpoint
+app.get('/api/recommendations_multiple', async (req, res) => {
+  try {
+      let bookIds = req.query.books;
+      
+      if (!bookIds) {
+          return res.status(400).json({ error: 'No book IDs provided' });
+      }
+
+      // Split the comma-separated book IDs and clean them
+      const bookIdArray = bookIds.split(',').map(id => {
+          // Remove any existing '/works/' prefix and trim whitespace
+          id = id.trim().replace('/works/', '');
+          // Add '/works/' prefix
+          return `${id}`;
+      });
+      
+      console.log('Processing recommendation request for books:', bookIdArray);
+      
+      // Verify all books exist in the database
+      for (const bookId of bookIdArray) {
+          const book = await Book.findById(bookId);
+          if (!book) {
+              console.log('recc_mul Book not found in database:', bookId);
+              return res.status(404).json({ error: `recc_mul Book not found in database: ${bookId}` });
+          }
+      }
+      
+      // Check if the user has 10 or more books with ratings
+      let useCollaborativeFiltering = false;
+      const token = req.header('Authorization')?.replace('Bearer ', '');
+      
+      if (token) {
+          try {
+              const decoded = jwt.verify(token, process.env.JWT_SECRET);
+              const user = await User.findById(decoded.userId);
+              
+              // Check if finishedBooks array exists and contains at least 10 books with ratings
+              if (user && user.finishedBooks && Array.isArray(user.finishedBooks)) {
+                  // Count books that have an actual rating (not null)
+                  const ratedBooksCount = user.finishedBooks.filter(book => 
+                      book.rating !== null && book.rating !== undefined
+                  ).length;
+                  
+                  console.log(`User has ${ratedBooksCount} rated books (need 10+ for collaborative filtering)`);
+                  
+                  if (ratedBooksCount >= 10) {
+                      useCollaborativeFiltering = true;
+                      console.log(`Using collaborative filtering`);
+                  } else {
+                      console.log(`Not enough ratings, using content-based filtering`);
+                  }
+              } else {
+                  console.log('User has no finished books or not in expected format');
+              }
+          } catch (error) {
+              console.log('Token verification failed:', error);
+              // Continue without collaborative filtering
+          }
+      }
+      
+      // Choose which recommender to use based on the number of rated books
+      const pythonScript = useCollaborativeFiltering 
+          ? 'services/item_collaborative_filtering.py'
+          : 'services/recommendation_service.py';
+      
+      console.log(`Using recommendation script: ${pythonScript}`);
+    
+      
+      // Spawn Python process with multiple book IDs
+      const python = spawn('python', [
+          pythonScript,
+          ...bookIdArray
+      ]);
+      
+      let dataString = '';
+      let errorString = '';
+
+      python.stdout.on('data', function (data) {
+          dataString += data.toString();
+          console.log(`Python stdout: ${data}`);
+      });
+
+      python.stderr.on('data', (data) => {
+          errorString += data.toString();
+          console.error(`Python stderr: ${data}`);
+      });
+
+      python.on('close', (code) => {
+          if (code !== 0) {
+              console.error(`Python process failed with code ${code}`);
+              console.error(`Error output: ${errorString}`);
+              return res.status(500).json({ 
+                  error: 'Failed to get recommendations',
+                  details: errorString
+              });
+          }
+
+          try {
+              const recommendations = JSON.parse(dataString.trim());
+              res.json(recommendations);
+          } catch (error) {
+              console.error('Failed to parse recommendations:', error);
+              res.status(500).json({ 
+                  error: 'Failed to parse recommendations',
+                  details: error.message
+              });
+          }
+      });
+
+  } catch (error) {
+      console.error('Endpoint error:', error);
+      res.status(500).json({ 
+          error: 'Failed to get recommendations',
+          details: error.message
+      });
+  }
+});
+
 
 // Test endpoint to check if a book exists
 app.get('/api/books/:bookId', async (req, res) => {
@@ -200,180 +333,7 @@ app.get('/api/books/:bookId', async (req, res) => {
 });
 
 
-// Debug endpoint to check first few books in database
-app.get('/api/debug/books', async (req, res) => {
-    try {
-        const books = await Book.find().limit(5);
-        res.json({
-            count: await Book.countDocuments(),
-            sampleBooks: books
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
-app.get('/api/debug/book/:bookId', async (req, res) => {
-    try {
-        const { bookId } = req.params;
-        const formattedId = bookId.startsWith('/works/') ? bookId : `/works/${bookId}`;
-        const book = await Book.findById(formattedId);
-        res.json({
-            exists: !!book,
-            bookData: book,
-            searchedId: formattedId
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Add this new endpoint for multiple book recommendations
-app.get('/api/recommendations_multiple', async (req, res) => {
-    try {
-        let bookIds = req.query.books;
-        
-        if (!bookIds) {
-            return res.status(400).json({ error: 'No book IDs provided' });
-        }
-
-        // Split the comma-separated book IDs and clean them
-        const bookIdArray = bookIds.split(',').map(id => {
-            // Remove any existing '/works/' prefix and trim whitespace
-            id = id.trim().replace('/works/', '');
-            // Add '/works/' prefix
-            return `${id}`;
-        });
-        
-        console.log('Processing recommendation request for books:', bookIdArray);
-        
-        // Verify all books exist in the database
-        for (const bookId of bookIdArray) {
-            const book = await Book.findById(bookId);
-            if (!book) {
-                console.log('recc_mul Book not found in database:', bookId);
-                return res.status(404).json({ error: `recc_mul Book not found in database: ${bookId}` });
-            }
-        }
-        
-        // Check if the user has 10 or more books rated by looking at the auth header
-        let useCollaborativeFiltering = false;
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        
-        if (token) {
-            try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                const user = await User.findById(decoded.userId);
-                if (user && user.ratings && user.ratings.length >= 10) {
-                    useCollaborativeFiltering = true;
-                    console.log(`User has ${user.ratings.length} ratings, using collaborative filtering`);
-                }
-            } catch (error) {
-                console.log('Token verification failed:', error);
-                // Continue without collaborative filtering
-            }
-        }
-        
-        // Choose which recommender to use
-        const pythonScript = 'services/item_collaborative_filtering.py';
-        
-        console.log(`Using recommendation script: ${pythonScript}`);
-        
-        // Spawn Python process with multiple book IDs
-        const python = spawn('python', [
-            pythonScript,
-            ...bookIdArray
-        ]);
-        
-        let dataString = '';
-        let errorString = '';
-
-        python.stdout.on('data', function (data) {
-            dataString += data.toString();
-            console.log(`Python stdout: ${data}`);
-        });
-
-        python.stderr.on('data', (data) => {
-            errorString += data.toString();
-            console.error(`Python stderr: ${data}`);
-        });
-
-        python.on('close', (code) => {
-            if (code !== 0) {
-                console.error(`Python process failed with code ${code}`);
-                console.error(`Error output: ${errorString}`);
-                return res.status(500).json({ 
-                    error: 'Failed to get recommendations',
-                    details: errorString
-                });
-            }
-
-            try {
-                const recommendations = JSON.parse(dataString.trim());
-                res.json(recommendations);
-            } catch (error) {
-                console.error('Failed to parse recommendations:', error);
-                res.status(500).json({ 
-                    error: 'Failed to parse recommendations',
-                    details: error.message
-                });
-            }
-        });
-
-    } catch (error) {
-        console.error('Endpoint error:', error);
-        res.status(500).json({ 
-            error: 'Failed to get recommendations',
-            details: error.message
-        });
-    }
-});
-
-
-// Add debug endpoint for testing multiple recommendations
-app.get('/api/debug/recommendations_multiple', async (req, res) => {
-    try {
-        // Test with some sample book IDs
-        const testBookIds = ['/works/OL82536W','/works/OL27482W'];
-        
-        console.log('Testing multiple recommendations for:', testBookIds);
-        
-        // Spawn Python process with test book IDs
-        const python = spawn('python', [
-            'services/recommendation_service.py',
-            ...testBookIds
-        ]);
-        
-        let dataString = '';
-        let errorString = '';
-
-        python.stdout.on('data', (data) => {
-            dataString += data.toString();
-            console.log(`Debug Python stdout: ${data}`);
-        });
-
-        python.stderr.on('data', (data) => {
-            errorString += data.toString();
-            console.error(`Debug Python stderr: ${data}`);
-        });
-
-        python.on('close', (code) => {
-            res.json({
-                status: code === 0 ? 'success' : 'error',
-                exitCode: code,
-                stdout: dataString,
-                stderr: errorString,
-                testBookIds: testBookIds
-            });
-        });
-
-    } catch (error) {
-        res.status(500).json({ 
-            error: 'Debug endpoint failed',
-            details: error.message
-        });
-    }
-});
 
 // Register endpoint
 app.post('/api/auth/register', async (req, res) => {

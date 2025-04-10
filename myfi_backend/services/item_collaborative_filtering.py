@@ -115,8 +115,18 @@ class ItemBasedCF:
                 continue
                 
             for rating_obj in book_ratings:
-                book_id = rating_obj.get("book_id")
-                rating = rating_obj.get("rating")
+                # Handle different formats of rating objects
+                if isinstance(rating_obj, str):
+                    # Old format - just a book ID string
+                    book_id = rating_obj
+                    rating = 1.0  # Default implicit rating
+                else:
+                    # Normal format - object with book_id and rating
+                    book_id = rating_obj.get("book_id")
+                    rating = rating_obj.get("rating")
+                    
+                    if rating is None:
+                        rating = 1.0  # Default rating
                 
                 # Skip if book_id is not in our mapping or rating is missing
                 if book_id not in self.book_id_to_index or rating is None:
@@ -205,14 +215,23 @@ class ItemBasedCF:
             if isinstance(book_ids, str):
                 book_ids = [book_ids]
             
-            print(f"Input book IDs: {book_ids}", file=sys.stderr)
+            # Handle different formats of book_ids (string or object with bookId)
+            normalized_book_ids = []
+            for item in book_ids:
+                if isinstance(item, dict) and 'bookId' in item:
+                    # New format - object with bookId
+                    normalized_book_ids.append(item['bookId'])
+                elif isinstance(item, str):
+                    # Old format - just a string ID
+                    normalized_book_ids.append(item)
+                else:
+                    print(f"Skipping invalid book ID format: {item}", file=sys.stderr)
+            
+            print(f"Input book IDs after normalization: {normalized_book_ids}", file=sys.stderr)
             
             # Convert OpenLibrary IDs to StoryGraph IDs for lookup
             sg_book_ids = []
-            for book_id in book_ids:
-                # Normalize input book_id format (ensure it has /works/ prefix)
-                book_id
-                
+            for book_id in normalized_book_ids:
                 # Try to find corresponding StoryGraph ID
                 if book_id in self.ol_to_sg_mapping:
                     sg_id = self.ol_to_sg_mapping[book_id]
