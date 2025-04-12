@@ -81,11 +81,9 @@ app.get('/api/books', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch books' });
     }
 });
-
 app.get('/api/recommendations/:bookId', async (req, res) => {
   try {
       let { bookId } = req.params;
-      
       
       console.log('Processing recommendation request for book:', bookId);
       
@@ -98,11 +96,13 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
       
       // Check if the user has 10 or more books with ratings
       let useCollaborativeFiltering = false;
+      let userId = null;
       const token = req.header('Authorization')?.replace('Bearer ', '');
       
       if (token) {
           try {
               const decoded = jwt.verify(token, process.env.JWT_SECRET);
+              userId = decoded.userId; // Store userId for later use
               const user = await User.findById(decoded.userId);
               
               // Check if finishedBooks array exists and contains at least 10 books with ratings
@@ -133,11 +133,21 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
       const pythonScript = useCollaborativeFiltering 
           ? 'services/item_collaborative_filtering.py'
           : 'services/recommendation_service.py';
-          
-      console.log(`Using recommendation script: ${pythonScript}`);
-      
-      // Spawn Python process
-      const python = spawn('python', [pythonScript, bookId]);
+
+      // Prepare arguments based on filtering type
+      let args = [];
+      if (useCollaborativeFiltering) {
+          // Pass user ID for collaborative filtering
+          args.push(userId.toString());
+      } else {
+          // Pass book ID for content-based
+          args.push(bookId);
+      }
+
+      console.log(`Using recommendation script: ${pythonScript} with args: ${args}`);
+
+      // Spawn Python process with appropriate arguments
+      const python = spawn('python', [pythonScript, ...args]);  
       
       let dataString = '';
       let errorString = '';
@@ -185,7 +195,6 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
   }
 });
 
-// Multiple book recommendations endpoint
 app.get('/api/recommendations_multiple', async (req, res) => {
   try {
       let bookIds = req.query.books;
@@ -215,11 +224,13 @@ app.get('/api/recommendations_multiple', async (req, res) => {
       
       // Check if the user has 10 or more books with ratings
       let useCollaborativeFiltering = false;
+      let userId = null;
       const token = req.header('Authorization')?.replace('Bearer ', '');
       
       if (token) {
           try {
               const decoded = jwt.verify(token, process.env.JWT_SECRET);
+              userId = decoded.userId; // Store userId for later use
               const user = await User.findById(decoded.userId);
               
               // Check if finishedBooks array exists and contains at least 10 books with ratings
@@ -251,14 +262,20 @@ app.get('/api/recommendations_multiple', async (req, res) => {
           ? 'services/item_collaborative_filtering.py'
           : 'services/recommendation_service.py';
       
-      console.log(`Using recommendation script: ${pythonScript}`);
-    
-      
-      // Spawn Python process with multiple book IDs
-      const python = spawn('python', [
-          pythonScript,
-          ...bookIdArray
-      ]);
+      // Prepare arguments based on filtering type
+      let args = [];
+      if (useCollaborativeFiltering) {
+          // Pass user ID for collaborative filtering
+          args.push(userId.toString()); // Ensure it's a string
+      } else {
+          // Pass all book IDs for content-based
+          args.push(...bookIdArray);
+      }
+  
+      console.log(`Using recommendation script: ${pythonScript} with args: ${args}`);
+  
+      // Spawn Python process with appropriate arguments
+      const python = spawn('python', [pythonScript, ...args]);
       
       let dataString = '';
       let errorString = '';
@@ -303,36 +320,6 @@ app.get('/api/recommendations_multiple', async (req, res) => {
       });
   }
 });
-
-
-// Test endpoint to check if a book exists
-app.get('/api/books/:bookId', async (req, res) => {
-    try {
-        const { bookId } = req.params;
-        const formattedId = bookId.startsWith('/works/') ? bookId : `/works/${bookId}`;
-        
-        console.log('Looking for book with ID:', formattedId);
-        
-        const book = await Book.findById(formattedId);
-        
-        if (!book) {
-            return res.status(404).json({ 
-                error: 'Book not found',
-                searchedId: formattedId
-            });
-        }
-        
-        res.json(book);
-    } catch (error) {
-        res.status(500).json({ 
-            error: 'Failed to fetch book',
-            details: error.message,
-            searchedId: req.params.bookId
-        });
-    }
-});
-
-
 
 
 // Register endpoint
