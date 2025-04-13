@@ -117,11 +117,20 @@ async function readCsvFile() {
     return new Promise((resolve, reject) => {
         fs.createReadStream(csvFilePath)
             .pipe(csv())
-            .on('data', (data) => results.push(data))
+            .on('data', (data) => {
+                // Log sample records to verify OL_ID is present
+                if (results.length < 3) {
+                    console.log('Sample CSV record:', data);
+                    console.log('OL_ID value:', data.OL_ID);
+                    console.log('Keys in record:', Object.keys(data));
+                }
+                results.push(data);
+            })
             .on('end', () => resolve(results))
             .on('error', (error) => reject(error));
     });
 }
+
 
 async function updateCsvFile(data) {
     const csvFilePath = path.resolve(__dirname, './scifi_list_OL_final.csv');
