@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema({
     bookId: String,
     rating: { type: Number, default: null }
   }],
+  recommendations: {
+    type: [String],
+    default: []
+  },
   createdAt: {
     type: Date,
     default: Date.now

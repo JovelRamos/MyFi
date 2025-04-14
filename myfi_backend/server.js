@@ -81,6 +81,7 @@ app.get('/api/books', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch books' });
     }
 });
+
 app.get('/api/recommendations/:bookId', async (req, res) => {
   try {
       let { bookId } = req.params;
@@ -97,13 +98,15 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
       // Check if the user has 10 or more books with ratings
       let useCollaborativeFiltering = false;
       let userId = null;
+      let user = null;
       const token = req.header('Authorization')?.replace('Bearer ', '');
       
       if (token) {
           try {
               const decoded = jwt.verify(token, process.env.JWT_SECRET);
               userId = decoded.userId; // Store userId for later use
-              const user = await User.findById(decoded.userId);
+              user = await User.findById(decoded.userId);
+              console.log(`Found user for recommendations: ${user ? 'Yes' : 'No'}`);
               
               // Check if finishedBooks array exists and contains at least 10 books with ratings
               if (user && user.finishedBooks && Array.isArray(user.finishedBooks)) {
@@ -127,9 +130,13 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
               console.log('Token verification failed:', error);
               // Continue without collaborative filtering
           }
+      } else {
+          console.log('No authorization token provided, proceeding without user context');
       }
       
-      // Choose which recommender to use based on the number of rated books
+      // Choose which recommender to use based on the number of rated books, debugging line added
+      console.log(`Collaborative filtering: ${useCollaborativeFiltering ? 'Yes' : 'No'}, User ID: ${userId || 'None'}`);
+      
       const pythonScript = useCollaborativeFiltering 
           ? 'services/item_collaborative_filtering.py'
           : 'services/recommendation_service.py';
@@ -155,7 +162,7 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
       // Collect data from script
       python.stdout.on('data', function (data) {
           dataString += data.toString();
-          console.log(`Python stdout: ${data}`);
+          console.log(`Python stdout: received data chunk`);
       });
 
       // Handle errors
@@ -164,7 +171,7 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
           console.error(`Python stderr: ${data}`);
       });
 
-      python.on('close', (code) => {
+      python.on('close', async (code) => {
           if (code !== 0) {
               console.error(`Python process failed with code ${code}`);
               console.error(`Error output: ${errorString}`);
@@ -174,13 +181,64 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
               });
           }
 
+          console.log(`Python process completed successfully with code ${code}`);
+          
           try {
+              console.log(`Attempting to parse recommendation data...`);
               const recommendations = JSON.parse(dataString.trim());
+              console.log(`Successfully parsed recommendations: ${recommendations.length} items found`);
+              
+              // Update user's recommendations if user is authenticated
+              if (user) {
+                  console.log(`Processing recommendations for user ID: ${user._id}`);
+                  
+                  // Extract book IDs from recommendations
+                  const bookIds = recommendations
+                      .filter(book => book.id && typeof book.id === 'string')
+                      .map(book => book.id);
+                  
+                  console.log(`Extracted ${bookIds.length} book IDs from recommendations`);
+                  console.log(`Book IDs: ${bookIds.join(', ')}`);
+                  
+                  // Update user's recommendations
+                  if (bookIds.length > 0) {
+                      console.log(`User's current recommendations count: ${user.recommendations ? user.recommendations.length : 0}`);
+                      
+                      // Create recommendations array if it doesn't exist
+                      if (!user.recommendations) {
+                          user.recommendations = [];
+                          console.log('Created new recommendations array for user');
+                      }
+                      
+                      // Add new unique recommendations
+                      const uniqueRecommendations = [...new Set([...bookIds, ...(user.recommendations || [])])];
+                      console.log(`Combined unique recommendations count: ${uniqueRecommendations.length}`);
+                      
+                      // Limit to most recent 100 recommendations
+                      user.recommendations = uniqueRecommendations.slice(0, 100);
+                      console.log(`Final recommendations count (limited to 100): ${user.recommendations.length}`);
+                      
+                      try {
+                          console.log('Attempting to save user recommendations to database...');
+                          await user.save();
+                          console.log(`Successfully saved user's recommendations to database`);
+                      } catch (saveError) {
+                          console.error('Error saving user recommendations:', saveError);
+                      }
+                  } else {
+                      console.log('No valid book IDs found in recommendations, skipping update');
+                  }
+              } else {
+                  console.log('No authenticated user, skipping recommendations update');
+              }
+              
+              // Send response
               res.json(recommendations);
+              
           } catch (error) {
-              console.error('Failed to parse recommendations:', error);
+              console.error('Failed to process recommendations:', error);
               res.status(500).json({ 
-                  error: 'Failed to parse recommendations',
+                  error: 'Failed to process recommendations',
                   details: error.message
               });
           }
@@ -225,13 +283,15 @@ app.get('/api/recommendations_multiple', async (req, res) => {
       // Check if the user has 10 or more books with ratings
       let useCollaborativeFiltering = false;
       let userId = null;
+      let user = null;
       const token = req.header('Authorization')?.replace('Bearer ', '');
       
       if (token) {
           try {
               const decoded = jwt.verify(token, process.env.JWT_SECRET);
               userId = decoded.userId; // Store userId for later use
-              const user = await User.findById(decoded.userId);
+              user = await User.findById(decoded.userId);
+              console.log(`Found user for recommendations: ${user ? 'Yes' : 'No'}`);
               
               // Check if finishedBooks array exists and contains at least 10 books with ratings
               if (user && user.finishedBooks && Array.isArray(user.finishedBooks)) {
@@ -255,9 +315,13 @@ app.get('/api/recommendations_multiple', async (req, res) => {
               console.log('Token verification failed:', error);
               // Continue without collaborative filtering
           }
+      } else {
+          console.log('No authorization token provided, proceeding without user context');
       }
       
-      // Choose which recommender to use based on the number of rated books
+      // Choose which recommender to use based on the number of rated books, debugging line added
+      console.log(`Collaborative filtering: ${useCollaborativeFiltering ? 'Yes' : 'No'}, User ID: ${userId || 'None'}`);
+      
       const pythonScript = useCollaborativeFiltering 
           ? 'services/item_collaborative_filtering.py'
           : 'services/recommendation_service.py';
@@ -282,7 +346,7 @@ app.get('/api/recommendations_multiple', async (req, res) => {
 
       python.stdout.on('data', function (data) {
           dataString += data.toString();
-          console.log(`Python stdout: ${data}`);
+          console.log(`Python stdout: received data chunk`);
       });
 
       python.stderr.on('data', (data) => {
@@ -290,7 +354,7 @@ app.get('/api/recommendations_multiple', async (req, res) => {
           console.error(`Python stderr: ${data}`);
       });
 
-      python.on('close', (code) => {
+      python.on('close', async (code) => {
           if (code !== 0) {
               console.error(`Python process failed with code ${code}`);
               console.error(`Error output: ${errorString}`);
@@ -300,13 +364,64 @@ app.get('/api/recommendations_multiple', async (req, res) => {
               });
           }
 
+          console.log(`Python process completed successfully with code ${code}`);
+          
           try {
+              console.log(`Attempting to parse recommendation data...`);
               const recommendations = JSON.parse(dataString.trim());
+              console.log(`Successfully parsed recommendations: ${recommendations.length} items found`);
+              
+              // Update user's recommendations if user is authenticated
+              if (user) {
+                  console.log(`Processing recommendations for user ID: ${user._id}`);
+                  
+                  // Extract book IDs from recommendations
+                  const bookIds = recommendations
+                      .filter(book => book.id && typeof book.id === 'string')
+                      .map(book => book.id);
+                  
+                  console.log(`Extracted ${bookIds.length} book IDs from recommendations`);
+                  console.log(`Book IDs: ${bookIds.join(', ')}`);
+                  
+                  // Update user's recommendations
+                  if (bookIds.length > 0) {
+                      console.log(`User's current recommendations count: ${user.recommendations ? user.recommendations.length : 0}`);
+                      
+                      // Create recommendations array if it doesn't exist
+                      if (!user.recommendations) {
+                          user.recommendations = [];
+                          console.log('Created new recommendations array for user');
+                      }
+                      
+                      // Add new unique recommendations
+                      const uniqueRecommendations = [...new Set([...bookIds, ...(user.recommendations || [])])];
+                      console.log(`Combined unique recommendations count: ${uniqueRecommendations.length}`);
+                      
+                      // Limit to most recent 100 recommendations
+                      user.recommendations = uniqueRecommendations.slice(0, 100);
+                      console.log(`Final recommendations count (limited to 100): ${user.recommendations.length}`);
+                      
+                      try {
+                          console.log('Attempting to save user recommendations to database...');
+                          await user.save();
+                          console.log(`Successfully saved user's recommendations to database`);
+                      } catch (saveError) {
+                          console.error('Error saving user recommendations:', saveError);
+                      }
+                  } else {
+                      console.log('No valid book IDs found in recommendations, skipping update');
+                  }
+              } else {
+                  console.log('No authenticated user, skipping recommendations update');
+              }
+              
+              // Send response
               res.json(recommendations);
+              
           } catch (error) {
-              console.error('Failed to parse recommendations:', error);
+              console.error('Failed to process recommendations:', error);
               res.status(500).json({ 
-                  error: 'Failed to parse recommendations',
+                  error: 'Failed to process recommendations',
                   details: error.message
               });
           }
@@ -320,7 +435,6 @@ app.get('/api/recommendations_multiple', async (req, res) => {
       });
   }
 });
-
 
 // Register endpoint
 app.post('/api/auth/register', async (req, res) => {
@@ -338,7 +452,8 @@ app.post('/api/auth/register', async (req, res) => {
         email,
         password,
         readingList: [],
-        currentlyReading: []
+        currentlyReading: [],
+        recommendations: []
       });
   
       await user.save();
@@ -356,15 +471,16 @@ app.post('/api/auth/register', async (req, res) => {
           id: user._id,
           email: user.email,
           readingList: user.readingList,
-          currentlyReading: user.currentlyReading
+          currentlyReading: user.currentlyReading,
+          recommendations: user.recommendations
         }
       });
     } catch (error) {
       res.status(500).json({ error: 'Registration failed' });
     }
-  });
+});
   
- // Login endpoint update
+// Login endpoint update
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -395,7 +511,8 @@ app.post('/api/auth/login', async (req, res) => {
         email: user.email,
         readingList: user.readingList,
         currentlyReading: user.currentlyReading,
-        finishedBooks: user.finishedBooks || []
+        finishedBooks: user.finishedBooks || [],
+        recommendations: user.recommendations || []
       }
     });
   } catch (error) {
@@ -416,7 +533,8 @@ app.get('/api/auth/verify', auth, async (req, res) => {
       email: user.email,
       readingList: user.readingList,
       currentlyReading: user.currentlyReading,
-      finishedBooks: user.finishedBooks || []
+      finishedBooks: user.finishedBooks || [],
+      recommendations: user.recommendations || []
     });
   } catch (error) {
     res.status(500).json({ error: 'Verification failed' });
@@ -518,8 +636,6 @@ app.post('/api/user/rate-book', auth, async (req, res) => {
   }
 });
 
-
-
 // Update the reading-list endpoint to add items at the beginning of the array
 app.post('/api/user/reading-list', auth, async (req, res) => {
   try {
@@ -541,11 +657,5 @@ app.post('/api/user/reading-list', auth, async (req, res) => {
     res.status(500).json({ error: 'Failed to update reading list' });
   }
 });
-
-
-
-
-
-
 
 app.listen(PORT, () => console.log(`Server started on ${PORT}`));
