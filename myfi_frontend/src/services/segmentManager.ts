@@ -345,19 +345,16 @@ private static async getMLRecommendations(
 
         // Clean and format book IDs
         const cleanBookIds = bookIds
-            .filter(id => id !== undefined && id !== null) // Filter out undefined/null values
+            .filter(id => id !== undefined && id !== null)
             .map(id => {
-                // Safely handle the ID - check if it exists before using replace
                 const cleaned = id ? id.replace('/works/', '').trim() : '';
                 if (!cleaned) {
                     console.warn('Found empty book ID after cleaning:', id);
                 }
-                console.log('Cleaned book ID:', cleaned);
                 return cleaned;
             })
-            .filter(id => id); // Filter out any empty strings after cleaning
+            .filter(id => id);
 
-        // Check if we have any valid IDs after filtering
         if (!cleanBookIds.length) {
             console.error('No valid book IDs to process after cleaning');
             return [];
@@ -365,11 +362,32 @@ private static async getMLRecommendations(
 
         console.log('Requesting recommendations for:', cleanBookIds);
 
+        // Get the current user ID from localStorage if available
+        let userId = null;
+        try {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                userId = user.id;
+                console.log('Found user ID for recommendations:', userId);
+            }
+        } catch (error) {
+            console.error('Error accessing user data:', error);
+        }
+
         // Construct the query string
         const queryString = cleanBookIds.join(',');
-        const url = `http://localhost:8000/api/recommendations_multiple?books=${queryString}`;
+        
+        // Build URL with query parameters
+        let url = `http://localhost:8000/api/recommendations_multiple?books=${queryString}`;
+        if (userId) {
+            url += `&userId=${userId}`;
+            console.log('Including user ID in recommendation request');
+        }
+        
         console.log('Making request to:', url);
 
+        // Make the request with a separate userId parameter that won't be confused with book IDs
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -395,7 +413,6 @@ private static async getMLRecommendations(
                 );
 
                 if (book) {
-                    console.log('Found matching book:', book.title);
                     return book;
                 } else {
                     console.log('No matching book found for ID:', recId);
@@ -412,4 +429,5 @@ private static async getMLRecommendations(
         return [];
     }
 }
+
 }

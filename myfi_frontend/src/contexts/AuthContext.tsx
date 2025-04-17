@@ -35,82 +35,95 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const verifyToken = async (token: string) => {
-    try {
-      const response = await fetch('http://localhost:8000/api/auth/verify', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        setIsAuthenticated(true);
-      } else {
-        throw new Error('Token verification failed');
-      }
-    } catch (error) {
-      console.error('Token verification failed:', error);
-      localStorage.removeItem('token');
-      setUser(null);
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
+// AuthContext.tsx - update the login and register functions
+
+const login = async (email: string, password: string) => {
+  try {
+    const response = await fetch('http://localhost:8000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Login failed');
     }
-  };
 
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await fetch('http://localhost:8000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    // Also store user data for easy access
+    localStorage.setItem('userData', JSON.stringify(data.user));
+    setUser(data.user);
+    setIsAuthenticated(true);
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Login failed');
+const register = async (email: string, password: string) => {
+  try {
+    const response = await fetch('http://localhost:8000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Registration failed');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    // Also store user data for easy access
+    localStorage.setItem('userData', JSON.stringify(data.user));
+    setUser(data.user);
+    setIsAuthenticated(true);
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
+  }
+};
+
+// Update logout to also clear userData
+const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userData');
+  setUser(null);
+  setIsAuthenticated(false);
+};
+
+// Update verifyToken to also store user data
+const verifyToken = async (token: string) => {
+  try {
+    const response = await fetch('http://localhost:8000/api/auth/verify', {
+      headers: {
+        'Authorization': `Bearer ${token}`
       }
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      setUser(data.user);
+    });
+    
+    if (response.ok) {
+      const userData = await response.json();
+      setUser(userData);
+      // Store user data for easy access
+      localStorage.setItem('userData', JSON.stringify(userData));
       setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+    } else {
+      throw new Error('Token verification failed');
     }
-  };
-
-  const logout = () => {
+  } catch (error) {
+    console.error('Token verification failed:', error);
     localStorage.removeItem('token');
+    localStorage.removeItem('userData');
     setUser(null);
     setIsAuthenticated(false);
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const register = async (email: string, password: string) => {
-    try {
-      const response = await fetch('http://localhost:8000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Registration failed');
-      }
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      setUser(data.user);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-    }
-  };
 
   return (
     <AuthContext.Provider value={{ 

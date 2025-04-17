@@ -55,4 +55,53 @@ export const getBookDetails = async (bookId: string) => {
   return response.data;
 };
 
+// Add these to api.ts
+
+export const getRecommendations = async (bookId: string) => {
+  const userData = localStorage.getItem('userData');
+  let userId = null;
+  
+  if (userData) {
+    try {
+      const user = JSON.parse(userData);
+      userId = user.id;
+    } catch (e) {
+      console.error('Error parsing user data:', e);
+    }
+  }
+  
+  // Add userId to query if available
+  let url = `/recommendations/${bookId}`;
+  if (userId) {
+    url += `?userId=${userId}`;
+  }
+  
+  const response = await api.get(url);
+  return response.data;
+};
+
+export const getMultipleRecommendations = async (bookIds: string[]) => {
+  const userData = localStorage.getItem('userData');
+  let userId = null;
+  
+  if (userData) {
+    try {
+      const user = JSON.parse(userData);
+      userId = user.id;
+    } catch (e) {
+      console.error('Error parsing user data:', e);
+    }
+  }
+  
+  // Prepare query params
+  const bookIdsParam = bookIds.join(',');
+  let url = `/recommendations_multiple?books=${bookIdsParam}`;
+  if (userId) {
+    url += `&userId=${userId}`;
+  }
+  
+  const response = await api.get(url);
+  return response.data;
+};
+
 export default api;
