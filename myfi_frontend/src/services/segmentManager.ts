@@ -19,6 +19,8 @@ export class SegmentManager {
       POST_2000: 24,
       MY_LIST: 24
     };
+
+    private static recommendationCache = new Map<string, Promise<Book[]>>();
   
     private static adjustArrayToMultipleOfSix(books: Book[]): Book[] {
       const remainder = books.length % this.BOOKS_PER_ROW;
@@ -332,102 +334,121 @@ export class SegmentManager {
         .slice(0, this.SEGMENT_SIZES.TRENDING_SCIFI);
     }
 
-private static async getMLRecommendations(
-    bookIds: string[],
-    allBooks: Book[]
-): Promise<Book[]> {
-    try {
-        // Ensure we have valid book IDs
-        if (!bookIds.length) {
-            console.error('No book IDs provided');
-            return [];
-        }
-
-        // Clean and format book IDs
-        const cleanBookIds = bookIds
-            .filter(id => id !== undefined && id !== null)
-            .map(id => {
-                const cleaned = id ? id.replace('/works/', '').trim() : '';
-                if (!cleaned) {
-                    console.warn('Found empty book ID after cleaning:', id);
-                }
-                return cleaned;
-            })
-            .filter(id => id);
-
-        if (!cleanBookIds.length) {
-            console.error('No valid book IDs to process after cleaning');
-            return [];
-        }
-
-        console.log('Requesting recommendations for:', cleanBookIds);
-
-        // Get the current user ID from localStorage if available
-        let userId = null;
+    private static async getMLRecommendations(
+        bookIds: string[],
+        allBooks: Book[]
+    ): Promise<Book[]> {
         try {
-            const userData = localStorage.getItem('userData');
-            if (userData) {
-                const user = JSON.parse(userData);
-                userId = user.id;
-                console.log('Found user ID for recommendations:', userId);
+            // Ensure we have valid book IDs
+            if (!bookIds.length) {
+                console.error('No book IDs provided');
+                return [];
             }
+    
+            // Clean and format book IDs
+            const cleanBookIds = bookIds
+                .filter(id => id !== undefined && id !== null)
+                .map(id => {
+                    const cleaned = id ? id.replace('/works/', '').trim() : '';
+                    if (!cleaned) {
+                        console.warn('Found empty book ID after cleaning:', id);
+                    }
+                    return cleaned;
+                })
+                .filter(id => id);
+    
+            if (!cleanBookIds.length) {
+                console.error('No valid book IDs to process after cleaning');
+                return [];
+            }
+    
+            // Create cache key based on sorted IDs for consistency
+            const cacheKey = [...cleanBookIds].sort().join(',');
+            
+            // Check cache first
+            if (this.recommendationCache.has(cacheKey)) {
+                console.log('Using cached recommendations for:', cacheKey);
+                return await this.recommendationCache.get(cacheKey)!;
+            }
+            
+            console.log('Requesting recommendations for:', cleanBookIds);
+    
+            // Get the current user ID from localStorage if available
+            let userId = null;
+            try {
+                const userData = localStorage.getItem('userData');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    userId = user.id;
+                    console.log('Found user ID for recommendations:', userId);
+                }
+            } catch (error) {
+                console.error('Error accessing user data:', error);
+            }
+    
+            // Construct the query string
+            const queryString = cleanBookIds.join(',');
+            
+            // Build URL with query parameters
+            let url = `http://localhost:8000/api/recommendations_multiple?books=${queryString}`;
+            if (userId) {
+                url += `&userId=${userId}`;
+                console.log('Including user ID in recommendation request');
+            }
+            
+            console.log('Making request to:', url);
+    
+            // Create a promise for fetching recommendations
+            const recommendationPromise = (async () => {
+                // Make the request
+                const response = await fetch(url);
+        
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+        
+                const recommendations = await response.json();
+                console.log('Received recommendations:', recommendations);
+        
+                // Map recommendations to books
+                const mappedBooks = recommendations
+                    .map((rec: Recommendation) => {
+                        if (!rec || !rec.id) {
+                            console.warn('Received recommendation without valid ID:', rec);
+                            return null;
+                        }
+        
+                        const recId = rec.id.replace('/works/', '');
+                        const book = allBooks.find(b => 
+                            b._id.replace('/works/', '') === recId
+                        );
+        
+                        if (book) {
+                            return book;
+                        } else {
+                            console.log('No matching book found for ID:', recId);
+                            return null;
+                        }
+                    })
+                    .filter((book: Book | null): book is Book => book !== null);
+        
+                console.log(`Mapped ${mappedBooks.length} books successfully`);
+                return mappedBooks;
+            })();
+            
+            // Store promise in cache
+            this.recommendationCache.set(cacheKey, recommendationPromise);
+            
+            // Return the promise result
+            return await recommendationPromise;
+    
         } catch (error) {
-            console.error('Error accessing user data:', error);
+            console.error('Error in getMLRecommendations:', error);
+            return [];
         }
-
-        // Construct the query string
-        const queryString = cleanBookIds.join(',');
-        
-        // Build URL with query parameters
-        let url = `http://localhost:8000/api/recommendations_multiple?books=${queryString}`;
-        if (userId) {
-            url += `&userId=${userId}`;
-            console.log('Including user ID in recommendation request');
-        }
-        
-        console.log('Making request to:', url);
-
-        // Make the request with a separate userId parameter that won't be confused with book IDs
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const recommendations = await response.json();
-        console.log('Received recommendations:', recommendations);
-
-        // Map recommendations to books
-        const mappedBooks = recommendations
-            .map((rec: Recommendation) => {
-                if (!rec || !rec.id) {
-                    console.warn('Received recommendation without valid ID:', rec);
-                    return null;
-                }
-
-                const recId = rec.id.replace('/works/', '');
-                const book = allBooks.find(b => 
-                    b._id.replace('/works/', '') === recId
-                );
-
-                if (book) {
-                    return book;
-                } else {
-                    console.log('No matching book found for ID:', recId);
-                    return null;
-                }
-            })
-            .filter((book: Book | null): book is Book => book !== null);
-
-        console.log(`Mapped ${mappedBooks.length} books successfully`);
-        return mappedBooks;
-
-    } catch (error) {
-        console.error('Error in getMLRecommendations:', error);
-        return [];
     }
-}
+    
 
 }

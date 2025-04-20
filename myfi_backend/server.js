@@ -263,209 +263,186 @@ if (user) {
 
 app.get('/api/recommendations_multiple', async (req, res) => {
   try {
-      let bookIds = req.query.books;
-      // Get userId directly from query parameter instead of verifying a token
-      let userId = req.query.userId;
-      
-      if (!bookIds) {
-          return res.status(400).json({ error: 'No book IDs provided' });
-      }
+    let bookIds = req.query.books;
+    let userId = req.query.userId;
+    
+    if (!bookIds) {
+      return res.status(400).json({ error: 'No book IDs provided' });
+    }
 
-      console.log('Processing recommendation request for books, userId:', userId);
-      
-      // Split the comma-separated book IDs and clean them
-      const bookIdArray = bookIds.split(',').map(id => {
-          // Remove any existing '/works/' prefix and trim whitespace
-          id = id.trim().replace('/works/', '');
-          // Add '/works/' prefix
-          return `${id}`;
-      });
-      
-      // Verify all books exist in the database
-      for (const bookId of bookIdArray) {
-          const book = await Book.findById(bookId);
-          if (!book) {
-              console.log('Book not found in database:', bookId);
-              return res.status(404).json({ error: `Book not found in database: ${bookId}` });
-          }
+    console.log(`Processing recommendation request for books, userId: ${userId}`);
+    
+    // Split the comma-separated book IDs and clean them
+    const bookIdArray = bookIds.split(',').map(id => {
+      // Remove any existing '/works/' prefix and trim whitespace
+      return id.trim().replace('/works/', '');
+    });
+    
+    // Verify all books exist in the database
+    for (const bookId of bookIdArray) {
+      const book = await Book.findById(bookId);
+      if (!book) {
+        console.log(`Book not found in database: ${bookId}`);
+        return res.status(404).json({ error: `Book not found in database: ${bookId}` });
       }
-      
-      // Default to content-based filtering
-      let useCollaborativeFiltering = false;
-      let user = null;
-      
-      // Check if userId is provided and valid
-      if (userId) {
-          try {
-              user = await User.findById(userId);
-              // Update user's recommendations if user is authenticated
-if (user) {
-  console.log(`Processing recommendations for user ID: ${user._id}`);
-  
-  // Extract book IDs from recommendations
-  const bookIds = recommendations
-      .filter(book => book.id && typeof book.id === 'string')
-      .map(book => book.id);
-  
-  console.log(`Extracted ${bookIds.length} book IDs from recommendations`);
-  
-  // Update user's recommendations
-  if (bookIds.length > 0) {
-      console.log(`User's current recommendations count: ${user.recommendations ? user.recommendations.length : 0}`);
-      
-      // Create recommendations array if it doesn't exist
-      if (!user.recommendations) {
-          user.recommendations = [];
-          console.log('Created new recommendations array for user');
-      }
-      
-      // Add new unique recommendations
-      const uniqueRecommendations = [...new Set([...bookIds, ...(user.recommendations || [])])];
-      console.log(`Combined unique recommendations count: ${uniqueRecommendations.length}`);
-      
-      // Limit to most recent 100 recommendations
-      const updatedRecommendations = uniqueRecommendations.slice(0, 100);
-      console.log(`Final recommendations count (limited to 100): ${updatedRecommendations.length}`);
-      
-      try {
-        console.log('Saving user recommendations to database...');
-        // Use findByIdAndUpdate instead of save to avoid version conflicts
-        await User.findByIdAndUpdate(
-            user._id,
-            { recommendations: user.recommendations },
-            { new: true }
-        );
-        console.log(`Successfully saved user's recommendations to database`);
-    } catch (saveError) {
-        console.error('Error saving user recommendations:', saveError);
     }
     
-  } else {
-      console.log('No valid book IDs found in recommendations, skipping update');
-  }
-} else {
-  console.log('No authenticated user, skipping recommendations update');
-}
-
-          } catch (error) {
-              console.log(`Error finding user: ${error.message}`);
-              // Continue with content-based filtering
-          }
-      } else {
-          console.log('No userId provided, using content-based filtering');
-      }
-      
-      // Choose recommender based on rating count
-      console.log(`Collaborative filtering: ${useCollaborativeFiltering ? 'Yes' : 'No'}, User ID: ${userId || 'None'}`);
-      
-      const pythonScript = useCollaborativeFiltering 
-          ? 'services/item_collaborative_filtering.py'
-          : 'services/recommendation_service.py';
-      
-      // Prepare arguments based on filtering type
-      let args = [];
-      if (useCollaborativeFiltering) {
-          // Pass user ID for collaborative filtering
-          args.push(userId.toString());
-      } else {
-          // Pass all book IDs for content-based
-          args.push(...bookIdArray);
-      }
-  
-      console.log(`Using recommendation script: ${pythonScript} with args: ${args}`);
-  
-      // Spawn Python process with appropriate arguments
-      const python = spawn('python', [pythonScript, ...args]);
-      
-      let dataString = '';
-      let errorString = '';
-
-      python.stdout.on('data', function (data) {
-          dataString += data.toString();
-          console.log(`Python stdout: received data chunk`);
-      });
-
-      python.stderr.on('data', (data) => {
-          errorString += data.toString();
-          console.error(`Python stderr: ${data}`);
-      });
-
-      python.on('close', async (code) => {
-          if (code !== 0) {
-              console.error(`Python process failed with code ${code}`);
-              console.error(`Error output: ${errorString}`);
-              return res.status(500).json({ 
-                  error: 'Failed to get recommendations',
-                  details: errorString
-              });
-          }
-
-          console.log(`Python process completed successfully with code ${code}`);
+    // Default to content-based filtering
+    let useCollaborativeFiltering = false;
+    let user = null;
+    
+    // Check if userId is provided and valid
+    if (userId) {
+      try {
+        user = await User.findById(userId);
+        
+        if (user) {
+          console.log(`Found user for recommendations: ${user.email}`);
           
-          try {
-              console.log(`Attempting to parse recommendation data...`);
-              const recommendations = JSON.parse(dataString.trim());
-              console.log(`Successfully parsed recommendations: ${recommendations.length} items found`);
-              
-              // Update user's recommendations if user exists
-              if (user) {
-                  console.log(`Processing recommendations for user ID: ${user._id}`);
-                  
-                  // Extract book IDs from recommendations
-                  const bookIds = recommendations
-                      .filter(book => book.id && typeof book.id === 'string')
-                      .map(book => book.id);
-                  
-                  console.log(`Extracted ${bookIds.length} book IDs from recommendations`);
-                  
-                  // Update user's recommendations
-                  if (bookIds.length > 0) {
-                      // Initialize recommendations array if it doesn't exist
-                      if (!user.recommendations) {
-                          user.recommendations = [];
-                          console.log('Created new recommendations array for user');
-                      }
-                      
-                      // Add new unique recommendations
-                      const uniqueRecommendations = [...new Set([...bookIds, ...user.recommendations])];
-                      console.log(`Combined unique recommendations count: ${uniqueRecommendations.length}`);
-                      
-                      // Limit to most recent 100 recommendations
-                      user.recommendations = uniqueRecommendations.slice(0, 100);
-                      console.log(`Final recommendations count: ${user.recommendations.length}`);
-                      
-                      try {
-                          console.log('Saving user recommendations to database...');
-                          await user.save();
-                          console.log(`Successfully saved user's recommendations to database`);
-                      } catch (saveError) {
-                          console.error('Error saving user recommendations:', saveError);
-                      }
-                  } else {
-                      console.log('No valid book IDs found in recommendations, skipping update');
-                  }
-              } else {
-                  console.log('No valid user found, skipping recommendations update');
-              }
-              
-              // Send response with recommendations
-              res.json(recommendations);
-              
-          } catch (error) {
-              console.error('Failed to process recommendations:', error);
-              res.status(500).json({ 
-                  error: 'Failed to process recommendations',
-                  details: error.message
-              });
+          // Check if finishedBooks array exists and contains at least 10 books with ratings
+          if (user.finishedBooks && Array.isArray(user.finishedBooks)) {
+            // Count books that have an actual rating (not null)
+            const ratedBooksCount = user.finishedBooks.filter(book => 
+              book.rating !== null && book.rating !== undefined
+            ).length;
+            
+            console.log(`User has ${ratedBooksCount} rated books (need 10+ for collaborative filtering)`);
+            
+            if (ratedBooksCount >= 10) {
+              useCollaborativeFiltering = true;
+              console.log(`Using collaborative filtering`);
+            } else {
+              console.log(`Not enough ratings, using content-based filtering`);
+            }
+          } else {
+            console.log('User has no finished books or not in expected format');
           }
-      });
+        } else {
+          console.log(`No user found with ID: ${userId}`);
+        }
+      } catch (error) {
+        console.log(`Error finding user: ${error.message}`);
+        // Continue with content-based filtering
+      }
+    } else {
+      console.log('No userId provided, using content-based filtering');
+    }
+    
+    // Choose recommender based on rating count
+    console.log(`Collaborative filtering: ${useCollaborativeFiltering ? 'Yes' : 'No'}, User ID: ${userId || 'None'}`);
+    
+    const pythonScript = useCollaborativeFiltering 
+      ? 'services/item_collaborative_filtering.py'
+      : 'services/recommendation_service.py';
+    
+    // Prepare arguments based on filtering type
+    let args = [];
+    if (useCollaborativeFiltering) {
+      // Pass user ID for collaborative filtering
+      args.push(userId.toString());
+    } else {
+      // Pass all book IDs for content-based
+      args.push(...bookIdArray);
+    }
+
+    console.log(`Using recommendation script: ${pythonScript} with args: ${args}`);
+
+    // Spawn Python process with appropriate arguments
+    const python = spawn('python', [pythonScript, ...args]);
+    
+    let dataString = '';
+    let errorString = '';
+
+    python.stdout.on('data', function (data) {
+      dataString += data.toString();
+      console.log(`Python stdout: received data chunk`);
+    });
+
+    python.stderr.on('data', (data) => {
+      errorString += data.toString();
+      console.error(`Python stderr: ${data}`);
+    });
+
+    python.on('close', async (code) => {
+      if (code !== 0) {
+        console.error(`Python process failed with code ${code}`);
+        console.error(`Error output: ${errorString}`);
+        return res.status(500).json({ 
+          error: 'Failed to get recommendations',
+          details: errorString
+        });
+      }
+
+      console.log(`Python process completed successfully with code ${code}`);
+      
+      try {
+        console.log(`Attempting to parse recommendation data...`);
+        const recommendations = JSON.parse(dataString.trim());
+        console.log(`Successfully parsed recommendations: ${recommendations.length} items found`);
+        
+        // Update user's recommendations if user exists
+        if (user) {
+          console.log(`Processing recommendations for user ID: ${user._id}`);
+          
+          // Extract book IDs from recommendations
+          const bookIds = recommendations
+            .filter(book => book.id && typeof book.id === 'string')
+            .map(book => book.id);
+          
+          console.log(`Extracted ${bookIds.length} book IDs from recommendations`);
+          
+          // Update user's recommendations
+          if (bookIds.length > 0) {
+            // Initialize recommendations array if it doesn't exist
+            if (!user.recommendations) {
+              user.recommendations = [];
+              console.log('Created new recommendations array for user');
+            }
+            
+            // Add new unique recommendations
+            const uniqueRecommendations = [...new Set([...bookIds, ...user.recommendations])];
+            console.log(`Combined unique recommendations count: ${uniqueRecommendations.length}`);
+            
+            // Limit to most recent 100 recommendations
+            user.recommendations = uniqueRecommendations.slice(0, 100);
+            console.log(`Final recommendations count: ${user.recommendations.length}`);
+            
+            try {
+              console.log('Saving user recommendations to database...');
+              await User.findByIdAndUpdate(
+                user._id, 
+                { recommendations: user.recommendations },
+                { new: true }
+              );
+              console.log(`Successfully saved user's recommendations to database`);
+            } catch (saveError) {
+              console.error('Error saving user recommendations:', saveError);
+            }
+          } else {
+            console.log('No valid book IDs found in recommendations, skipping update');
+          }
+        } else {
+          console.log('No valid user found, skipping recommendations update');
+        }
+        
+        // Send response with recommendations
+        res.json(recommendations);
+        
+      } catch (error) {
+        console.error('Failed to process recommendations:', error);
+        res.status(500).json({ 
+          error: 'Failed to process recommendations',
+          details: error.message
+        });
+      }
+    });
 
   } catch (error) {
-      console.error('Endpoint error:', error);
-      res.status(500).json({ 
-          error: 'Failed to get recommendations',
-          details: error.message
-      });
+    console.error('Endpoint error:', error);
+    res.status(500).json({ 
+      error: 'Failed to get recommendations',
+      details: error.message
+    });
   }
 });
 
