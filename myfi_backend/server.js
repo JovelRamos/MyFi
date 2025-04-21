@@ -669,4 +669,41 @@ app.post('/api/user/reading-list', auth, async (req, res) => {
   }
 });
 
+// Endpoint to get user's saved recommendations
+app.get('/api/user/recommendations', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Check if user has recommendations
+    if (!user.recommendations || user.recommendations.length === 0) {
+      return res.json({ recommendations: [] });
+    }
+    
+    // Find books that match the recommendation IDs
+    const recommendedBooks = await Book.find({ 
+      _id: { $in: user.recommendations } 
+    });
+    
+    // Return formatted recommendations
+    res.json({
+      recommendations: recommendedBooks.map(book => ({
+        id: book._id,
+        title: book.title,
+        author: book.author_names ? book.author_names[0] : 'Unknown Author',
+        cover_url: book.cover_url || '',
+        similarity_score: 1.0 // Default score since these are saved recommendations
+      }))
+    });
+    
+  } catch (error) {
+    console.error('Error fetching user recommendations:', error);
+    res.status(500).json({ error: 'Failed to fetch recommendations' });
+  }
+});
+
+
 app.listen(PORT, () => console.log(`Server started on ${PORT}`));

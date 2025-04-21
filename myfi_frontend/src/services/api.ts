@@ -104,4 +104,9 @@ export const getMultipleRecommendations = async (bookIds: string[]) => {
   return response.data;
 };
 
+export const getUserRecommendations = async () => {
+  const response = await api.get('/user/recommendations');
+  return response.data.recommendations;
+};
+
 export default api;

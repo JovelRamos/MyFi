@@ -179,6 +179,9 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
     try {
       const response = await api.post('/user/rate-book', { bookId, rating });
       
+      // Store the timestamp of when rating was changed
+      localStorage.setItem('lastRatingChange', Date.now().toString());
+      
       // Update finishedBooks with the new rating
       if (response.data.finishedBooks) {
         setFinishedBooks(response.data.finishedBooks);
@@ -204,7 +207,7 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
       console.error('Failed to rate book', error);
       throw error;
     }
-  };
+};
 
   return (
     <UserBookContext.Provider value={{ 

@@ -333,7 +333,6 @@ export class SegmentManager {
         .sort((a, b) => (b.ratings_average || 0) - (a.ratings_average || 0))
         .slice(0, this.SEGMENT_SIZES.TRENDING_SCIFI);
     }
-
     private static async getMLRecommendations(
         bookIds: string[],
         allBooks: Book[]
@@ -370,21 +369,81 @@ export class SegmentManager {
                 console.log('Using cached recommendations for:', cacheKey);
                 return await this.recommendationCache.get(cacheKey)!;
             }
-            
-            console.log('Requesting recommendations for:', cleanBookIds);
     
             // Get the current user ID from localStorage if available
             let userId = null;
+            let shouldUseServerRecalculation = false;
+            
             try {
                 const userData = localStorage.getItem('userData');
                 if (userData) {
                     const user = JSON.parse(userData);
                     userId = user.id;
-                    console.log('Found user ID for recommendations:', userId);
+                    
+                    // Check if we need to recalculate (e.g., after rating a book)
+                    const lastRatingChange = localStorage.getItem('lastRatingChange');
+                    if (lastRatingChange) {
+                        // If user rated a book in the last 5 minutes, recalculate
+                        const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
+                        if (parseInt(lastRatingChange) > fiveMinutesAgo) {
+                            shouldUseServerRecalculation = true;
+                            console.log('Recent rating changes detected, recalculating recommendations');
+                        }
+                    }
                 }
             } catch (error) {
                 console.error('Error accessing user data:', error);
             }
+    
+            // If user is logged in and no recent rating changes, try to get saved recommendations
+            if (userId && !shouldUseServerRecalculation) {
+                try {
+                    console.log('Attempting to fetch saved recommendations from server');
+                    const response = await fetch(`http://localhost:8000/api/user/recommendations`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const { recommendations } = await response.json();
+                        
+                        if (recommendations && recommendations.length > 0) {
+                            console.log('Retrieved saved recommendations:', recommendations.length);
+                            
+                            // Map recommendations to books
+                            const mappedBooks = recommendations
+                                .map((rec: Recommendation) => {
+                                    if (!rec || !rec.id) return null;
+                                    
+                                    const recId = rec.id.replace('/works/', '');
+                                    const book = allBooks.find(b => 
+                                        b._id.replace('/works/', '') === recId
+                                    );
+                                    
+                                    return book || null;
+                                })
+                                .filter((book: Book | null): book is Book => book !== null);
+                            
+                            console.log(`Mapped ${mappedBooks.length} saved recommendation books`);
+                            
+                            // Store in cache and return
+                            this.recommendationCache.set(cacheKey, Promise.resolve(mappedBooks));
+                            return mappedBooks;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error getting saved recommendations:', error);
+                    // Fall through to calculate new recommendations
+                }
+            }
+            
+            // If we reach here, either:
+            // 1. User not logged in
+            // 2. User recently rated a book
+            // 3. Failed to get saved recommendations
+            // So we'll calculate new recommendations
+            console.log('Requesting new recommendations for:', cleanBookIds);
     
             // Construct the query string
             const queryString = cleanBookIds.join(',');
@@ -449,6 +508,7 @@ export class SegmentManager {
             return [];
         }
     }
+    
     
 
 }
