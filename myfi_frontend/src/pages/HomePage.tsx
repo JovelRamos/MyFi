@@ -1,5 +1,5 @@
 // src/pages/HomePage.tsx
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { Book } from '../types/Book';
 import { BookSegment } from '../types/BookSegment';
 import { BookSegmentRow } from '../components/BookSegment';
@@ -38,6 +38,33 @@ function HomePage() {
     (isAuthenticated && userBooksInitialLoading) || 
     (!initialSegmentsGenerated.current && isGeneratingSegments) ||
     authLoading;
+
+  const [recommendationsNeedUpdate, setRecommendationsNeedUpdate] = useState(false);
+
+  useEffect(() => {
+    const checkRecommendationStatus = () => {
+      const needsUpdate = localStorage.getItem('recommendationsNeedUpdate') === 'true';
+      setRecommendationsNeedUpdate(needsUpdate);
+    };
+    
+    // Check immediately
+    checkRecommendationStatus();
+    
+    // Listen for storage events (in case another tab changes it)
+    window.addEventListener('storage', checkRecommendationStatus);
+    
+    // Listen for custom event from SegmentManager
+    window.addEventListener('recommendationsUpdated', () => {
+      setRecommendationsNeedUpdate(false);
+    });
+    
+    return () => {
+      window.removeEventListener('storage', checkRecommendationStatus);
+      window.removeEventListener('recommendationsUpdated', () => {
+        setRecommendationsNeedUpdate(false);
+      });
+    };
+  }, []);
 
   // First effect: Load books data
   useEffect(() => {
@@ -91,6 +118,12 @@ function HomePage() {
       // Don't show loading screen for updates to the lists, only initial generation
       const isInitialGeneration = !initialSegmentsGenerated.current;
       
+      // Skip re-generation if we already have segments unless a re-generation is needed
+      if (segments.length > 0 && !recommendationsNeedUpdate && !isInitialGeneration) {
+        console.log('Skipping segment regeneration - no update needed');
+        return;
+      }
+      
       try {
         setIsGeneratingSegments(true);
         console.log("Generating segments with:", {
@@ -99,7 +132,8 @@ function HomePage() {
           currentlyReading: isAuthenticated ? currentlyReading : [],
           finishedBooks: isAuthenticated ? finishedBooks : [],
           isAuthenticated,
-          isInitialGeneration
+          isInitialGeneration,
+          recommendationsNeedUpdate
         });
         
         // Only pass user data if authenticated
@@ -115,6 +149,12 @@ function HomePage() {
         
         // Mark that we've done the initial generation
         initialSegmentsGenerated.current = true;
+        
+        // Clear the update flag if it was set
+        if (recommendationsNeedUpdate) {
+          setRecommendationsNeedUpdate(false);
+          localStorage.removeItem('recommendationsNeedUpdate');
+        }
       } catch (err) {
         console.error("Error generating segments:", err);
         setError(err instanceof Error ? err.message : 'Failed to generate segments');
@@ -124,8 +164,16 @@ function HomePage() {
     };
 
     generateBookSegments();
-  }, [books, isAuthenticated, userBooksInitialLoading, readingList, currentlyReading, finishedBooks]);
-
+  }, [
+    books, 
+    isAuthenticated, 
+    userBooksInitialLoading, 
+    readingList, 
+    currentlyReading, 
+    finishedBooks, 
+    recommendationsNeedUpdate
+  ]);
+  
   if (isLoading) return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-zinc-900 bg-opacity-80">
       <div className="relative w-16 h-16">

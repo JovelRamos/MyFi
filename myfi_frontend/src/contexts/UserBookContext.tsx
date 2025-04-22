@@ -15,6 +15,8 @@ type UserBookState = {
   removeFromCurrentlyReading: (bookId: string) => Promise<void>;
   markAsFinished: (bookId: string) => Promise<void>;
   rateBook: (bookId: string, rating: number) => Promise<void>;
+  recommendationsNeedUpdate: boolean;
+  setRecommendationsUpdated: () => void;
 };
 const UserBookContext = createContext<UserBookState | undefined>(undefined);
 
@@ -28,6 +30,18 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
   const [currentlyReading, setCurrentlyReading] = useState<string[]>([]);
   const [finishedBooks, setFinishedBooks] = useState<{bookId: string, rating: number | null}[]>([]);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
+  const [recommendationsNeedUpdate, setRecommendationsNeedUpdate] = useState(false);
+
+  const setRecommendationsUpdated = () => {
+    setRecommendationsNeedUpdate(false);
+    localStorage.removeItem('recommendationsNeedUpdate'); // Clear localStorage flag too
+  };
+
+  // Add this function to mark recommendations as needing update
+  const invalidateRecommendations = () => {
+    setRecommendationsNeedUpdate(true);
+    localStorage.setItem('recommendationsNeedUpdate', 'true');
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -169,6 +183,7 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
       });
       setCurrentlyReading(response.data.currentlyReading);
       setFinishedBooks(response.data.finishedBooks || []);
+      invalidateRecommendations(); // Add this
     } catch (error) {
       console.error('Failed to mark book as finished', error);
       throw error;
@@ -178,9 +193,6 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
   const rateBook = async (bookId: string, rating: number) => {
     try {
       const response = await api.post('/user/rate-book', { bookId, rating });
-      
-      // Store the timestamp of when rating was changed
-      localStorage.setItem('lastRatingChange', Date.now().toString());
       
       // Update finishedBooks with the new rating
       if (response.data.finishedBooks) {
@@ -203,11 +215,13 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
         
         setFinishedBooks(updatedFinishedBooks);
       }
+      
+      invalidateRecommendations(); // Add this
     } catch (error) {
       console.error('Failed to rate book', error);
       throw error;
     }
-};
+  };
 
   return (
     <UserBookContext.Provider value={{ 
@@ -220,7 +234,9 @@ const UserBookProviderContent = ({ children }: { children: ReactNode }) => {
       markAsCurrentlyReading,
       removeFromCurrentlyReading,
       markAsFinished,
-      rateBook
+      rateBook,
+      recommendationsNeedUpdate,
+      setRecommendationsUpdated
     }}>
       {children}
     </UserBookContext.Provider>
