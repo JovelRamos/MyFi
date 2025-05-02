@@ -38,11 +38,7 @@ export class SegmentManager {
         finishedBooks: string[] = []
     ): Promise<BookSegment[]> {
         const segments: BookSegment[] = [];
-    
-        // Check if recommendations need update
-        const recommendationsNeedUpdate = localStorage.getItem('recommendationsNeedUpdate') === 'true';
-        console.log('Recommendations need update:', recommendationsNeedUpdate);
-    
+
         // Currently Reading (reverse order - most recent first)
         if (currentlyReading.length > 0) {
             // Get the currently reading books in the order they appear in the currentlyReading array
@@ -94,64 +90,29 @@ export class SegmentManager {
                 });
             }
         }
+
+        // ML-based recommendations based on finished books
         if (finishedBooks.length > 0) {
             try {
-                console.log('Getting recommendations for finished books:', finishedBooks);
-                if (recommendationsNeedUpdate || !this.recommendationCache.size) {
-                    console.log('Refreshing recommendations (update needed or first load)');
-                    const recommendedBooks = await this.getMLRecommendations(
-                        finishedBooks,
-                        books
-                    );
-                    
-                    if (recommendedBooks.length > 0) {
-                        segments.push({
-                            id: 'ml-recommendations',
-                            title: 'Because You\'ve Read',
-                            type: 'RECOMMENDED_FOR_YOU',
-                            books: this.adjustArrayToMultipleOfSix(recommendedBooks),
-                            priority: 3,
-                            isPersonalized: true
-                        });
-                    } else {
-                        console.log('No recommendations were found');
-                    }
+                console.log('Getting ML recommendations for finished books:', finishedBooks);
+                const recommendedBooks = await this.getMLRecommendations(
+                    finishedBooks,
+                    books
+                );
+                console.log('Number of recommended books:', recommendedBooks.length);
+                console.log('Recommended books:', recommendedBooks);
+                
+                if (recommendedBooks.length > 0) {
+                    segments.push({
+                        id: 'ml-recommendations',
+                        title: 'Because You\'ve Read',
+                        type: 'RECOMMENDED_FOR_YOU',
+                        books: this.adjustArrayToMultipleOfSix(recommendedBooks),
+                        priority: 3,
+                        isPersonalized: true
+                    });
                 } else {
-                    console.log('Using existing recommendations (no update needed)');
-                    // Try to get recommendations from cache for the user's books
-                    const cacheKey = [...finishedBooks].sort().join(',');
-                    
-                    if (this.recommendationCache.has(cacheKey)) {
-                        const cachedBooks = await this.recommendationCache.get(cacheKey)!;
-                        
-                        if (cachedBooks.length > 0) {
-                            segments.push({
-                                id: 'ml-recommendations',
-                                title: 'Because You\'ve Read',
-                                type: 'RECOMMENDED_FOR_YOU',
-                                books: this.adjustArrayToMultipleOfSix(cachedBooks),
-                                priority: 3,
-                                isPersonalized: true
-                            });
-                        }
-                    } else {
-                        // Didn't find in cache - use the method but it will handle avoiding API calls
-                        const recommendedBooks = await this.getMLRecommendations(
-                            finishedBooks,
-                            books
-                        );
-                        
-                        if (recommendedBooks.length > 0) {
-                            segments.push({
-                                id: 'ml-recommendations',
-                                title: 'Because You\'ve Read',
-                                type: 'RECOMMENDED_FOR_YOU',
-                                books: this.adjustArrayToMultipleOfSix(recommendedBooks),
-                                priority: 3,
-                                isPersonalized: true
-                            });
-                        }
-                    }
+                    console.log('No recommendations were found');
                 }
             } catch (error) {
                 console.error('Failed to get ML recommendations:', error);
@@ -362,8 +323,9 @@ export class SegmentManager {
         console.log('Final segments:', segments);
 
         // Filter out any segments that ended up with zero books
-        return segments.filter(segment => segment.books.length > 0)
-        .sort((a, b) => a.priority - b.priority);
+        return segments
+            .filter(segment => segment.books.length > 0)
+            .sort((a, b) => a.priority - b.priority);
     }
   
     private static filterAndSortByRating(books: Book[]): Book[] {
@@ -371,123 +333,118 @@ export class SegmentManager {
         .sort((a, b) => (b.ratings_average || 0) - (a.ratings_average || 0))
         .slice(0, this.SEGMENT_SIZES.TRENDING_SCIFI);
     }
-    
-    
-
-
-private static async getMLRecommendations(
-    bookIds: string[],
-    allBooks: Book[]
-): Promise<Book[]> {
-    try {
-        // Ensure we have valid book IDs
-        if (!bookIds.length) {
-            console.error('No book IDs provided');
-            return [];
-        }
-
-        // Clean and format book IDs
-        const cleanBookIds = bookIds
-            .filter(id => id !== undefined && id !== null)
-            .map(id => {
-                const cleaned = id ? id.replace('/works/', '').trim() : '';
-                if (!cleaned) {
-                    console.warn('Found empty book ID after cleaning:', id);
-                }
-                return cleaned;
-            })
-            .filter(id => id);
-
-        if (!cleanBookIds.length) {
-            console.error('No valid book IDs to process after cleaning');
-            return [];
-        }
-
-        // Create cache key based on sorted IDs for consistency
-        const cacheKey = [...cleanBookIds].sort().join(',');
-        
-        // Check cache first
-        if (this.recommendationCache.has(cacheKey)) {
-            console.log('Using cached recommendations for:', cacheKey);
-            return await this.recommendationCache.get(cacheKey)!;
-        }
-
-        // Get the current user ID from localStorage if available
-        let userId = null;
-        // Check if recommendations need update - important flag!
-        let shouldUseServerRecalculation = false;
-        
+    private static async getMLRecommendations(
+        bookIds: string[],
+        allBooks: Book[]
+    ): Promise<Book[]> {
         try {
-            const userData = localStorage.getItem('userData');
-            
-            // Check if recommendations need to be updated
-            const recommendationsNeedUpdate = localStorage.getItem('recommendationsNeedUpdate') === 'true';
-            
-            if (userData) {
-                const user = JSON.parse(userData);
-                userId = user.id;
-                
-                if (recommendationsNeedUpdate) {
-                    shouldUseServerRecalculation = true;
-                    console.log('Recommendations need update flag detected, recalculating');
-                }
+            // Ensure we have valid book IDs
+            if (!bookIds.length) {
+                console.error('No book IDs provided');
+                return [];
             }
-        } catch (error) {
-            console.error('Error accessing user data:', error);
-        }
-
-        // If user is logged in and no update needed, try to get saved recommendations
-        if (userId && !shouldUseServerRecalculation) {
-            try {
-                console.log('Attempting to fetch saved recommendations from server');
-                const response = await fetch(`http://localhost:8000/api/user/recommendations`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+    
+            // Clean and format book IDs
+            const cleanBookIds = bookIds
+                .filter(id => id !== undefined && id !== null)
+                .map(id => {
+                    const cleaned = id ? id.replace('/works/', '').trim() : '';
+                    if (!cleaned) {
+                        console.warn('Found empty book ID after cleaning:', id);
                     }
-                });
-                
-                if (response.ok) {
-                    const { recommendations } = await response.json();
+                    return cleaned;
+                })
+                .filter(id => id);
+    
+            if (!cleanBookIds.length) {
+                console.error('No valid book IDs to process after cleaning');
+                return [];
+            }
+    
+            // Create cache key based on sorted IDs for consistency
+            const cacheKey = [...cleanBookIds].sort().join(',');
+            
+            // Check cache first
+            if (this.recommendationCache.has(cacheKey)) {
+                console.log('Using cached recommendations for:', cacheKey);
+                return await this.recommendationCache.get(cacheKey)!;
+            }
+    
+            // Get the current user ID from localStorage if available
+            let userId = null;
+            let shouldUseServerRecalculation = false;
+            
+            try {
+                const userData = localStorage.getItem('userData');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    userId = user.id;
                     
-                    if (recommendations && recommendations.length > 0) {
-                        console.log('Retrieved saved recommendations:', recommendations.length);
+                    // Check if we need to recalculate (e.g., after rating a book)
+                    const lastRatingChange = localStorage.getItem('lastRatingChange');
+                    if (lastRatingChange) {
+                        // If user rated a book in the last 5 minutes, recalculate
+                        const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
+                        if (parseInt(lastRatingChange) > fiveMinutesAgo) {
+                            shouldUseServerRecalculation = true;
+                            console.log('Recent rating changes detected, recalculating recommendations');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error accessing user data:', error);
+            }
+    
+            // If user is logged in and no recent rating changes, try to get saved recommendations
+            if (userId && !shouldUseServerRecalculation) {
+                try {
+                    console.log('Attempting to fetch saved recommendations from server');
+                    const response = await fetch(`http://localhost:8000/api/user/recommendations`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const { recommendations } = await response.json();
                         
-                        // Map recommendations to books
-                        const mappedBooks = recommendations
-                            .map((rec: Recommendation) => {
-                                if (!rec || !rec.id) return null;
-                                
-                                const recId = rec.id.replace('/works/', '');
-                                const book = allBooks.find(b => 
-                                    b._id.replace('/works/', '') === recId
-                                );
-                                
-                                return book || null;
-                            })
-                            .filter((book: Book | null): book is Book => book !== null);
-                        
-                        console.log(`Mapped ${mappedBooks.length} saved recommendation books`);
-                        
-                        if (mappedBooks.length > 0) {
-                            // Clear the recommendations need update flag since we're now using the saved ones
-                            localStorage.removeItem('recommendationsNeedUpdate');
+                        if (recommendations && recommendations.length > 0) {
+                            console.log('Retrieved saved recommendations:', recommendations.length);
+                            
+                            // Map recommendations to books
+                            const mappedBooks = recommendations
+                                .map((rec: Recommendation) => {
+                                    if (!rec || !rec.id) return null;
+                                    
+                                    const recId = rec.id.replace('/works/', '');
+                                    const book = allBooks.find(b => 
+                                        b._id.replace('/works/', '') === recId
+                                    );
+                                    
+                                    return book || null;
+                                })
+                                .filter((book: Book | null): book is Book => book !== null);
+                            
+                            console.log(`Mapped ${mappedBooks.length} saved recommendation books`);
                             
                             // Store in cache and return
                             this.recommendationCache.set(cacheKey, Promise.resolve(mappedBooks));
                             return mappedBooks;
                         }
                     }
+                } catch (error) {
+                    console.error('Error getting saved recommendations:', error);
+                    // Fall through to calculate new recommendations
                 }
-            } catch (error) {
-                console.error('Error getting saved recommendations:', error);
-                // Fall through to calculate new recommendations
             }
-        }
-        
-        // If we need to recalculate OR couldn't get saved recommendations, proceed with API call
-        if (shouldUseServerRecalculation) {
-            console.log('Requesting fresh recommendations from server');
             
+            // If we reach here, either:
+            // 1. User not logged in
+            // 2. User recently rated a book
+            // 3. Failed to get saved recommendations
+            // So we'll calculate new recommendations
+            console.log('Requesting new recommendations for:', cleanBookIds);
+    
             // Construct the query string
             const queryString = cleanBookIds.join(',');
             
@@ -513,18 +470,6 @@ private static async getMLRecommendations(
         
                 const recommendations = await response.json();
                 console.log('Received recommendations:', recommendations);
-                
-                // Clear the recommendations need update flag since we just updated them
-                localStorage.removeItem('recommendationsNeedUpdate');
-                
-                // Notify any interested components that recommendations are updated
-                try {
-                    // Using a custom event to inform components that might be listening
-                    const event = new CustomEvent('recommendationsUpdated');
-                    window.dispatchEvent(event);
-                } catch (e) {
-                    console.error('Error dispatching recommendationsUpdated event:', e);
-                }
         
                 // Map recommendations to books
                 const mappedBooks = recommendations
@@ -557,22 +502,12 @@ private static async getMLRecommendations(
             
             // Return the promise result
             return await recommendationPromise;
+    
+        } catch (error) {
+            console.error('Error in getMLRecommendations:', error);
+            return [];
         }
-        
-        // If no recalculation needed and no saved recommendations,
-        // return an empty array or perhaps get generic recommendations
-        console.log('No recommendations available and no recalculation needed');
-        
-        // For now, just return an empty array to avoid making unnecessary API calls
-        this.recommendationCache.set(cacheKey, Promise.resolve([]));
-        return [];
-
-    } catch (error) {
-        console.error('Error in getMLRecommendations:', error);
-        return [];
     }
-}
-
     
     
 
