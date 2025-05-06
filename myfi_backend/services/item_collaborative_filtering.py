@@ -1,13 +1,19 @@
-#myfi_backend/services/item_collaborative_filtering.py
+# myfi_backend/services/item_collaborative_filtering.py
+
+import sys
+import numpy
+import scipy
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import numpy as np
 from scipy.sparse import csr_matrix
-from sklearn.metrics.pairwise import cosine_similarity
-import sys
 import json
 from collections import defaultdict
 import time
 import re
+
 
 class ItemBasedCF:
     def __init__(self, mongo_uri=None):
@@ -18,9 +24,12 @@ class ItemBasedCF:
             
             self.client = MongoClient(mongo_uri)
             self.db = self.client.storygraph_data
-            self.users_collection = self.db.users
+            # Fix: Use the correct way to access the users collection
+            self.users_collection = self.client.test.users
             self.books_collection = self.db.books
             self.test_books_collection = self.client.test.books  # For book metadata
+            
+
             
             # Create ID mapping between OpenLibrary IDs and StoryGraph IDs
             print("Building ID mapping between OpenLibrary and StoryGraph...", file=sys.stderr)
@@ -30,7 +39,22 @@ class ItemBasedCF:
             # Get all books from test database (OpenLibrary format)
             ol_books = list(self.test_books_collection.find({}, {"_id": 1, "book_id": 1}))
             for book in ol_books:
-                ol_id = book["_id"]
+                ol_id = str(book["_id"])
+                
+                # Store multiple formats of OpenLibrary IDs
+                # 1. Original format (could be /works/OL123W or just OL123W)
+                self.ol_to_sg_mapping[ol_id] = ol_id
+                
+                # 2. If it has /works/ prefix, also store without it
+                if ol_id.startswith('/works/'):
+                    ol_short_id = ol_id[7:]  # Remove '/works/' prefix
+                    self.ol_to_sg_mapping[ol_short_id] = ol_id
+                
+                # 3. If it doesn't have /works/ prefix, also store with it
+                elif re.match(r'^OL\d+W$', ol_id):
+                    ol_long_id = f"/works/{ol_id}"
+                    self.ol_to_sg_mapping[ol_long_id] = ol_id
+                
                 if "book_id" in book:
                     sg_id = book["book_id"]
                     self.ol_to_sg_mapping[ol_id] = sg_id
@@ -46,8 +70,18 @@ class ItemBasedCF:
                     if match:
                         ol_id = match.group(1)
                         ol_full_id = f"/works/{ol_id}"
-                        self.ol_to_sg_mapping[ol_full_id] = sg_id
+                        self.ol_to_sg_mapping[ol_id] = sg_id  # Store without /works/ prefix
+                        self.ol_to_sg_mapping[ol_full_id] = sg_id  # Store with /works/ prefix
                         self.sg_to_ol_mapping[sg_id] = ol_full_id
+                
+                # Also add direct OL format mappings
+                match = re.search(r'(OL\d+W)', sg_id)
+                if match:
+                    ol_id = match.group(1)
+                    ol_full_id = f"/works/{ol_id}"
+                    self.ol_to_sg_mapping[ol_id] = sg_id  # Store without /works/ prefix
+                    self.ol_to_sg_mapping[ol_full_id] = sg_id  # Store with /works/ prefix
+                    self.sg_to_ol_mapping[sg_id] = ol_full_id
             
             print(f"Built mapping between {len(self.ol_to_sg_mapping)} OpenLibrary and StoryGraph IDs", file=sys.stderr)
             
@@ -70,13 +104,24 @@ class ItemBasedCF:
             }))
             
             for book in test_books:
-                book_id = book["_id"]
+                book_id = str(book["_id"])
+                
+                # Store metadata under multiple ID formats
                 self.metadata[book_id] = {
                     "title": book.get("title", "Unknown"),
                     "author_names": book.get("author_names", []),
                     "description": book.get("description", ""),
                     "cover_id": book.get("cover_id")
                 }
+                
+                # Also store without /works/ prefix if needed
+                if book_id.startswith('/works/'):
+                    short_id = book_id[7:]  # Remove /works/ prefix
+                    self.metadata[short_id] = self.metadata[book_id]
+                # Also store with /works/ prefix if needed
+                elif re.match(r'^OL\d+W$', book_id):
+                    long_id = f"/works/{book_id}"
+                    self.metadata[long_id] = self.metadata[book_id]
                 
             print(f"Loaded {len(self.book_id_to_index)} books with {len(self.metadata)} metadata entries", file=sys.stderr)
             
@@ -87,6 +132,66 @@ class ItemBasedCF:
             print(f"Error initializing ItemBasedCF: {str(e)}", file=sys.stderr)
             raise
     
+    def normalize_book_id(self, book_id):
+        """Try different formats of book_id to ensure compatibility"""
+        # Try original format
+        if book_id in self.ol_to_sg_mapping:
+            return self.ol_to_sg_mapping[book_id]
+            
+        # Try with /works/ prefix if it doesn't have it
+        if not book_id.startswith('/works/') and re.match(r'^OL\d+W$', book_id):
+            book_id_with_prefix = f"/works/{book_id}"
+            if book_id_with_prefix in self.ol_to_sg_mapping:
+                return self.ol_to_sg_mapping[book_id_with_prefix]
+                
+        # Try without /works/ prefix if it has it
+        if book_id.startswith('/works/'):
+            book_id_without_prefix = book_id[7:]  # Remove '/works/' prefix
+            if book_id_without_prefix in self.ol_to_sg_mapping:
+                return self.ol_to_sg_mapping[book_id_without_prefix]
+                
+        # If all else fails, return the original ID
+        return book_id
+        
+    def get_user_rated_books(self, user_id):
+        """Get the books rated by a specific user"""
+        try:
+            print(f"Looking up rated books for user: {user_id}", file=sys.stderr)
+            
+            # Find the user document
+            # Fix: Use find_one() directly on the collection
+            user = self.users_collection.find_one({"_id": user_id})
+            if not user:
+                print(f"User not found with ID: {user_id}", file=sys.stderr)
+                return []
+            
+            print(f"Found user with email: {user.get('email', 'unknown')}", file=sys.stderr)
+            
+            # Extract book IDs and ratings from finishedBooks array
+            rated_books = []
+            
+            if 'finishedBooks' in user and isinstance(user['finishedBooks'], list):
+                print(f"User has {len(user['finishedBooks'])} finished books", file=sys.stderr)
+                for book_entry in user['finishedBooks']:
+                    if isinstance(book_entry, dict) and 'bookId' in book_entry and 'rating' in book_entry:
+                        if book_entry['rating'] is not None:  # Only include books with actual ratings
+                            book_id = book_entry['bookId']
+                            rating = book_entry['rating']
+                            print(f"  Found rated book: {book_id} with rating {rating}", file=sys.stderr)
+                            rated_books.append(book_id)
+            
+            print(f"Found {len(rated_books)} rated books for user {user_id}", file=sys.stderr)
+            for i, book_id in enumerate(rated_books[:10]):  # Log first 10 for debugging
+                print(f"  Rated book {i+1}: {book_id}", file=sys.stderr)
+            
+            return rated_books
+            
+        except Exception as e:
+            print(f"Error retrieving user rated books: {str(e)}", file=sys.stderr)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            return []
+
     def build_rating_matrix(self):
         """Build a sparse user-item matrix from MongoDB data"""
         print("Building rating matrix...", file=sys.stderr)
@@ -99,8 +204,8 @@ class ItemBasedCF:
         
         # Process user ratings
         user_cursor = self.users_collection.find(
-            {"book_ratings": {"$exists": True, "$ne": []}},
-            {"book_ratings": 1}
+            {"finishedBooks": {"$exists": True, "$ne": []}},
+            {"finishedBooks": 1}
         )
         
         user_count = 0
@@ -110,33 +215,29 @@ class ItemBasedCF:
         user_index = 0
         
         for user in user_cursor:
-            book_ratings = user.get("book_ratings", [])
-            if not book_ratings:
+            finished_books = user.get("finishedBooks", [])
+            if not finished_books:
                 continue
                 
-            for rating_obj in book_ratings:
-                # Handle different formats of rating objects
-                if isinstance(rating_obj, str):
-                    # Old format - just a book ID string
-                    book_id = rating_obj
-                    rating = 1.0  # Default implicit rating
-                else:
-                    # Normal format - object with book_id and rating
-                    book_id = rating_obj.get("book_id")
-                    rating = rating_obj.get("rating")
-                    
-                    if rating is None:
-                        rating = 1.0  # Default rating
-                
-                # Skip if book_id is not in our mapping or rating is missing
-                if book_id not in self.book_id_to_index or rating is None:
+            for book_entry in finished_books:
+                if not isinstance(book_entry, dict):
                     continue
                     
-                # Normalize rating to account for different user scales
-                # (not dividing by user's average here, but could be added)
+                book_id = book_entry.get("bookId")
+                rating = book_entry.get("rating")
                 
+                if book_id is None or rating is None:
+                    continue
+                
+                # Normalize book ID and map to StoryGraph ID
+                sg_book_id = self.normalize_book_id(book_id)
+                
+                # Skip if book_id is not in our mapping
+                if sg_book_id not in self.book_id_to_index:
+                    continue
+                    
                 # Add to data
-                book_index = self.book_id_to_index[book_id]
+                book_index = self.book_id_to_index[sg_book_id]
                 ratings_data.append(float(rating))
                 row_indices.append(user_index)
                 col_indices.append(book_index)
@@ -146,14 +247,18 @@ class ItemBasedCF:
             user_count += 1
             
             # Print progress
-            if user_count % 10000 == 0:
+            if user_count % 1000 == 0:
                 print(f"Processed {user_count} users, {rating_count} ratings", file=sys.stderr)
         
         # Create sparse matrix
-        n_users = user_index
+        n_users = max(user_index, 1)  # At least one user
         n_items = len(self.book_id_to_index)
         
-        matrix = csr_matrix((ratings_data, (row_indices, col_indices)), shape=(n_users, n_items))
+        if rating_count == 0:
+            print("No ratings found, creating empty matrix", file=sys.stderr)
+            matrix = csr_matrix((n_users, n_items))
+        else:
+            matrix = csr_matrix((ratings_data, (row_indices, col_indices)), shape=(n_users, n_items))
         
         elapsed = time.time() - start_time
         print(f"Built matrix with {n_users} users, {n_items} items, and {rating_count} ratings in {elapsed:.2f} seconds", file=sys.stderr)
@@ -172,13 +277,20 @@ class ItemBasedCF:
         # Build rating matrix
         rating_matrix = self.build_rating_matrix()
         
+        # Check if rating matrix has data
+        if rating_matrix.nnz == 0:
+            print("Rating matrix is empty, cannot compute similarity", file=sys.stderr)
+            return np.zeros((len(self.book_id_to_index), len(self.book_id_to_index)))
+        
         # Center ratings by subtracting user means (adjust for user rating bias)
         user_means = rating_matrix.mean(axis=1).A.flatten()
+        
         # For each user, subtract their mean from all their ratings
         centered_matrix = rating_matrix.copy()
         for i in range(rating_matrix.shape[0]):
             user_ratings = rating_matrix[i].nonzero()[1]
-            centered_matrix[i, user_ratings] = rating_matrix[i, user_ratings].toarray()[0] - user_means[i]
+            if len(user_ratings) > 0:  # Only process if user has ratings
+                centered_matrix[i, user_ratings] = rating_matrix[i, user_ratings].toarray()[0] - user_means[i]
         
         # Convert to CSR format for efficient calculations
         centered_matrix = centered_matrix.tocsr()
@@ -188,7 +300,7 @@ class ItemBasedCF:
         item_matrix = centered_matrix.T.tocsr()
         
         # Compute similarity in batches to avoid memory issues
-        batch_size = 1000
+        batch_size = 500
         n_items = item_matrix.shape[0]
         similarity_matrix = np.zeros((n_items, n_items))
         
@@ -208,54 +320,29 @@ class ItemBasedCF:
         self.similarity_matrix = similarity_matrix
         return similarity_matrix
     
-    def get_item_recommendations(self, book_ids, n_recommendations=6, min_similarity=0.05):  # Lower threshold to 0.05
-        """Get recommendations based on one or more book IDs"""
+    def get_recommendations_for_user(self, user_id, n_recommendations=6, min_similarity=0.05):
+        """Get recommendations for a user based on their rated books"""
         try:
-            # Ensure book_ids is a list
-            if isinstance(book_ids, str):
-                book_ids = [book_ids]
+            print(f"Getting recommendations for user: {user_id}", file=sys.stderr)
             
-            # Handle different formats of book_ids (string or object with bookId)
-            normalized_book_ids = []
-            for item in book_ids:
-                if isinstance(item, dict) and 'bookId' in item:
-                    # New format - object with bookId
-                    normalized_book_ids.append(item['bookId'])
-                elif isinstance(item, str):
-                    # Old format - just a string ID
-                    normalized_book_ids.append(item)
-                else:
-                    print(f"Skipping invalid book ID format: {item}", file=sys.stderr)
+            # Get the books rated by this user
+            user_books = self.get_user_rated_books(user_id)
+            if not user_books:
+                print(f"No rated books found for user {user_id}", file=sys.stderr)
+                return []
+                
+            print(f"User has rated {len(user_books)} books", file=sys.stderr)
             
-            print(f"Input book IDs after normalization: {normalized_book_ids}", file=sys.stderr)
-            
-            # Convert OpenLibrary IDs to StoryGraph IDs for lookup
+            # Convert IDs to StoryGraph IDs for lookup
             sg_book_ids = []
-            for book_id in normalized_book_ids:
+            for book_id in user_books:
                 # Try to find corresponding StoryGraph ID
-                if book_id in self.ol_to_sg_mapping:
-                    sg_id = self.ol_to_sg_mapping[book_id]
+                sg_id = self.normalize_book_id(book_id)
+                if sg_id in self.book_id_to_index:
                     sg_book_ids.append(sg_id)
-                    print(f"Mapped OpenLibrary ID {book_id} to StoryGraph ID {sg_id}", file=sys.stderr)
+                    print(f"Mapped ID {book_id} to StoryGraph ID {sg_id}", file=sys.stderr)
                 else:
-                    # Try direct matching or pattern matching
-                    found = False
-                    ol_key = None
-                    
-                    # Extract the OL part if it's in /works/OL format
-                    match = re.search(r'\/works\/(OL\d+W)', book_id)
-                    if match:
-                        ol_key = match.group(1)
-                    
-                    for sg_id in self.book_id_to_index.keys():
-                        if book_id in sg_id or (ol_key and ol_key in sg_id):
-                            sg_book_ids.append(sg_id)
-                            print(f"Found match for {book_id} in StoryGraph ID {sg_id}", file=sys.stderr)
-                            found = True
-                            break
-                    
-                    if not found:
-                        print(f"Could not find StoryGraph ID for OpenLibrary ID {book_id}", file=sys.stderr)
+                    print(f"Could not find StoryGraph ID for book ID {book_id}", file=sys.stderr)
             
             if not sg_book_ids:
                 print("No input books could be mapped to StoryGraph IDs", file=sys.stderr)
@@ -272,7 +359,6 @@ class ItemBasedCF:
             for sg_id in sg_book_ids:
                 if sg_id in self.book_id_to_index:
                     indices.append(self.book_id_to_index[sg_id])
-                    print(f"Found index {self.book_id_to_index[sg_id]} for StoryGraph ID {sg_id}", file=sys.stderr)
             
             if not indices:
                 print("No input books found in similarity matrix", file=sys.stderr)
@@ -282,15 +368,6 @@ class ItemBasedCF:
             combined_similarity = np.zeros(self.similarity_matrix.shape[0])
             for idx in indices:
                 combined_similarity += self.similarity_matrix[idx]
-                
-                # Add detailed logging for the top similar items
-                print(f"Top 10 similarity scores for input book index {idx}:", file=sys.stderr)
-                top_scores = sorted([(i, self.similarity_matrix[idx][i]) 
-                                for i in range(len(self.similarity_matrix[idx]))
-                                if i != idx], key=lambda x: x[1], reverse=True)[:10]
-                for book_idx, score in top_scores:
-                    book_id = self.index_to_book_id[book_idx]
-                    print(f"  Book {book_idx} (ID: {book_id}): {score:.4f}", file=sys.stderr)
                 
             # Average the similarities
             combined_similarity /= len(indices)
@@ -322,23 +399,29 @@ class ItemBasedCF:
                 # Try to find in our mapping
                 if sg_book_id in self.sg_to_ol_mapping:
                     ol_book_id = self.sg_to_ol_mapping[sg_book_id]
-                    print(f"Mapped StoryGraph ID {sg_book_id} to OpenLibrary ID {ol_book_id}", file=sys.stderr)
                 else:
                     # Try to extract OpenLibrary ID from StoryGraph ID
                     match = re.search(r'\/works\/(OL\d+W)', sg_book_id)
                     if match:
                         ol_key = match.group(1)
                         ol_book_id = f"/works/{ol_key}"
-                        print(f"Extracted OpenLibrary ID {ol_book_id} from StoryGraph ID {sg_book_id}", file=sys.stderr)
                     else:
                         # No mapping found, use StoryGraph ID as-is
                         ol_book_id = sg_book_id
-                        print(f"No OpenLibrary ID found for {sg_book_id}, using as-is", file=sys.stderr)
                 
-                # Look up metadata for this book
-                if ol_book_id and ol_book_id in self.metadata:
-                    # Use existing metadata
+                # Try both with and without /works/ prefix for metadata lookup
+                meta = None
+                if ol_book_id in self.metadata:
                     meta = self.metadata[ol_book_id]
+                # If not found, try without /works/ prefix
+                elif ol_book_id.startswith('/works/') and ol_book_id[7:] in self.metadata:
+                    meta = self.metadata[ol_book_id[7:]]
+                # If still not found, try with /works/ prefix
+                elif not ol_book_id.startswith('/works/') and f"/works/{ol_book_id}" in self.metadata:
+                    meta = self.metadata[f"/works/{ol_book_id}"]
+                
+                if meta:
+                    # Use existing metadata
                     recommendations.append({
                         "id": ol_book_id,
                         "title": meta.get("title", "Unknown"),
@@ -351,7 +434,7 @@ class ItemBasedCF:
                 else:
                     # Basic entry if no metadata
                     recommendations.append({
-                        "id": ol_book_id or sg_book_id,
+                        "id": ol_book_id,
                         "title": "Unknown",
                         "author_names": [],
                         "similarity_score": float(combined_similarity[idx]),
@@ -368,11 +451,10 @@ class ItemBasedCF:
             return recommendations
                 
         except Exception as e:
-            print(f"Error in get_item_recommendations: {str(e)}", file=sys.stderr)
+            print(f"Error in get_recommendations_for_user: {str(e)}", file=sys.stderr)
             import traceback
             traceback.print_exc(file=sys.stderr)
             return []
-
             
     def close(self):
         """Close MongoDB connection"""
@@ -383,22 +465,38 @@ def main():
     """Command-line interface for the recommender"""
     try:
         if len(sys.argv) < 2:
-            raise ValueError("Book ID argument is required")
+            raise ValueError("User ID argument is required")
         
-        book_ids = sys.argv[1:]
-        print(f"Starting item-based CF for book IDs: {book_ids}", file=sys.stderr)
+        user_id = sys.argv[1]
+        
+        print(f"Starting item-based collaborative filtering for user ID: {user_id}", file=sys.stderr)
         
         recommender = ItemBasedCF()
-        recommendations = recommender.get_item_recommendations(book_ids)
+        
+        # Check if the input is a MongoDB ObjectId format (user ID)
+        if re.match(r'^[0-9a-f]{24}$', user_id):
+            # This is a MongoDB ObjectId - treat as user ID
+            user_id_obj = ObjectId(user_id)
+            print(f"Converting string {user_id} to ObjectId for lookup", file=sys.stderr)
+            recommendations = recommender.get_recommendations_for_user(user_id_obj)
+        else:
+            # Not a valid ObjectId
+            print(f"Input is not a valid MongoDB ObjectId: {user_id}", file=sys.stderr)
+            recommendations = []
         
         if not recommendations:
-            print(f"No recommendations found for book IDs: {book_ids}", file=sys.stderr)
+            print(f"No recommendations found for user ID: {user_id}", file=sys.stderr)
+        else:
+            print(f"Found {len(recommendations)} recommendations for user", file=sys.stderr)
         
+        # Ensure we json dump the final recommendations as the output
         print(json.dumps(recommendations))
         recommender.close()
         
     except Exception as e:
         print(f"Error in main: {str(e)}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
         print(json.dumps([]))  # Return empty array on error
         sys.exit(1)
 
