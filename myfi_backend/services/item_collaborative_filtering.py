@@ -23,13 +23,13 @@ class ItemBasedCF:
                 mongo_uri = "mongodb+srv://jovel:423275077127@myfi.ezmdt.mongodb.net/?retryWrites=true&w=majority&appName=myfi"
             
             self.client = MongoClient(mongo_uri)
+            
+            # Initialize database connections
             self.db = self.client.storygraph_data
-            # Fix: Use the correct way to access the users collection
-            self.users_collection = self.client.test.users
+            self.storygraph_users = self.db.users  # StoryGraph users for collaborative filtering
             self.books_collection = self.db.books
             self.test_books_collection = self.client.test.books  # For book metadata
-            
-
+            self.app_users_collection = self.client.test.users   # For your application users
             
             # Create ID mapping between OpenLibrary IDs and StoryGraph IDs
             print("Building ID mapping between OpenLibrary and StoryGraph...", file=sys.stderr)
@@ -154,13 +154,12 @@ class ItemBasedCF:
         return book_id
         
     def get_user_rated_books(self, user_id):
-        """Get the books rated by a specific user"""
+        """Get the books rated by a specific user from application database"""
         try:
             print(f"Looking up rated books for user: {user_id}", file=sys.stderr)
             
-            # Find the user document
-            # Fix: Use find_one() directly on the collection
-            user = self.users_collection.find_one({"_id": user_id})
+            # Find the user document from your application database
+            user = self.app_users_collection.find_one({"_id": user_id})
             if not user:
                 print(f"User not found with ID: {user_id}", file=sys.stderr)
                 return []
@@ -193,8 +192,8 @@ class ItemBasedCF:
             return []
 
     def build_rating_matrix(self):
-        """Build a sparse user-item matrix from MongoDB data"""
-        print("Building rating matrix...", file=sys.stderr)
+        """Build a sparse user-item matrix from StoryGraph MongoDB data"""
+        print("Building rating matrix from StoryGraph data...", file=sys.stderr)
         start_time = time.time()
         
         # Store rating data for matrix construction
@@ -202,56 +201,68 @@ class ItemBasedCF:
         row_indices = []
         col_indices = []
         
-        # Process user ratings
-        user_cursor = self.users_collection.find(
-            {"finishedBooks": {"$exists": True, "$ne": []}},
-            {"finishedBooks": 1}
-        )
-        
+        # Process user ratings from StoryGraph users
         user_count = 0
         rating_count = 0
         
-        # Create temporary user index
-        user_index = 0
+        # Create temporary user index mapping
+        user_id_to_index = {}
+        
+        # Query settings for large dataset
+        batch_size = 1000
+        
+        print("Querying StoryGraph users with ratings...", file=sys.stderr)
+        
+        # Use a cursor to process users in batches to avoid memory issues
+        user_cursor = self.storygraph_users.find(
+            {"book_ratings": {"$exists": True, "$ne": []}},
+            {"username": 1, "book_ratings": 1}
+        ).batch_size(batch_size)
+        
+        # Set progress reporting milestones instead of reporting every 100 users
+        milestones = [1000, 5000, 10000, 50000, 100000]
+        next_milestone_idx = 0
         
         for user in user_cursor:
-            finished_books = user.get("finishedBooks", [])
-            if not finished_books:
+            user_idx = user_count  # Assign current count as index
+            user_id_to_index[user.get("username", f"user_{user_count}")] = user_idx
+            
+            book_ratings = user.get("book_ratings", [])
+            if not book_ratings:
                 continue
-                
-            for book_entry in finished_books:
-                if not isinstance(book_entry, dict):
+            
+            has_ratings = False
+            for rating_item in book_ratings:
+                if not isinstance(rating_item, dict):
                     continue
-                    
-                book_id = book_entry.get("bookId")
-                rating = book_entry.get("rating")
+                
+                book_id = rating_item.get("book_id")
+                rating = rating_item.get("rating")
                 
                 if book_id is None or rating is None:
                     continue
                 
-                # Normalize book ID and map to StoryGraph ID
-                sg_book_id = self.normalize_book_id(book_id)
-                
-                # Skip if book_id is not in our mapping
-                if sg_book_id not in self.book_id_to_index:
-                    continue
-                    
-                # Add to data
-                book_index = self.book_id_to_index[sg_book_id]
-                ratings_data.append(float(rating))
-                row_indices.append(user_index)
-                col_indices.append(book_index)
-                rating_count += 1
+                # Check if book_id is in our mapping
+                if book_id in self.book_id_to_index:
+                    book_index = self.book_id_to_index[book_id]
+                    ratings_data.append(float(rating))
+                    row_indices.append(user_idx)
+                    col_indices.append(book_index)
+                    rating_count += 1
+                    has_ratings = True
             
-            user_index += 1
-            user_count += 1
+            if has_ratings:
+                user_count += 1
             
-            # Print progress
-            if user_count % 1000 == 0:
-                print(f"Processed {user_count} users, {rating_count} ratings", file=sys.stderr)
+            # Print progress at specific milestones only
+            if next_milestone_idx < len(milestones) and user_count >= milestones[next_milestone_idx]:
+                print(f"Processing milestone: {milestones[next_milestone_idx]} users, {rating_count} ratings", file=sys.stderr)
+                next_milestone_idx += 1
+        
+        print(f"Completed processing StoryGraph users and ratings", file=sys.stderr)
         
         # Create sparse matrix
-        n_users = max(user_index, 1)  # At least one user
+        n_users = max(user_count, 1)  # At least one user
         n_items = len(self.book_id_to_index)
         
         if rating_count == 0:
@@ -373,14 +384,38 @@ class ItemBasedCF:
             combined_similarity /= len(indices)
             
             # Add logging for similarity threshold
-            above_threshold = sum(combined_similarity > min_similarity)
-            print(f"Number of books with similarity > {min_similarity}: {above_threshold}", file=sys.stderr)
+            thresholds = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
+            for threshold in thresholds:
+                above_threshold_indices = np.where(combined_similarity > threshold)[0]
+                books_above_threshold = [self.index_to_book_id[idx] for idx in above_threshold_indices if idx not in indices]
+                
+                # Map StoryGraph IDs to OpenLibrary IDs when possible
+                ol_book_ids = []
+                for sg_id in books_above_threshold:
+                    if sg_id in self.sg_to_ol_mapping:
+                        ol_book_ids.append(self.sg_to_ol_mapping[sg_id])
+                    else:
+                        # Try to extract OpenLibrary ID from StoryGraph ID
+                        match = re.search(r'\/works\/(OL\d+W)', sg_id)
+                        if match:
+                            ol_book_id = f"/works/{match.group(1)}"
+                            ol_book_ids.append(ol_book_id)
+                        else:
+                            ol_book_ids.append(sg_id)  # Use SG ID if no mapping
+                
+                print(f"Number of books with similarity > {threshold}: {len(books_above_threshold)}", file=sys.stderr)
+                print(f"Books with similarity > {threshold}:", file=sys.stderr)
+                for i, book_id in enumerate(ol_book_ids[:10]):  # Limit to first 10 for readability
+                    print(f"  Book {i+1}: {book_id}", file=sys.stderr)
+                if len(ol_book_ids) > 10:
+                    print(f"  ... and {len(ol_book_ids) - 10} more", file=sys.stderr)
                 
             # Sort by similarity and get top N+len(indices) (to exclude input books later)
             similar_indices = combined_similarity.argsort()[::-1]
             
             # Prepare recommendations
             recommendations = []
+            recommended_ids = []  # To store and print extracted book IDs
             for idx in similar_indices:
                 # Skip the input books
                 if idx in indices:
@@ -408,6 +443,8 @@ class ItemBasedCF:
                     else:
                         # No mapping found, use StoryGraph ID as-is
                         ol_book_id = sg_book_id
+                
+                recommended_ids.append(ol_book_id)  # Add to list of recommended IDs
                 
                 # Try both with and without /works/ prefix for metadata lookup
                 meta = None
@@ -445,6 +482,11 @@ class ItemBasedCF:
                 if len(recommendations) >= n_recommendations:
                     break
             
+            # Print out the extracted book IDs
+            print(f"Extracted recommended book IDs:", file=sys.stderr)
+            for i, book_id in enumerate(recommended_ids):
+                print(f"  Recommendation {i+1}: {book_id}", file=sys.stderr)
+            
             if not recommendations:
                 print(f"No recommendations found that meet the threshold. Consider lowering min_similarity (currently {min_similarity})", file=sys.stderr)
                 
@@ -460,6 +502,7 @@ class ItemBasedCF:
         """Close MongoDB connection"""
         if hasattr(self, 'client'):
             self.client.close()
+            print("MongoDB connection closed", file=sys.stderr)
 
 def main():
     """Command-line interface for the recommender"""

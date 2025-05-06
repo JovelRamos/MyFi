@@ -190,8 +190,7 @@ app.get('/api/recommendations/:bookId', async (req, res) => {
               const recommendations = JSON.parse(dataString.trim());
               console.log(`Successfully parsed recommendations: ${recommendations.length} items found`);
               
-              // Update user's recommendations if user exists
-              // Update user's recommendations if user is authenticated
+             // Update user's recommendations if user exists
 if (user) {
   console.log(`Processing recommendations for user ID: ${user._id}`);
   
@@ -212,23 +211,19 @@ if (user) {
           console.log('Created new recommendations array for user');
       }
       
-      // Add new unique recommendations
-      const uniqueRecommendations = [...new Set([...bookIds, ...(user.recommendations || [])])];
-      console.log(`Combined unique recommendations count: ${uniqueRecommendations.length}`);
-      
-      // Limit to most recent 100 recommendations
-      const updatedRecommendations = uniqueRecommendations.slice(0, 100);
-      console.log(`Final recommendations count (limited to 100): ${updatedRecommendations.length}`);
+      // REPLACE previous recommendations with new ones (instead of combining)
+      const updatedRecommendations = bookIds;
+      console.log(`New recommendations count: ${updatedRecommendations.length}`);
       
       try {
-          console.log('Attempting to save user recommendations to database...');
+          console.log('Saving user recommendations to database...');
           // Use findByIdAndUpdate instead of save to avoid version conflicts
           await User.findByIdAndUpdate(
               user._id,
               { recommendations: updatedRecommendations },
               { new: true }
           );
-          console.log(`Successfully saved user's recommendations to database`);
+          console.log(`Successfully saved user's recommendations to database (replacing previous recommendations)`);
       } catch (saveError) {
           console.error('Error saving user recommendations:', saveError);
       }
@@ -238,6 +233,7 @@ if (user) {
 } else {
   console.log('No authenticated user, skipping recommendations update');
 }
+
 
               
               // Send response with recommendations
@@ -381,49 +377,47 @@ app.get('/api/recommendations_multiple', async (req, res) => {
         console.log(`Successfully parsed recommendations: ${recommendations.length} items found`);
         
         // Update user's recommendations if user exists
-        if (user) {
-          console.log(`Processing recommendations for user ID: ${user._id}`);
-          
-          // Extract book IDs from recommendations
-          const bookIds = recommendations
-            .filter(book => book.id && typeof book.id === 'string')
-            .map(book => book.id);
-          
-          console.log(`Extracted ${bookIds.length} book IDs from recommendations`);
-          
-          // Update user's recommendations
-          if (bookIds.length > 0) {
-            // Initialize recommendations array if it doesn't exist
-            if (!user.recommendations) {
-              user.recommendations = [];
-              console.log('Created new recommendations array for user');
-            }
-            
-            // Add new unique recommendations
-            const uniqueRecommendations = [...new Set([...bookIds, ...user.recommendations])];
-            console.log(`Combined unique recommendations count: ${uniqueRecommendations.length}`);
-            
-            // Limit to most recent 100 recommendations
-            user.recommendations = uniqueRecommendations.slice(0, 100);
-            console.log(`Final recommendations count: ${user.recommendations.length}`);
-            
-            try {
-              console.log('Saving user recommendations to database...');
-              await User.findByIdAndUpdate(
-                user._id, 
-                { recommendations: user.recommendations },
-                { new: true }
-              );
-              console.log(`Successfully saved user's recommendations to database`);
-            } catch (saveError) {
-              console.error('Error saving user recommendations:', saveError);
-            }
-          } else {
-            console.log('No valid book IDs found in recommendations, skipping update');
-          }
-        } else {
-          console.log('No valid user found, skipping recommendations update');
-        }
+        // Update user's recommendations if user exists
+if (user) {
+  console.log(`Processing recommendations for user ID: ${user._id}`);
+  
+  // Extract book IDs from recommendations
+  const bookIds = recommendations
+    .filter(book => book.id && typeof book.id === 'string')
+    .map(book => book.id);
+  
+  console.log(`Extracted ${bookIds.length} book IDs from recommendations`);
+  
+  // Update user's recommendations
+  if (bookIds.length > 0) {
+    // Initialize recommendations array if it doesn't exist
+    if (!user.recommendations) {
+      user.recommendations = [];
+      console.log('Created new recommendations array for user');
+    }
+    
+    // REPLACE previous recommendations with new ones
+    user.recommendations = bookIds;
+    console.log(`New recommendations count: ${user.recommendations.length}`);
+    
+    try {
+      console.log('Saving user recommendations to database...');
+      await User.findByIdAndUpdate(
+        user._id, 
+        { recommendations: user.recommendations },
+        { new: true }
+      );
+      console.log(`Successfully saved user's recommendations to database (replacing previous recommendations)`);
+    } catch (saveError) {
+      console.error('Error saving user recommendations:', saveError);
+    }
+  } else {
+    console.log('No valid book IDs found in recommendations, skipping update');
+  }
+} else {
+  console.log('No valid user found, skipping recommendations update');
+}
+
         
         // Send response with recommendations
         res.json(recommendations);
