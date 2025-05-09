@@ -1,0 +1,1990 @@
+Status Code: 200
+
+--- Headers ---
+Date: Thu, 08 May 2025 18:46:45 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+link: <https://assets.thestorygraph.com/assets/tailwind-0c6e250c37f2a527d3f50b9855899d30b9fa4c0e4e4220ad7e6185826811d62d.css>; rel=preload; as=style; nopush,<https://assets.thestorygraph.com/assets/application-26591cd76ded69a08e38eae2cd99482eaa07d44b8e5dcbbea28e93ad05e57048.css>; rel=preload; as=style; nopush,<https://assets.thestorygraph.com/assets/actiontext-fda89fb985904aeef790c7726b37a19940dd37683d966e2bbd91f7a1f9df9d7b.css>; rel=preload; as=style; nopush,<https://assets.thestorygraph.com/assets/flatpickr-9eda924a2df0017cdb233fc4f8c6da2cc85013b0f0653c73d913d890f044482f.css>; rel=preload; as=style; nopush,<https://assets.thestorygraph.com/assets/flexmasonry-3b5985ab8f2474ca9faa251e6f078b60f7dc96d28c33ec89c2f41155dc757d6a.css>; rel=preload; as=style; nopush,<https://assets.thestorygraph.com/assets/application-7ced99a3c5801fa5a582862b376a48b066696269d927a83a0cb158c76bea4caf.js>; rel=preload; as=script; nopush
+Cache-Control: max-age=0, private, must-revalidate
+Set-Cookie: _storygraph_session=8IwfTrRFXiscaW8CgZI21ZggqLUMK31diGGKWARYLymHhzMmzpWF7t5ulltv59bZtf1oHlsGcTzYVYPe84CWCRpuwxQtk7yKbdgc9lPY%2BADBJCP62OdaQ2LjWBIEzeYfPPFRpcOcPm5TCqlfvXQ0%2FoZeNImNZDawnEH0U3tJds6vex4SZLrOgHxV5R4SCRB5uoSiBPzlAraWcizGO5OSTqh%2B%2Ba0l%2FP1PvKJso%2BlADV3dZXpZRsi1D0k1UENM6iVuSOdbzwbVxPUhKy%2BfgYXSGkNkguCxlvFNjR2Xl0dnhjChRMHOz9BeKTecl%2FovvjsiOJbnmBDQNr0iATEEGJpnrJfwh4mv%2B%2B6nfy2%2FjcnkA3c6DnQByDhrULgwF8ya7AsHrQnDbAorapb8NtElk8neafUpCyEMOF2Vu%2FxWMIY5NecYN62yHMKUOX9kvewU5KDoXXcZ4eygUs3uwd2nCizPK%2FehT5fKSucg75rNksYY7eVUtLzFoUE9e5Q3XmI8dZ1h66arqvyUsnPil%2BspYpijvPbvY%2BuLfNr4hkWVLXgaeJs2cZN%2BiD5Z5yXyiRqzH2ROid%2FQ%2B3ExWh4NPZDzbAOTXM%2FC2Lye--FE2bCvwx%2BG9LgNcd--pnShRmzii%2BQjDjI0BN4tlw%3D%3D; path=/; expires=Fri, 08 May 2026 18:46:45 GMT; secure; HttpOnly; SameSite=Lax
+x-request-id: a9e7319d-d97a-4f56-a0f2-0e03124f2613
+x-runtime: 2.628236
+vary: Accept, Origin, accept-encoding
+x-powered-by: cloud66
+cf-cache-status: DYNAMIC
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=jUghwwSyjKn2OyPItzX%2B5VORD9TpoRacJOXocudVAv%2ByvklniZt%2BjRoP%2FPKClJRIx8IRIMih5u0%2Fl6HU5Gq42F1G90%2Fb9GVR5%2Boky%2Fi01JtSU3reDi66WFgEg5IQqI3L2fLZOfn9aQ%3D%3D"}],"group":"cf-nel","max_age":604800}
+NEL: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+CF-RAY: 93cb1f121cba1567-SJC
+Content-Encoding: br
+server-timing: cfL4;desc="?proto=TCP&rtt=1487&min_rtt=1486&rtt_var=558&sent=5&recv=7&lost=0&retrans=0&sent_bytes=2856&recv_bytes=2803&delivery_rate=1948855&cwnd=251&unsent_bytes=0&cid=0a09432685c7ea23&ts=3303&x=0"
+
+--- Content ---
+<!DOCTYPE html>
+<html class="system">
+  <head>
+      <script defer data-domain="app.thestorygraph.com" src="https://blue.thestorygraph.com/js/script.js"></script>
+
+    <title>Reviews - The Blade Itself | The StoryGraph</title>
+    <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="eGIp-_hafuknPSdXZCa3-gexlt00YJ0FgZmWgtbvoA8t8aIc3ZtYRQwF8LrVPna3OL0p7CgTjC-Qfc63wcCCIQ" />
+    
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#333" />
+        <style>
+          @media (prefers-color-scheme: dark) {
+            body, html { background-color: #333; }
+          }
+          @media (prefers-color-scheme: light) {
+           body, html { background-color: #fff; }
+          }
+        </style>
+
+    
+    <link rel="stylesheet" href="https://assets.thestorygraph.com/assets/tailwind-0c6e250c37f2a527d3f50b9855899d30b9fa4c0e4e4220ad7e6185826811d62d.css" data-turbo-track="reload" />
+    <link rel="stylesheet" href="https://assets.thestorygraph.com/assets/application-26591cd76ded69a08e38eae2cd99482eaa07d44b8e5dcbbea28e93ad05e57048.css" data-turbo-track="reload" />
+    <link rel="stylesheet" href="https://assets.thestorygraph.com/assets/actiontext-fda89fb985904aeef790c7726b37a19940dd37683d966e2bbd91f7a1f9df9d7b.css" media="all" />
+    <link rel="stylesheet" href="https://assets.thestorygraph.com/assets/flatpickr-9eda924a2df0017cdb233fc4f8c6da2cc85013b0f0653c73d913d890f044482f.css" media="all" />
+    <link rel="stylesheet" href="https://assets.thestorygraph.com/assets/flexmasonry-3b5985ab8f2474ca9faa251e6f078b60f7dc96d28c33ec89c2f41155dc757d6a.css" media="all" />
+
+    <link rel="icon" type="image/x-icon" href="https://assets.thestorygraph.com/assets/favicon-e44d387265ecfbbf96b3a1935ed01834d1146a91d41711c1c773f933ec3c6916.ico" />
+    <script src="https://assets.thestorygraph.com/assets/application-7ced99a3c5801fa5a582862b376a48b066696269d927a83a0cb158c76bea4caf.js"></script>
+    <script src="https://assets.thestorygraph.com/packs/js/application-bfd5ad175d46ece822cc.js"></script>
+    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/icons/android-icon-192x192.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+
+      <link rel="manifest" href="/manifest.json">
+
+    <script data-turbo-cache="false">
+      if (navigator.userAgent.includes("Turbo Native")) {
+        var userThemeSetting = document.getElementById('cu_theme').value
+        if (navigator.userAgent.includes("Android")) {
+          Android.setUserThemeSetting(userThemeSetting);
+        } else {
+          window.webkit.messageHandlers.nativeAppViewController.postMessage({ type: 'themeSetting', user_id: userThemeSetting })
+        }
+      }
+
+      if (document.querySelector("html").classList.contains('system')) {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          $("html").addClass("dark");
+        } else {
+          $("html").removeClass("dark");
+        }
+      }
+    </script>
+  </head>
+
+  <body class="antialiased bg-white dark:bg-darkestGrey font-body text-darkestGrey dark:text-grey "  >
+    <div class="min-h-screen bg-white dark:bg-darkestGrey">
+      <nav id="navbar" aria-label="Main" class="sticky z-1000 top-0 bg-white dark:bg-darkestGrey shadow dark:shadow-md ">
+          <div class="max-w-full mx-auto sm:px-6 lg:px-8">
+            <div class="flex justify-between h-8">
+              <div class="flex px-2 md:px-0">
+                <div class="ml-2 flex-shrink-0 flex items-center">
+                  <div id="logo-navbar">
+                    <div class="dark:hidden">
+                      <a aria-label="Go to The StoryGraph homepage" href="/">
+                        <img alt="" role="img" aria-hidden="true" class="block h-6 w-6" src="https://assets.thestorygraph.com/assets/logo-no-text-7334be64b3d3a1652e2a4d9bc2ce2c12fdc48c879f4503e8fa702e1b57005e40.png" />
+</a>                    </div>
+                    <div class="hidden dark:block">
+                      <a aria-label="Go to The StoryGraph homepage" href="/">
+                        <img alt="" role="img" aria-hidden="true" class="block h-[40px] w-[40px]" src="https://assets.thestorygraph.com/assets/logo-no-text-dark-mode-89b2eccfe91d6f1f6d8bd3aaaa24fbd70ec45c7500804a351c7801459cf2d506.png" />
+</a>                    </div>
+                  </div>
+                  <div id="pwa-back-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="button" class="block w-6 icon-cheveron-left-circle">
+                      <title>Go back</title>
+                      <circle cx="12" cy="12" r="10" class="fill-current text-white dark:text-darkestGrey"/><path class="fill-current text-darkestGrey dark:text-grey" d="M13.7 15.3a1 1 0 0 1-1.4 1.4l-4-4a1 1 0 0 1 0-1.4l4-4a1 1 0 0 1 1.4 1.4L10.42 12l3.3 3.3z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="hidden ml-4 xl:ml-6 xl:flex space-x-4 xl:space-x-8">
+                  <a class="hidden lg:inline-flex items-center px-1 pt-1 border-b-4 text-xs xl:text-sm font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:border-cyan-700 dark:hover:border-cyan-500" href="/browse?sort_order=Last+updated">Explore</a>
+                    <a class="inline-flex items-center px-1 pt-1 border-b-4 text-xs xl:text-sm font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:border-cyan-700 dark:hover:border-cyan-500" href="/stats/jovel?year=2025">Stats</a>
+                    <a class="inline-flex items-center px-1 pt-1 border-b-4 text-xs xl:text-sm font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:border-cyan-700 dark:hover:border-cyan-500" href="/reading_challenges/dashboard/jovel">Challenges</a>
+                  <a class="inline-flex items-center px-1 pt-1 border-b-4 text-xs xl:text-sm font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:border-cyan-700 dark:hover:border-cyan-500" href="/community">Community</a>
+                  <a class="inline-flex items-center px-1 pt-1 border-b-4 text-xs xl:text-sm font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:border-cyan-700 dark:hover:border-cyan-500" href="/giveaways">Giveaways</a>
+                </div>
+              </div>
+              <div class="flex-1 flex items-center justify-center px-2 md:px-0 xl:ml-6 xl:justify-end">
+                <div class="max-w-xl w-full xl:max-w-xs">
+                  <label for="search" class="sr-only">Search</label>
+                  <div id="search-all-books" class="relative items-center" data-controller="combobox">
+                    <form class="peer" data-turbo-frame="search_results" data-controller="form" data-action="invalid-&gt;form#hideValidationMessage:capture input-&gt;form#submit" action="/search?turbo_frame=search_results" accept-charset="UTF-8" method="get">
+                      <div class="absolute inset-y-0 right-1 pl-3 flex items-center cursor-pointer">
+                        <button name="button" type="submit" id="search-button" data-form-target="submit">
+                          <svg class="h-5 w-5 text-cyan-600 dark:text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                          </svg>
+</button>                      </div>
+                      <div class="clear-input hidden absolute inset-y-0 right-6 sm:right-7 pl-3 flex items-center cursor-pointer" data-form-target="clear">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-600 dark:text-cyan-400" viewBox="0 0 20 20" role="button" fill="currentColor">
+                          <title>Clear search input</title>
+                          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                      <input type="search" name="search_term" id="search" pattern="^(?! *$).+" required="required" autocomplete="off" placeholder="Search all books..." class="search-field block w-full md:ml-5 pl-3 pr-6 sm:pr-7 py-2 border-2 border-darkGrey dark:border-darkerGrey rounded-md leading-5 bg-white dark:bg-darkestGrey placeholder-darkerGrey focus:outline-none focus:placeholder-darkerGrey focus:ring-1 focus:ring-cyan-600 dark:focus:ring-cyan-400 focus:border-cyan-600 dark:focus:border-cyan-400 text-sm md:text-xs lg:text-sm font-body" data-combobox-target="input" data-action="focus-&gt;combobox#start focusout-&gt;combobox#stop" />
+                      <turbo-frame id="search_results" target="_top" class="empty:hidden peer-invalid:hidden" data-combobox-target="list">
+                      </turbo-frame>
+</form>                  </div>
+                </div>
+              </div>
+              <div class="flex items-center px-2 xl:hidden">
+                <!-- Mobile menu button -->
+                <button id="toggle-mobile-menu" class="inline-flex items-center justify-center p-2 rounded-md text-darkestGrey dark:text-grey hover:text-cyan-700 dark:hover:text-cyan-500 focus:outline-none" aria-expanded="false">
+                  <span class="sr-only">Open main menu</span>
+                  <!-- Icon when menu is closed. -->
+                  <!--
+                    Heroicon name: menu
+
+                    Menu open: "hidden", Menu closed: "block"
+                  -->
+                  <div class="relative">
+                    <svg id="open-mobile-menu" class="block h-6 w-6 text-darkestGrey dark:text-grey hover:text-cyan-700 dark:hover:text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" role="button" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                  </div>
+                  <!-- Icon when menu is open. -->
+                  <!--
+                    Heroicon name: x
+
+                    Menu open: "block", Menu closed: "hidden"
+                  -->
+                  <svg id="close-mobile-menu" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" role="button" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div class="hidden md:ml-4 xl:flex md:items-center">
+                <!-- Profile dropdown -->
+                  <div class="ml-4 relative flex-shrink-0">
+                    <div>
+                      <button class="bg-white dark:bg-darkestGrey rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-darkestGrey focus:ring-cyan-600 dark:focus:ring-cyan-400" id="user-menu" aria-haspopup="true">
+                        <span class="sr-only">Open user menu</span>
+                          <img alt="Your profile picture" class="object-cover h-7 w-7 rounded-full" src="https://cdn.thestorygraph.com/tlzf2prhx64dwqfn2gir4kjsxj0o" />
+                      </button>
+                    </div>
+                    <!--
+                      Profile dropdown panel, show/hide based on dropdown state.
+
+                      Entering: "transition ease-out duration-100"
+                      From: "transform opacity-0 scale-95"
+                      To: "transform opacity-100 scale-100"
+                      Leaving: "transition ease-in duration-75"
+                      From: "transform opacity-100 scale-100"
+                      To: "transform opacity-0 scale-95"
+                    -->
+                    <div id="user-menu-dropdown" class="hidden origin-top-right absolute right-0 mt-3 w-11 rounded-md shadow-lg py-1 bg-white dark:bg-darkestGrey ring-1 ring-darkestGrey/5 dark:ring-grey/5" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+                      <a class="block px-4 py-2 text-sm text-right text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Profile" href="/profile/jovel">Profile</a>
+                        <a class="block px-4 py-2 text-sm text-right text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Notifications" href="/notifications">Notifications</a>
+                      <a class="block px-4 py-2 text-sm text-right text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Manage Account" href="/profile/edit/jovel">Manage Account</a>
+                      <a class="block px-4 py-2 text-sm text-right text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Preferences" href="/preferences/edit/jovel">Preferences</a>
+                      <form class="button_to" method="post" action="/users/sign_out"><input type="hidden" name="_method" value="delete" autocomplete="off" /><button class="block px-4 py-2 bg-transparent w-full cursor-pointer text-sm text-right text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Sign out" type="submit">Sign out</button><input type="hidden" name="authenticity_token" value="csLaQc_A8o-zM95Xw_9OdGV918iA7e4KWGxv2ctLQrCfH6CeleAZMYBviuhnCpWTLtj3Ru7dj1-RIua2wcjaNw" autocomplete="off" /></form>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <!--
+            Mobile menu, toggle classes based on menu state.
+
+            Menu open: "block", Menu closed: "hidden"
+          -->
+          <div id="mobile-menu" class="hidden">
+            <div class="pt-2 pb-3 space-y-1">
+              <a class="mobile-menu-item larger-mobile-menu-item block pl-3 pr-4 py-2 border-l-4 text-body font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" href="/browse?sort_order=Last+updated">Explore</a>
+                  <a class="native-tabs-hidden mobile-menu-item larger-mobile-menu-item block pl-3 pr-4 py-2 border-l-4 text-body font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" href="/stats/jovel?year=2025">Stats</a>
+                  <a class="native-tabs-hidden mobile-menu-item block pl-3 pr-4 py-2 border-l-4 text-body font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" href="/reading_challenges/dashboard/jovel">Challenges</a>
+                <a class="native-tabs-hidden mobile-menu-item larger-mobile-menu-item block pl-3 pr-4 py-2 border-l-4 text-body font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" href="/community">Community</a>
+              <a class="mobile-menu-item block pl-3 pr-4 py-2 border-l-4 text-body font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" href="/giveaways">Giveaways</a>
+              <div class="block md:hidden">
+                <a class="mobile-menu-item block pl-3 pr-4 py-2 border-l-4 text-body font-semibold font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" href="/contact-us">Contact us</a>
+              </div>
+            </div>
+              <div class="pt-4 pb-3 border-t border-darkGrey dark:border-darkerGrey">
+                <a href="/profile/jovel">
+                  <div class="flex items-center px-4 hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 text-darkestGrey dark:text-grey hover:text-white dark:hover:text-darkestGrey">
+                    <div class="flex-shrink-0">
+                        <img alt="Your profile picture" class="object-cover h-8 w-8 rounded-full" src="https://cdn.thestorygraph.com/tlzf2prhx64dwqfn2gir4kjsxj0o" />
+                    </div>
+                    <div class="ml-3">
+                      <div class="text-base font-body font-semibold">jovel</div>
+                      <div class="text-sm font-body font-normal">jmarkxr@gmail.com</div>
+                    </div>
+                  </div>
+</a>                <div class="mt-3 space-y-1">
+                    <a class="mobile-menu-item block px-4 py-2 text-base font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Notifications" href="/notifications">Notifications</a>
+                  <a class="mobile-menu-item block px-4 py-2 text-base font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Manage Account" href="/profile/edit/jovel">Manage Account</a>
+                  <a class="mobile-menu-item block px-4 py-2 text-base font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Preferences" href="/preferences/edit/jovel">Preferences</a>
+                  <form data-controller="native-tabs" data-action="turbo:submit-end-&gt;native-tabs#refreshTabs" data-signed-out="true" class="button_to" method="post" action="/users/sign_out"><input type="hidden" name="_method" value="delete" autocomplete="off" /><button class="mobile-menu-item bg-transparent cursor-pointer w-full text-left block px-4 py-2 text-base font-body border-transparent text-darkestGrey dark:text-grey hover:bg-cyan-600 dark:hover:bg-cyan-400 hover:border-cyan-700 dark:hover:border-cyan-500 hover:text-white dark:hover:text-darkestGrey" role="menuitem" aria-label="Sign out" type="submit">Sign out</button><input type="hidden" name="authenticity_token" value="WugtquC1U0AE2H8jBzAo2ZfKPRYkghjoD8RFihRqs7W3NVd1upW4_jeEK5yjxfM-3G8dmEqyeb3GiszlHukrMg" autocomplete="off" /></form>
+                </div>
+              </div>
+          </div>
+      </nav>
+
+
+      <div class="py-4 sm:py-3">
+        <main>
+          <div class="max-w-8xl mx-auto px-5 sm:px-6 lg:px-8">
+
+              <div id="plus-popup" class="hidden rounded-md bg-yellow-50  border-l-4 border-yellow-400 p-4 mb-6 shadow">
+                <div class="flex">
+                  <div class="ml-3">
+                    <p class="text-sm font-medium text-yellow-800">
+                    Enjoy extra features and help keep The StoryGraph independent by signing up to our <a data-turbo="false" class="plus-find-out-more-btn font-semibold underline" href="/plus">Plus plan</a>!<br /><br /><a data-turbo="false" class="plus-find-out-more-btn font-semibold underline" href="/plus">Find out more</a>
+                    </p>
+                  </div>
+                  <div class="ml-auto pl-3">
+                    <div class="-mx-1.5 -my-1.5">
+                      <button type="button" id="close-plus-popup" class="inline-flex bg-yellow-50 rounded-md p-1.5 text-yellow-500 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:ring-yellow-600">
+                        <span class="sr-only">Dismiss</span>
+                        <!-- Heroicon name: solid/x -->
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" role="button" fill="currentColor" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <div id="camera-modal" class="hidden fixed inset-0 z-[1001] bg-white dark:bg-darkestGrey bg-opacity-95 flex flex-col justify-between p-4 sm:p-6 overflow-hidden [padding-top:env(safe-area-inset-top)] [padding-bottom:env(safe-area-inset-bottom)]" aria-labelledby="modal-title" role="dialog" aria-modal="true" data-controller="barcode-scanner">
+              <div class="mt-2 flex justify-end z-[1002]">
+                <button data-action="click->barcode-scanner#closeCameraModal">
+                  <svg class="icon icon-baseline w-5" viewBox="0 0 23 23" role="button">
+                    <title>Close pane</title>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-close-circle">
+                      <circle cx="12" cy="12" r="10" class="text-cyan-700 dark:text-cyan-500 stroke-current" fill="none" stroke-width="2"/>
+                      <path class="text-cyan-700 dark:text-cyan-500 fill-current" d="M13.41 12l2.83 2.83a1 1 0 0 1-1.41 1.41L12 13.41l-2.83 2.83a1 1 0 1 1-1.41-1.41L10.59 12 7.76 9.17a1 1 0 0 1 1.41-1.41L12 10.59l2.83-2.83a1 1 0 0 1 1.41 1.41L13.41 12z" stroke-width="2"/>
+                    </svg>
+                  </svg>
+                </button>
+              </div>
+
+              <div id="camera-container" data-in-ios-native-app="" data-in-android-native-app="" class="flex-1 flex flex-col items-center justify-center text-center -translate-y-5">
+                <p class="text-center font-semibold my-4">
+                Take a photo of a barcode or cover
+                </p>
+
+                <video id="camera-preview" class="rounded-md max-w-full max-h-[60vh] object-contain mb-4" playsinline autoplay muted></video>
+
+                <canvas id="captured-image" class="hidden rounded-md max-w-full max-h-[60vh] object-contain mb-4"></canvas>
+
+                <button id="capture-button" class="primary-btn mb-3" data-action="click->barcode-scanner#captureImage">
+                  Capture
+                </button>
+
+                <button type="button" id="use-native-camera-button" class="underline text-sm" data-owned="false" data-action="click->barcode-scanner#triggerNativeCamera">
+                  Use Phone Camera
+                </button>
+                <input
+                    type="file"
+                    id="native-camera-upload"
+                    accept="image/*"
+                    capture="environment"
+                    class="hidden"
+                    data-action="change->barcode-scanner#handleNativeUpload">
+              </div>
+            </div>
+
+            <div class="container mx-auto mt-5 sm:my-8 max-w-2xl px-1 sm:px-4 flex sm:justify-center">
+  <div class="block sm:hidden">
+    <div class="flex flex-row gap-4 w-full">
+      <div class="flex-shrink-0 w-[100px] h-[146px]">
+          <a href="/books/682d6d03-1728-4a87-8127-513a9a3a30e5">
+            <img alt="The Blade Itself by Joe Abercrombie" class="w-full rounded-sm shadow-lg dark:shadow-darkerGrey/40 max-h-full" src="https://cdn.thestorygraph.com/aaahcw1odyad8xcsxmo5lgfmx4xz" />
+</a>      </div>
+
+      <div class="pt-0.5 flex flex-col justify-between">
+        <div>
+          <h4 class="text-sm font-semibold uppercase">
+            7.81k reviews for:
+          </h4>
+          <h2 class="font-semibold text-xl leading-snug clamp-2 text-cyan-700 dark:text-cyan-500">
+            <a class="inverse-link" href="/books/682d6d03-1728-4a87-8127-513a9a3a30e5">The Blade Itself</a>
+          </h2>
+          <h3 class="font-semibold text-lg text-cyan-700 dark:text-cyan-500 clamp-1">
+            <a class="inverse-link" href="/authors/ed45bc4e-a871-45b7-bdf4-39b91508b934">Joe Abercrombie</a>
+          </h3>
+        </div>
+        <div>
+            <p class="flex items-center font-semibold text-base">
+            <svg class="inline pb-0.5 icon-star w-5 h-5 text-[#FFDB77] mr-1 -ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path class="fill-current" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </svg>
+            <span>4.09 AVERAGE</span>
+            </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <div class="flex items-center">
+        <form data-turbo-frame="book_reviews" action="/book_reviews/682d6d03-1728-4a87-8127-513a9a3a30e5" accept-charset="UTF-8" method="get">
+          <div class="flex items-center">
+            <input name="written_explanations_only" type="hidden" value="false" autocomplete="off" /><input class="standard-checkbox-new mr-2" id="explanation_reviews_only_mobile" onchange="this.form.requestSubmit()" type="checkbox" value="true" name="written_explanations_only" />
+
+          <label class="text-darkerGrey dark:text-darkGrey text-[13px]" for="explanation_reviews_only_mobile">Only show reviews with written explanations</label>
+          </div>
+</form>      </div>
+    </div>
+  </div>
+
+  <div class="hidden sm:flex flex-row items-start gap-6">
+    <div class="flex-shrink-0 w-[140px] h-[204px]">
+        <div class="inline-block">
+          <a href="/books/682d6d03-1728-4a87-8127-513a9a3a30e5">
+            <img alt="The Blade Itself by Joe Abercrombie" class="w-full rounded-sm shadow-lg dark:shadow-darkerGrey/40 max-h-[204px]" src="https://cdn.thestorygraph.com/aaahcw1odyad8xcsxmo5lgfmx4xz" />
+</a>        </div>
+    </div>
+
+    <div class="flex flex-col justify-between h-[204px] pb-1">
+      <div>
+        <h4 class="text-base font-semibold uppercase">
+          7.81k reviews for:
+        </h4>
+        <h2 class="font-semibold text-2xl clamp-2">
+          <a class="inverse-link" href="/books/682d6d03-1728-4a87-8127-513a9a3a30e5">The Blade Itself</a>
+        </h2>
+        <h3 class="font-semibold text-lg text-cyan-700 dark:text-cyan-500 mb-2 clamp-1">
+          <a class="inverse-link" href="/authors/ed45bc4e-a871-45b7-bdf4-39b91508b934">Joe Abercrombie</a>
+        </h3>
+      </div>
+
+      <div>
+          <p class="flex items-center font-semibold text-lg mb-3">
+          <svg class="inline pb-0.5 icon-star w-5 h-5 text-[#FFDB77] mr-1 -ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path class="fill-current" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+          <span>4.09 AVERAGE</span>
+          </p>
+        <form data-turbo-frame="book_reviews" action="/book_reviews/682d6d03-1728-4a87-8127-513a9a3a30e5" accept-charset="UTF-8" method="get">
+          <div class="flex items-center">
+            <input name="written_explanations_only" type="hidden" value="false" autocomplete="off" /><input class="standard-checkbox-new mr-2" id="explanation_reviews_only_desktop" onchange="this.form.requestSubmit()" type="checkbox" value="true" name="written_explanations_only" />
+
+          <label class="text-darkerGrey dark:text-darkGrey" for="explanation_reviews_only_desktop">Only show reviews with written explanations</label>
+          </div>
+</form>      </div>
+    </div>
+  </div>
+</div>
+
+<turbo-frame id="book_reviews">
+  <span class="review-panes">
+        <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/summy1001">summy1001</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 3.75 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <div class="relative w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true">
+                        <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] absolute top-0 left-0 z-0 text-midGrey dark:text-darkerGrey" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                        </svg>
+                        <div class="overflow-hidden absolute top-0 left-0" style="width: 75%;">
+                          <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" fill="#FFDB77" viewBox="0 0 24 24">
+                            <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">3.75</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/7d205f04-9557-4583-9c07-fab52685a934">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+      <div class="moods-list-reviews mt-3 sm:mt-2 mb-2">
+          <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">adventurous</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">dark</span>
+        <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">medium-paced</span>
+      </div>
+
+
+
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "-content";
+    const buttonId = "-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/mensrea3">mensrea3</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 4.0 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">4.0</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/02a36e1a-23e9-4085-b45d-61a271e971b1">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+
+
+
+        <hr class="text-midGrey dark:text-darkerGrey my-4 sm:my-5">
+        <div class="relative review-explanation-container">
+          <div id="review-02a36e1a-23e9-4085-b45d-61a271e971b1-abea50f0-content" class="trix-content review-explanation overflow-hidden">
+            For this and more book reviews you can visit my book blog: <a href="https://mybookshelfdialogues.com/">My Bookshelf Dialogues</a><br><br><b>Book synopsis:</b><br><i>Say one thing for Logen Ninefingers, say he is a lucky bastard. He has miraculously escaped an ambush leaving him bruised and battered, but still, he found his favourite pot! He is still alive, and with a plan. The spirits say he is summoned by a Magus. He will answer the call.<br>On his way down to the torture chambers, Inquisitor Glokta asks himself for the thousandth time: "Why do I do this?" as he limps down the corridor to ask his questions and get a confession.<br>Also in Adua, Captain Jezal dan Luthar is training - and complaining - for a fencing contest, entirely unaware of the lurking and very real danger coming from the North.</i><br><br>In his literary debut, Joe Abercrombie makes a valiant attempt to place his pawn upon the legendary chessboard where fantasy authors like George R. R. Martin have been slothily moving around for decades, drawing epic maps of worlds that don't exist and creating characters that could. Where others would get crushed right from the start, Abercrombie easily cruises through his 500 pages, making a solid player who promises that he will bring more on the table; a player who can deliver. Many readers have learnt not to expect much from debut authors. The easiest way to disappoint a reader is to write a book after all, but Abercrombie's novel anything but disappoints.<br><blockquote>It seemed a bitter, pointless sort of life now. No one was any better off because of it. Full of violence and pain, with not much but disappointment and hardship in between.</blockquote><br>We are introduced to Logen Ninefingers in a frantic opening scene where he has just been separated from his companions due to an ambush by the Shanka. Logen is running for his life, something he seems to be doing as a profession, and, following a cinematic escape, he is left alone, his friends gone. He is hurt and sad and lost but it is quickly obvious that he has learned how to survive by himself. The Bloody Nine they call him, a fierce warrior, the terror of the north. Only now he is just happy to be still alive. Upon lighting a fire he summons the spirits to guide him. They tell him that Master Bayaz, the First of the Magi is calling for him and Logen, seeing as he has nowhere else to go, decides to go find him. On his journey to meet the Magus, Logen meets his young and overzealous apprentice, Malacus Quai. Where Logen is a man of brutality and scars, Quai is very close to what today is called a nerd. Abercrombie paints a picture of a lad who is deeply involved in books and spends much of his time being tortured by his Master in the name of learning only to end up disappointing him while his eagerness to please is constantly battling his clumsiness for dominance. The two men make it back to the Magus' gate where they find Bayaz, a respected old magician of legends, said to hold great power within him. It soon becomes evident just how powerful Bayaz is, when a visit from Bethod, the self-proclaimed King of the Northmen, turns into a tense encounter. Bethod is starting a war against the Union, and Bayaz decides to reclaim his seat at the Closed Council in Adua and influence the decisions the Union takes against the Northern threat.<br><blockquote>You have to learn to love the small things in life, like a hot bath. You have to love the  small things, when you've nothing else.</blockquote><br>In Adua, a second interesting protagonist is developed and Abercrombie makes use of interrupting inner monologue through the narration, offering a much more intimate perspective into a personality that tortures people for a living. Inquisitor Glokta is certainly difficult to understand and to even like. He is the asker of questions and he is damn good at his job, thanks to his past as a prisoner of war when he was tortured by the Gurkhish army in such creative ways that left him irreversibly crippled living a life in constant pain. He works for the Arch Lektor and is asked to investigate traitorous business against the King from the respected Guild of Mercers when news arrive from the North that war is coming. Captain Luthar dan Gorst is yet another main perspective in Adua, which offers an insight into the life of young nobility. Arrogant, vain, highly unlikable person, he is smitten with a lower class girl but his priority is winning the fencing contest and making a name for himself - essentially without ever putting himself in actual danger.<br><blockquote>' I've fought in three campaigns,' he began. 'In seven pitched battles. In countless raids and skirmishes and desperate defences, and bloody actions of every kind. I've fought in the driving snow, the blasting wind, the middle of the night. I've been fighting all my life, one enemy or another, one friend or another. I've known little else. I've seen men killed for a word, for a look, for nothing at all. A woman tried to stab me once for killing her husband, and I threw her down a well. And that's far from the worst of it. Life used to be cheap as dirt to me. Cheaper.</blockquote><br>Much like his predecessor, A Game of Thrones, Abercrombie introduces a Union under the threat coming from the North. It seems that the general consensus in fantasy wants harsh, cold climates making bloodthirsty people! Abercrombie also takes the route of magic in a more secondary role as the narration is more about introducing the characters and developing a sense of familiarity. Indeed, the first book reads very much as a prequel, with Abercrombie repeatedly mentioning the history of the Union as forged by the battles of the Magi. He generally attempts to offer small insights into the background of Bayaz, but repetition of the same basic historical events unavoidably leads to redundancy. Moreover, it is difficult to read such volumes as A Game of Thrones and go into a story where there is a Union, a minimalistic historical background and two enemies trying to invade the empire - the Northmen with Bethod and the Gurkhish - feeling the epicness of the scope. Still, for a smaller-scale, more basic parallel of the Seven Kingdoms, the novel does its job at telling a fun and satisfyingly complex story. There is no point at which I could find Abercrombie seriously lacking. The characters, as already mentioned, are well-developed, and numerous enough to make conceptualising them a difficult task that the author does a fine job tackling.<br><blockquote>'Therer are few men with more blood on their hands than me. None, that I know of. The Bloody Nine they call me, my enemies, and there's a lot of 'em. Always more enemies, and fewer friends. Blood gets you nothing but more blood. It follows me now, always, like my shadow, and like my shadow I can never be free of it. I've earned it. I've deserved it. I've sought it out. Such is my punishment.' </blockquote><br>The world is auspiciously presented through the eyes of different characters thus giving a view from multiple angles which, as Fifa fans know, is very helpful and, here, insightful. We experience Adua through the eyes of Sand dan Glokta, who sees stairs as an enemy and happy people and nobility as a life long lost. Jezal takes us to the bars of Adua, having a drink with friends and also inside the Open Council where comedy meets tragedy and together they make a fine job at entertaining the reader. But also the savage Northman, Logen, gets to experience the overwhelming architecture and culture of the capital. Still, Abercrombie keeps a firm hold on the scope, possibly in an effort not to overwhelm his readers in which he succeeds. And oh, what fun this novel is. I am not easily entertained and consider writing a challenging way to show humour, but Abercrombie's prose was truly hilarious at times. I think this speaks volumes to his ability of building a scene that feels so real as if it's playing right in front of your eyes.<br>'Now,' murmured Bayaz, 'compare it to a sword half drawn.' A foot length of metal hissed out of the sheath, a single silver letter shining near the hilt. The blade itself was dull, but it's edge had a cold and frosty glint. 'It speaks louder, does it not? It screams defiance! It bellows a challenge!Do you hear it?'<br>In many reviews, Abercrombie's First Law trilogy is given the title of dark fantasy, but I fail to see how this is so. To me, Abercrombie writes in a quite playful, very relaxed manner and attempts humour before doom. Sure, there are serious moments and the story is not just a light-hearted tale of funny comedians, but for fans of the grimdark genre, Steven Erikson is a much safer choice. Overall, a wonderful prequel, a promising beginning, a fantastically fun and entertaining read. People are right about Abercrombie, he is definitely worth your while.
+          </div>
+          <button id="review-02a36e1a-23e9-4085-b45d-61a271e971b1-abea50f0-toggle"
+                  class="hidden mt-4 font-semibold focus:outline-none">
+                  Show More
+          </button>
+        </div>
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "review-02a36e1a-23e9-4085-b45d-61a271e971b1-abea50f0-content";
+    const buttonId = "review-02a36e1a-23e9-4085-b45d-61a271e971b1-abea50f0-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/dylabreasa">dylabreasa</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 4.0 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">4.0</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/96fc158f-251a-4c7c-b02c-87f2bd121269">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+      <div class="moods-list-reviews mt-3 sm:mt-2 mb-2">
+          <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">adventurous</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">dark</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">mysterious</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">tense</span>
+        <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">fast-paced</span>
+      </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[max-content,max-content] gap-x-6 text-xs sm:text-sm mt-2 sm:mt-3 mb-2 review-character-questions-list">
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Plot or Character Driven:</span>
+              <span class="font-medium text-[#591B5C] dark:text-[#D970FF] ml-1">
+                Character
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Strong character development:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                No
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Loveable characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                No
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Diverse cast of characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Flaws of characters a main focus:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+        </div>
+
+
+
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "-content";
+    const buttonId = "-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/z4q">z4q</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 3.5 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <div class="relative w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true">
+                        <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] absolute top-0 left-0 z-0 text-midGrey dark:text-darkerGrey" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                        </svg>
+                        <div class="overflow-hidden absolute top-0 left-0" style="width: 50%;">
+                          <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" fill="#FFDB77" viewBox="0 0 24 24">
+                            <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">3.5</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/ed93cb6b-4ce1-404b-9d62-11c067990430">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+      <div class="moods-list-reviews mt-3 sm:mt-2 mb-2">
+          <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">dark</span>
+        <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">slow-paced</span>
+      </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[max-content,max-content] gap-x-6 text-xs sm:text-sm mt-2 sm:mt-3 mb-2 review-character-questions-list">
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Plot or Character Driven:</span>
+              <span class="font-medium text-[#FFA602] dark:text-[#FFA602] ml-1">
+                Plot
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Strong character development:</span>
+              <span class="font-medium text-[#BF5600] dark:text-[#FFA270] ml-1">
+                Complicated
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Loveable characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                No
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Diverse cast of characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Flaws of characters a main focus:</span>
+              <span class="font-medium text-[#BF5600] dark:text-[#FFA270] ml-1">
+                Complicated
+              </span>
+            </div>
+        </div>
+
+
+
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "-content";
+    const buttonId = "-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <img alt="cirignanon&#39;s profile picture" class="object-cover h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full" src="https://cdn.thestorygraph.com/o5ibdnkqf0840xazxn16e21uiikg" />
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/cirignanon">cirignanon</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"><a class="text-darkerGrey dark:text-darkGrey standard-link font-medium" data-turbo-frame="_top" href="/books/b14a1af0-f721-4ece-acdb-772f6918aee3">against another edition</a></span></h4>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/a0860734-8348-492e-8a8b-dba389d17e60">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+
+
+
+        <hr class="text-midGrey dark:text-darkerGrey my-4 sm:my-5">
+        <div class="relative review-explanation-container">
+          <div id="review-a0860734-8348-492e-8a8b-dba389d17e60-e320b114-content" class="trix-content review-explanation overflow-hidden">
+            <div>The world building took far too long and spent a long time on political machinations and the best character had the least amount of time. Just wasn’t doing it for me.</div>
+          </div>
+          <button id="review-a0860734-8348-492e-8a8b-dba389d17e60-e320b114-toggle"
+                  class="hidden mt-4 font-semibold focus:outline-none">
+                  Show More
+          </button>
+        </div>
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "review-a0860734-8348-492e-8a8b-dba389d17e60-e320b114-content";
+    const buttonId = "review-a0860734-8348-492e-8a8b-dba389d17e60-e320b114-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/beonks">beonks</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"><a class="text-darkerGrey dark:text-darkGrey standard-link font-medium" data-turbo-frame="_top" href="/books/264792ba-1634-4985-953e-312c441179a3">against another edition</a></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 2.0 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">2.0</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/f6e242d6-b9c2-4a34-adc1-96f97abf6bab">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+      <div class="moods-list-reviews mt-3 sm:mt-2 mb-2">
+          <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">adventurous</span>
+        <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">slow-paced</span>
+      </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[max-content,max-content] gap-x-6 text-xs sm:text-sm mt-2 sm:mt-3 mb-2 review-character-questions-list">
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Plot or Character Driven:</span>
+              <span class="font-medium text-[#591B5C] dark:text-[#D970FF] ml-1">
+                Character
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Strong character development:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                No
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Loveable characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                No
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Diverse cast of characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Flaws of characters a main focus:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+        </div>
+
+
+
+        <hr class="text-midGrey dark:text-darkerGrey my-4 sm:my-5">
+        <div class="relative review-explanation-container">
+          <div id="review-f6e242d6-b9c2-4a34-adc1-96f97abf6bab-509da7f2-content" class="trix-content review-explanation overflow-hidden">
+            <div>Not my cup of tea. Wonderful prose but just boring.</div>
+          </div>
+          <button id="review-f6e242d6-b9c2-4a34-adc1-96f97abf6bab-509da7f2-toggle"
+                  class="hidden mt-4 font-semibold focus:outline-none">
+                  Show More
+          </button>
+        </div>
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "review-f6e242d6-b9c2-4a34-adc1-96f97abf6bab-509da7f2-content";
+    const buttonId = "review-f6e242d6-b9c2-4a34-adc1-96f97abf6bab-509da7f2-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/drewsats">drewsats</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 4.5 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <div class="relative w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true">
+                        <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] absolute top-0 left-0 z-0 text-midGrey dark:text-darkerGrey" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                        </svg>
+                        <div class="overflow-hidden absolute top-0 left-0" style="width: 50%;">
+                          <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" fill="#FFDB77" viewBox="0 0 24 24">
+                            <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                          </svg>
+                        </div>
+                      </div>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">4.5</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/ad726779-74b8-432a-8054-719675971dc2">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+      <div class="moods-list-reviews mt-3 sm:mt-2 mb-2">
+          <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">adventurous</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">dark</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">funny</span>
+        <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">fast-paced</span>
+      </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[max-content,max-content] gap-x-6 text-xs sm:text-sm mt-2 sm:mt-3 mb-2 review-character-questions-list">
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Plot or Character Driven:</span>
+              <span class="font-medium text-[#591B5C] dark:text-[#D970FF] ml-1">
+                Character
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Strong character development:</span>
+              <span class="font-medium text-[#BF5600] dark:text-[#FFA270] ml-1">
+                Complicated
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Loveable characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Diverse cast of characters:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Flaws of characters a main focus:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                No
+              </span>
+            </div>
+        </div>
+
+
+
+        <hr class="text-midGrey dark:text-darkerGrey my-4 sm:my-5">
+        <div class="relative review-explanation-container">
+          <div id="review-ad726779-74b8-432a-8054-719675971dc2-209b4c0a-content" class="trix-content review-explanation overflow-hidden">
+            <div><section class="inline spoiler">To be honest, the characters, world-building, action, dialogue, and plot setup are all a 5/5 star book for me. The only thing preventing me from rating it as such was that it was so clearly a “table setter” book for the trilogy. The characters embark on the <strong><em>beginning</em></strong> of their great quest in the last chapter of the book. </section></div>
+          </div>
+          <button id="review-ad726779-74b8-432a-8054-719675971dc2-209b4c0a-toggle"
+                  class="hidden mt-4 font-semibold focus:outline-none">
+                  Show More
+          </button>
+        </div>
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "review-ad726779-74b8-432a-8054-719675971dc2-209b4c0a-content";
+    const buttonId = "review-ad726779-74b8-432a-8054-719675971dc2-209b4c0a-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/lawfs">lawfs</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"><a class="text-darkerGrey dark:text-darkGrey standard-link font-medium" data-turbo-frame="_top" href="/books/321d9346-f98e-44a9-8c9e-714717e53661">against another edition</a></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 4.25 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <div class="relative w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true">
+                        <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] absolute top-0 left-0 z-0 text-midGrey dark:text-darkerGrey" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                        </svg>
+                        <div class="overflow-hidden absolute top-0 left-0" style="width: 25%;">
+                          <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" fill="#FFDB77" viewBox="0 0 24 24">
+                            <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                          </svg>
+                        </div>
+                      </div>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">4.25</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/c1b8d11e-158f-4f69-9dc4-c66e910a9ecc">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+      <div class="moods-list-reviews mt-3 sm:mt-2 mb-2">
+          <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">adventurous</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">dark</span>
+                  <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">funny</span>
+        <span class="inline-flex items-center px-1.5 py-1 rounded text-xs sm:text-sm mr-0.5 sm:mr-2 mb-2 border border-midGrey dark:border-darkerGrey text-cyan-700 dark:text-cyan-500 rounded">medium-paced</span>
+      </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[max-content,max-content] gap-x-6 text-xs sm:text-sm mt-2 sm:mt-3 mb-2 review-character-questions-list">
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Plot or Character Driven:</span>
+              <span class="font-medium text-[#591B5C] dark:text-[#D970FF] ml-1">
+                Character
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Strong character development:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Loveable characters:</span>
+              <span class="font-medium text-[#BF5600] dark:text-[#FFA270] ml-1">
+                Complicated
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Diverse cast of characters:</span>
+              <span class="font-medium text-[#BF5600] dark:text-[#FFA270] ml-1">
+                Complicated
+              </span>
+            </div>
+
+            <div>
+              <span class="text-darkerGrey dark:text-darkGrey font-semibold">Flaws of characters a main focus:</span>
+              <span class="font-medium text-[#0E7C86] dark:text-[#2AB5C0] ml-1">
+                Yes
+              </span>
+            </div>
+        </div>
+
+
+
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "-content";
+    const buttonId = "-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/emersonandrews">emersonandrews</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 5.0 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">5.0</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/f654654c-7b3b-4aeb-9220-387fccc06079">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+
+
+
+        <hr class="text-midGrey dark:text-darkerGrey my-4 sm:my-5">
+        <div class="relative review-explanation-container">
+          <div id="review-f654654c-7b3b-4aeb-9220-387fccc06079-bc4eb3e2-content" class="trix-content review-explanation overflow-hidden">
+            The Blade itself is the kind of book I was searching for when I learned about grimdark. It is stylized in the best of ways and each of the characters are interesting. Glokta is one of my favorite characters of all time. I want to see each character fail or succeed and the result doesn't change my interest level. Forget Game of Thrones or Low Town, I can't wait to read the rest of this series. I want to savor each scene. The technical skills of this novel are refreshing. It is nice to see mid-scene POV switches that bring me more into the moment as each perspective widens the feelings I experience. I am still alive, and ready for whatever comes next.<br><br>
+          </div>
+          <button id="review-f654654c-7b3b-4aeb-9220-387fccc06079-bc4eb3e2-toggle"
+                  class="hidden mt-4 font-semibold focus:outline-none">
+                  Show More
+          </button>
+        </div>
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "review-f654654c-7b3b-4aeb-9220-387fccc06079-bc4eb3e2-content";
+    const buttonId = "review-f654654c-7b3b-4aeb-9220-387fccc06079-bc4eb3e2-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+    <div class="mx-auto mt-4 max-w-4xl mb-6 standard-pane">
+    <div class="flex">
+      <div class="flex flex-shrink-0 mb-2">
+          <div class="h-[38px] sm:h-[60px] w-[38px] sm:w-[60px] rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-user-circle"><g><path class="fill-current text-cyan-700 dark:text-cyan-500" d="M3.66 17.52a10 10 0 1 1 16.68 0C19.48 16.02 17.86 16 16 16H8c-1.86 0-3.48.01-4.34 1.52z"/><path class="fill-current text-darkGrey" d="M3.66 17.52A5 5 0 0 1 8 15h8a5 5 0 0 1 4.34 2.52 10 10 0 0 1-16.68 0zM12 13a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></g></svg>
+          </div>
+      </div>
+      <div class="ml-2 sm:pt-1 flex-grow">
+        <h4 class="text-sm sm:text-base font-semibold text-cyan-700 dark:text-cyan-500"><a class="inverse-link" data-turbo-frame="_top" href="/profile/laraluzr">laraluzr</a>&#39;s review <span class="text-xs sm:text-sm block sm:inline text-[13px] text-darkerGrey dark:text-darkGrey"><a class="text-darkerGrey dark:text-darkGrey standard-link font-medium" data-turbo-frame="_top" href="/books/517ac221-3a44-41ea-87d7-d92630e69392">against another edition</a></span></h4>
+          <div class="mt-1 sm:mt-0 flex items-center gap-3 -ml-1" aria-label="Book rating: 3.0 out of 5">
+            <div class="flex flex-col pt-[0.5px]">
+              <div class="flex">
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                      <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px]" aria-hidden="true" fill="#FFDB77" viewBox="0 0 24 24">
+                        <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                      </svg>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+                    <svg class="w-[20px] sm:w-[26px] h-[20px] sm:h-[26px] text-midGrey dark:text-darkerGrey" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 .587l3.668 7.412 8.167.747-6.18 5.203 2.325 7.678L12 18.204l-6.98 3.473 2.325-7.678-6.18-5.203 8.167-.747L12 .587z"/>
+                    </svg>
+              </div>
+            </div>
+            <span class="text-sm sm:text-base pt-0.5 sm:pt-1 -ml-1 font-semibold text-darkerGrey dark:text-darkGrey">3.0</span>
+          </div>
+      </div>
+      <a class="flex sm:pt-1" data-turbo-frame="_top" href="/reviews/9e670935-7e97-4e30-96a6-f0c17927d78b">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#CCCCCC" class="size-[30px] sm:size-[44px] dark:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.8" stroke="#666666" class="size-[30px] sm:size-[44px] hidden dark:block">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+</a>    </div>
+
+
+
+        <hr class="text-midGrey dark:text-darkerGrey my-4 sm:my-5">
+        <div class="relative review-explanation-container">
+          <div id="review-9e670935-7e97-4e30-96a6-f0c17927d78b-28928168-content" class="trix-content review-explanation overflow-hidden">
+            3.5<br><br>my first fantasy book in years — which might justify the low rating. i’ll probably keep reading the series in a couple of months as i’m now invested in the story
+          </div>
+          <button id="review-9e670935-7e97-4e30-96a6-f0c17927d78b-28928168-toggle"
+                  class="hidden mt-4 font-semibold focus:outline-none">
+                  Show More
+          </button>
+        </div>
+
+  </div>
+
+<script>
+  (function() {
+    const contentId = "review-9e670935-7e97-4e30-96a6-f0c17927d78b-28928168-content";
+    const buttonId = "review-9e670935-7e97-4e30-96a6-f0c17927d78b-28928168-toggle";
+
+    function initializeShowMoreLess(descriptionId, buttonId, maxLinesMobile, maxLinesDesktop) {
+      const descriptionContent = document.getElementById(descriptionId);
+      const toggleButton = document.getElementById(buttonId);
+
+      if (!descriptionContent || !toggleButton) return;
+
+      const lineHeight = parseFloat(window.getComputedStyle(descriptionContent).lineHeight);
+      const isDesktop = window.innerWidth >= 1280;
+      const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
+      const maxHeight = lineHeight * maxLines;
+      const fullHeight = descriptionContent.scrollHeight;
+
+      // Reset state
+      descriptionContent.style.maxHeight = `${maxHeight}px`;
+      toggleButton.textContent = "Show More";
+      let isExpanded = false;
+
+      if (fullHeight <= maxHeight + 5) {
+        toggleButton.style.display = "none";
+        return;
+      }
+
+      toggleButton.style.display = "inline-block";
+
+      function applyShowMoreStyle() {
+      toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-cyan-700", "dark:bg-cyan-500",
+            "text-white", "dark:text-blackish"
+          );
+        }
+      }
+
+      function applyShowLessStyle() {
+        toggleButton.className = "mt-4 font-semibold focus:outline-none";
+
+        if (isDesktop) {
+          toggleButton.classList.add("text-cyan-700", "dark:text-cyan-500");
+        } else {
+          toggleButton.classList.add(
+            "px-4", "py-2", "rounded", "text-xs",
+            "bg-[#DBF7FA]", "dark:bg-[#DBF7FA]",
+            "text-cyan-700", "dark:text-blackish"
+          );
+        }
+      }
+
+      applyShowMoreStyle();
+
+      toggleButton.onclick = function() {
+        if (!isExpanded) {
+          descriptionContent.style.maxHeight = `${fullHeight}px`;
+          toggleButton.textContent = "Show Less";
+          applyShowLessStyle();
+        } else {
+          descriptionContent.style.maxHeight = `${maxHeight}px`;
+          toggleButton.textContent = "Show More";
+          applyShowMoreStyle();
+        }
+        isExpanded = !isExpanded;
+      };
+    }
+
+    initializeShowMoreLess(contentId, buttonId, 8, 6);
+  })();
+</script>
+
+
+  </span>
+  <div id="infinite-scroll" class="flex justify-center">
+    <a id="next_link" data-remote="true" href="/book_reviews/682d6d03-1728-4a87-8127-513a9a3a30e5?page=3" aria-label="Next">More...</a>
+  </div>
+</turbo-frame>
+<button onclick="scrollToTopFunction()" class="fixed   bottom-8 right-1 md:right-2 z-100 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-darkestGrey focus:ring-cyan-600 dark:focus:ring-cyan-400" id="btn-scroll-to-top" title="Scroll to top"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="button" class="icon-cheveron-up-circle h-7 w-7"><circle cx="12" cy="12" r="10" class="fill-current text-cyan-600 dark:text-cyan-400"/><path class="fill-current text-white dark:text-darkestGrey" d="M8.7 13.7a1 1 0 1 1-1.4-1.4l4-4a1 1 0 0 1 1.4 0l4 4a1 1 0 0 1-1.4 1.4L12 10.42l-3.3 3.3z"/></svg></button>
+
+
+
+              <div id="cookies-popup" style="z-index:2147483002;" class="hidden fixed border-2 bg-white dark:bg-darkestGrey border-darkGrey dark:border-darkerGrey bottom-0 left-0 rounded-md mx-2 pt-2 pb-4 pl-4 pr-2 shadow-2xl text-sm max-w-full md:w-13 m-2">
+                <svg id="close-cookies-popup" role="button" class="icon icon-baseline w-5 cursor-pointer float-right" viewbox="0 0 23 23"><title>Accept and close</title>
+                  <svg width="24" height="24">
+                    <path class="text-cyan-700 dark:text-cyan-500 fill-current" fill-rule="evenodd" clip-rule="evenodd" d="M9.59584 8.74731C9.36152 8.51299 8.98162 8.51299 8.74731 8.74731C8.51299 8.98162 8.51299 9.36152 8.74731 9.59584L11.1515 12L8.74731 14.4042C8.51299 14.6385 8.51299 15.0184 8.74731 15.2527C8.98162 15.487 9.36152 15.487 9.59584 15.2527L12 12.8485L14.4042 15.2527C14.6385 15.487 15.0184 15.487 15.2527 15.2527C15.487 15.0184 15.487 14.6385 15.2527 14.4042L12.8485 12L15.2527 9.59584C15.487 9.36152 15.487 8.98162 15.2527 8.74731C15.0184 8.51299 14.6385 8.51299 14.4042 8.74731L12 11.1515L9.59584 8.74731Z"/>
+                    <path class="text-cyan-700 dark:text-cyan-500 fill-current" fill-rule="evenodd" clip-rule="evenodd" d="M3.4 12C3.4 7.25035 7.25035 3.4 12 3.4C16.7497 3.4 20.6 7.25035 20.6 12C20.6 16.7497 16.7497 20.6 12 20.6C7.25035 20.6 3.4 16.7497 3.4 12ZM12 4.6C7.91309 4.6 4.6 7.91309 4.6 12C4.6 16.0869 7.91309 19.4 12 19.4C16.0869 19.4 19.4 16.0869 19.4 12C19.4 7.91309 16.0869 4.6 12 4.6Z"/>
+                  </svg>
+                </svg>
+                <div class="clear-right pr-6">
+                  <p>By using The StoryGraph, you agree to our <a class="font-semibold text-cyan-700 dark:text-cyan-500 hover:text-darkestGrey dark:text-grey cookies-find-out-more-btn" href="/cookies">use of cookies</a>.<br />We use a small number of cookies to provide you with a great experience.</p>
+                  <p class="mt-2"><a class="font-semibold text-cyan-700 dark:text-cyan-500 hover:text-darkestGrey dark:text-grey cookies-find-out-more-btn border-b" href="/cookies">Find out more</a></p>
+                </div>
+              </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+        <nav id="mobile-footer-menu" aria-label="Footer" style="z-index:2147483001;" class="native-tabs-hidden grid grid-cols-4 text-center sticky pb-5 pt-3 bottom-0 h-8 bg-white dark:bg-darkestGrey border-t border-darkGrey dark:border-darkerGrey shadow-2xl xl:hidden block z-1000">
+          <a href="/">
+            <div class="col-span-1">
+                <title>Visit homepage</title>
+                <svg xmlns="http://www.w3.org/2000/svg" role="button" class="inline h-6 w-6 text-darkestGrey dark:text-grey" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </div>
+</a>          <a href="/stats/jovel?year=2025">
+            <div class="col-span-1">
+                <svg xmlns="http://www.w3.org/2000/svg" role="button" class="inline h-6 w-6 text-darkestGrey dark:text-grey" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <title>Visit your stats page</title>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+            </div>
+</a>          <a href="/community">
+            <div class="col-span-1">
+                <title>Visit the community page</title>
+                <svg xmlns="http://www.w3.org/2000/svg" role="button" class="inline h-6 w-6 text-darkestGrey dark:text-grey" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+</a>          <a href="/profile/jovel">
+            <div class="col-span-1">
+                <svg xmlns="http://www.w3.org/2000/svg" role="button" class="inline h-6 w-6 text-darkestGrey dark:text-grey" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <title>Visit your profile page</title>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+</a>        </nav>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+      <script>
+  window.fwSettings={
+      'widget_id':79000000885
+    };
+  !function(){if("function"!=typeof window.FreshworksWidget){var n=function(){n.q.push(arguments)};n.q=[],window.FreshworksWidget=n}}()
+</script>
+<script type='text/javascript' src='https://euc-widget.freshworks.com/widgets/79000000885.js' async defer></script>
+
+      <input type="hidden" name="cu_email" id="cu_email" value="jmarkxr@gmail.com" autocomplete="off" />
+      <input type="hidden" name="cu_id" id="cu_id" value="00705f59-2ba3-4d6e-859e-29c5867f78d0" autocomplete="off" />
+      <input type="hidden" name="cu_status" id="cu_status" value="1" autocomplete="off" />
+      <input type="hidden" name="cu_theme" id="cu_theme" value="system" autocomplete="off" />
+  </body>
+</html>

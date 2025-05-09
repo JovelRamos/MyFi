@@ -5,17 +5,14 @@ import re
 def get_book_reviews(book_id, page=1, output_file=None):
     url = f"https://app.thestorygraph.com/book_reviews/{book_id}"
     
-    # Add timestamp parameter similar to the original request
-    current_timestamp = int(time.time() * 1000)  # Current time in milliseconds
     params = {
-        'page': page,
-        '_': str(current_timestamp)
+        'page': page
     }
     
     headers = {
         'Host': 'app.thestorygraph.com',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:138.0) Gecko/20100101 Firefox/138.0',
-        'Accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
+        'Accept': 'text/html, */*; q=0.01',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br, zstd',
         'Referer': f'https://app.thestorygraph.com/book_reviews/{book_id}',

@@ -11,6 +11,71 @@ import re
 from datetime import datetime, timedelta
 import random
 
+
+def get_book_reviews(book_id, page=1):
+    """
+    Bypasses The StoryGraph's authentication to retrieve review content.
+    
+    Args:
+        book_id: The StoryGraph book ID
+        page: Page number of reviews to fetch
+        
+    Returns:
+        BeautifulSoup object with parsed HTML content
+    """
+    url = f"https://app.thestorygraph.com/book_reviews/{book_id}"
+    
+    params = {
+        'page': page
+    }
+    
+    headers = {
+        'Host': 'app.thestorygraph.com',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:138.0) Gecko/20100101 Firefox/138.0',
+        'Accept': 'text/html, */*; q=0.01',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Referer': f'https://app.thestorygraph.com/book_reviews/{book_id}',
+        'X-CSRF-Token': 'z6KV0aagO5Xl0QKh2QWAhibU-HOcGdfTemAzYiRdwDCaMR42g2EdOc7p1UxoHUHLGdhHQoBqxvlrhGtXM3LiHg',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'Connection': 'keep-alive',
+        'TE': 'trailers'
+    }
+    
+    # These cookies must be updated periodically when they expire
+    cookies = {
+        'cf_clearance': 'C3Gbh8M_UbLXevI51HYteRqVS83x7xbc9IuuXknnfy8-1746209107-1.2.1.1-Yb2Yyc39iObEm1KeOFQNBnQn3u64q4kck813uDkwrX8co9cWdL7grU5J5PzJIyWm3hDNOX9igsDmzBNC5y5DeCYh.7sBYavDyObXXfdPBtFhjH9GfehpB2cj2NQbI.Jlp797QklaM2Hbvc1Sbbop8RC9me9EUXqTjOgzpcSLr8y0LxwpwO7dQayw6CSm1uYP6MyNMS4OjaFn_kN7A3WAKjwyq02ie_cPDgQpLhcSyBh1_j.y5QMIPm1eLWRtup9XLVPid7JdHns2i5jHuApQb8jZGCt6hgv9FgFy_vDwLNwd3qpQbraUzUeXExam4D6PPANCrWw1E5JCj3zQf6IpecvZn5KkOzSVWJBOQbbDzDN0ZeO4KvCHKFLmRRTvpNEa',
+        '_storygraph_session': '7lpM%2BIhUQfVB1%2BWaPGpW1ZpYrEAfeuZYUoDwRdCHBwxSDZjjpc9ymP2JmPzMaKd6DmtrDoWGuB8pC%2BcYEcPEA%2BG1YRj4OE%2FA8QTy8YX1aZq7yftX8ugAFtpnX4kev3JBT4jHM6j%2FYkdmdLpYgDmRoJ1dO48ukGA1%2FiIsR%2B02c2k1w1uA4WuoggAEcGA2ApaSLTMXPLmnppmAlN6ASeWbQcxPnMBYs8yJ868SwI%2FjC11eMcXEcrLyJ%2F36bTXTE1CsI5jIhhemkOhJLk8EeuLBhKXcf0KTqthLXNukOfEi2erWDhN3jPNUssQFpr2pbkDTAnpxMtphl4kPlEPGB0sEtdcixsZ54zcblh1Ebpqw2t2CPWxHL9SdiXLQ8wTihZo%2BisnrMcYLAkCc4dQd1idgXOffTeU7ZhB%2BY3QNZaxRLjis3lgGP1b7mpRS4VUrwX91H%2BySzvyCVbOPtM25D%2FEq45gXliHbq0Mio9NNhB3oaYDYpGDttgAI5o427jm21tl%2BO5iGeYWH28anVjbJbRA3peFmrr5y90ic6GzCwjyf2qWvnXpPKGO1D8VvDScpJb7cJqHASVW24IDyJdJIlVr518C%2Fk0Wx--vkuioLUbyaihqj21--T1UM0XZldErpycUJ5jmQiw%3D%3D',
+        'remember_user_token': 'eyJfcmFpbHMiOnsibWVzc2FnZSI6Ilcxc2lNREEzTURWbU5Ua3RNbUpoTXkwMFpEWmxMVGcxT1dVdE1qbGpOVGcyTjJZM09HUXdJbDBzSWlReVlTUXhNU1JhVEhCdVpsVnhjUzlrTWpVMlNuUlBhM1JUYmxsUElpd2lNVGMwTmpJd09UazFNeTQ1T0RJMk5qUTJJbDA9IiwiZXhwIjoiMjA0NS0wNS0wMlQxODoxOToxMy45ODJaIiwicHVyIjoiY29va2llLnJlbWVtYmVyX3VzZXJfdG9rZW4ifX0%3D--ee56488e93d85d76b000ee99b4e33683f054f1c6'
+    }
+    
+    print(f"Fetching reviews for book ID {book_id}, page {page}...")
+    response = requests.get(url, params=params, headers=headers, cookies=cookies)
+    
+    if response.status_code == 200:
+        print(f"Request successful with status code: {response.status_code}")
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Quick validation that we got expected content
+        review_panes = soup.select('.standard-pane')
+        print(f"Found {len(review_panes)} standard panes")
+        
+        # Save response for debugging if no panes found
+        if len(review_panes) == 0:
+            with open(f"debug_response_{book_id}_{page}.html", "w", encoding="utf-8") as f:
+                f.write(response.text)
+            print(f"Saved response to debug_response_{book_id}_{page}.html for debugging")
+            
+        return soup
+    else:
+        print(f"Request failed with status code: {response.status_code}")
+        return None
+
+
+
 class StoryGraphScraper:
     def __init__(self, csv_path, mongo_uri):
         """
@@ -124,20 +189,15 @@ class StoryGraphScraper:
         Scrape a single page of ratings for a book by parsing the network response.
         
         Returns:
-            tuple: (ratings_list, has_next_page)
+            tuple: (ratings_list, has_next_page, completed)
         """
-        url = f"{self.base_url.format(book_id)}?page={page}"
-        
         try:
-            # Make the request with our headers
-            response = requests.get(url, headers=self.headers, timeout=30)
-            response.raise_for_status()  # Raise exception for bad status codes
+            # Use our authentication bypass function to get the page content
+            soup = get_book_reviews(book_id, page)
             
-            # Get the HTML content
-            html_content = response.text
-            
-            # Parse the HTML
-            soup = BeautifulSoup(html_content, 'html.parser')
+            if not soup:
+                print(f"Failed to get content for book {book_id}, page {page}")
+                return [], False, True  # Mark as completed if we can't get the page
             
             # Extract ratings
             ratings = []
@@ -148,33 +208,61 @@ class StoryGraphScraper:
             
             for pane in review_panes:
                 try:
-                    # Extract username - look for the profile link in the heading
-                    username_elem = pane.select_one('a.standard-link[href^="/profile/"]')
+                    # Extract username - look for profile link with updated selector
+                    username_elem = pane.select_one('a.inverse-link[href^="/profile/"]')
+                    
+                    if not username_elem:
+                        # Fallback to the old selector just in case
+                        username_elem = pane.select_one('a[href^="/profile/"]')
                     
                     if username_elem:
                         # Extract username from href attribute
                         href = username_elem.get('href', '')
                         username = href.replace('/profile/', '') if '/profile/' in href else None
                         
-                        # Extract rating from the paragraph with the star icon
-                        rating_elem = pane.select_one('p.mb-2:has(svg.icon-star)')
+                        # Look for the rating div with aria-label containing "Book rating"
+                        rating_div = pane.select_one('div[aria-label*="Book rating"]')
                         
-                        if rating_elem:
-                            # Get text content and clean it
-                            rating_text = rating_elem.get_text(strip=True)
-                            try:
-                                # Extract the rating value (first part of text)
-                                rating_value = float(rating_text.strip().split()[0])
-                                
-                                # Add to ratings list
-                                ratings.append({
-                                    "username": username,
-                                    "rating": rating_value,
-                                    "book_id": book_id,
-                                    "page": page
-                                })
-                            except (ValueError, IndexError):
-                                pass
+                        if rating_div:
+                            # Find the rating text in the span 
+                            rating_span = rating_div.select_one('span.text-sm, span.text-base')
+                            
+                            if rating_span:
+                                rating_text = rating_span.get_text(strip=True)
+                                try:
+                                    rating_value = float(rating_text)
+                                    
+                                    # Add to ratings list
+                                    ratings.append({
+                                        "username": username,
+                                        "rating": rating_value,
+                                        "book_id": book_id,
+                                        "page": page
+                                    })
+                                    print(f"Found rating: {username} rated {rating_value}")
+                                except (ValueError, IndexError) as e:
+                                    print(f"Could not parse rating value '{rating_text}': {e}")
+                        else:
+                            # Fallback to the old method
+                            # Try finding star icons
+                            star_icons = pane.select('svg.icon-star')
+                            if star_icons:
+                                # Count stars or look for a text near them
+                                parent_elem = star_icons[0].parent.parent
+                                rating_text = parent_elem.get_text(strip=True)
+                                try:
+                                    # Extract the first number from the text
+                                    rating_value = float(re.search(r'(\d+\.?\d*)', rating_text).group(1))
+                                    
+                                    ratings.append({
+                                        "username": username,
+                                        "rating": rating_value,
+                                        "book_id": book_id,
+                                        "page": page
+                                    })
+                                    print(f"Found rating (fallback method): {username} rated {rating_value}")
+                                except (AttributeError, ValueError) as e:
+                                    print(f"Failed to extract rating using fallback: {e}")
                 except Exception as e:
                     print(f"Error processing a review: {e}")
             
@@ -182,14 +270,15 @@ class StoryGraphScraper:
             next_page_link = soup.select_one('.pagination a[rel="next"]')
             has_next_page = next_page_link is not None
             
-            # Set completed status based on number of reviews (0 means we've reached the end)
+            # Set completed status based on number of ratings (0 means we've reached the end)
             completed = len(ratings) == 0
             
             return ratings, has_next_page, completed
             
-        except requests.RequestException as e:
-            print(f"Error accessing {url}: {e}")
+        except Exception as e:
+            print(f"Error accessing book {book_id}, page {page}: {e}")
             return [], False, True  # Mark as completed on error to prevent endless retries
+
         
     def batch_scrape(self, max_books_per_day=20, max_pages_per_book=None, 
                     delay_between_books=120, start_from_book=None):
@@ -439,7 +528,7 @@ class StoryGraphScraper:
                     break
                 
                 # Scrape current page
-                ratings, _, _ = self.scrape_ratings_page(book_id, current_page)
+                ratings, has_next, is_completed = self.scrape_ratings_page(book_id, current_page)
                 
                 # Save ratings to MongoDB
                 saved_count = self.save_ratings_to_mongodb(ratings)
@@ -471,9 +560,6 @@ class StoryGraphScraper:
                 time.sleep(self.request_delay)
         
         print(f"Finished scraping book {book_id}. Total ratings saved: {total_ratings}")
-
-
-
     
     def get_user_ratings_count(self):
         """Get statistics about users and their ratings."""
@@ -623,4 +709,3 @@ if __name__ == "__main__":
     finally:
         if 'scraper' in locals():
             scraper.close()
-
