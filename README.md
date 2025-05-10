@@ -2,6 +2,18 @@
 
 Hey there! I'm excited to share MyFi with you – my passion project that brings sci-fi book recommendations into the 21st century. It's a full-stack adventure where I've combined my love for coding, machine learning, and of course, science fiction & fantasy literature.
 
+## Demo
+
+Home Page:
+![Home Page](screenshots/landing.jpeg)
+
+My Books Page:
+![About Me Page](screenshots/landing.jpeg)
+
+Backend Peek:
+![Backend](screenshots/backend_sneakpeek.png)
+
+
 ## About MyFi
 
 I built MyFi from scratch as an end-to-end solution that connects readers with their next favorite sci-fi books. It's the culmination of my work across frontend development, API design, and data pipeline engineering – all working together to create personalized reading experiences.

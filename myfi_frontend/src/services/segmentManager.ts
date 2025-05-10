@@ -105,7 +105,7 @@ export class SegmentManager {
                 if (recommendedBooks.length > 0) {
                     segments.push({
                         id: 'ml-recommendations',
-                        title: 'Because You\'ve Read',
+                        title: 'Based On Your Shelves',
                         type: 'RECOMMENDED_FOR_YOU',
                         books: this.adjustArrayToMultipleOfSix(recommendedBooks),
                         priority: 3,

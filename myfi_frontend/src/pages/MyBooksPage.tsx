@@ -15,22 +15,39 @@ interface BookNode extends SimulationNodeDatum {
   status: 'reading' | 'to-read' | 'finished' | 'recommended';
   x?: number;
   y?: number;
+  rating?: number;
+  similarityScore?: number; // For positioning based on similarity
+  sourceBookId?: string; // For recommended books, links to the source book
+}
+
+// For item-based recommendation connections
+interface BookConnection {
+  source: string;
+  target: string;
+  strength: number; // Similarity strength
+  type: 'similarity' | 'recommendation';
 }
 
 function BookClusterMap({ 
   books, 
-  readingStatus, 
-  recommendations 
+  readingStatus,
+  recommendations,
+  similarityData,
+  ratings
 }: { 
   books: Book[], 
   readingStatus: Record<string, 'reading' | 'to-read' | 'finished'>,
-  recommendations: Book[]
+  recommendations: Book[],
+  similarityData: Record<string, Record<string, number>>, // book -> similar book -> score
+  ratings: Record<string, number> // book id -> rating (1-5)
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [bookStatus, setBookStatus] = useState<'reading' | 'to-read' | 'finished' | 'recommended' | null>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [clusterMethod, setClusterMethod] = useState<'status' | 'similarity' | 'genre'>('similarity');
   
+  // Update dimensions when window resizes
   useEffect(() => {
     const updateDimensions = () => {
       if (svgRef.current?.parentElement) {
@@ -55,11 +72,63 @@ function BookClusterMap({
     
     // Combine user books and recommendations
     const allBooks = [...books];
+
+    // Track connections between books
+    const connections: BookConnection[] = [];
+    
+    // Process recommendations based on 5-star books
+    const highlyRatedBookIds = Object.entries(ratings)
+        .filter(([_, rating]) => rating >= 5)
+        .map(([bookId]) => bookId);
+    
+    // Create a map to track which recommendations come from which source books
+    const recommendationSources: Record<string, string[]> = {};
     
     // Add recommendations if they don't already exist in user books
     recommendations.forEach(rec => {
       if (!allBooks.some(book => book._id === rec._id)) {
-        allBooks.push(rec);
+        // Set source book information from 5-star book that led to this recommendation
+        // Find which 5-star books this recommendation is connected to
+        const sourcesForRec = highlyRatedBookIds.filter(bookId => 
+          similarityData[bookId]?.[rec._id] > 0.5 // Threshold for similarity
+        );
+        
+        if (sourcesForRec.length > 0) {
+          recommendationSources[rec._id] = sourcesForRec;
+          
+          // Add connections to visualization
+          sourcesForRec.forEach(sourceId => {
+            const similarityScore = similarityData[sourceId][rec._id] || 0;
+            connections.push({
+              source: sourceId,
+              target: rec._id,
+              strength: similarityScore,
+              type: 'recommendation'
+            });
+          });
+          
+          allBooks.push(rec);
+        }
+      }
+    });
+    
+    // Add similarity connections between existing books
+    allBooks.forEach(book1 => {
+      if (similarityData[book1._id]) {
+        Object.entries(similarityData[book1._id])
+          .filter(([book2Id, score]) => 
+            score > 0.7 && // Only show strong connections
+            book1._id < book2Id && // Avoid duplicate connections
+            allBooks.some(b => b._id === book2Id) // Only connect to books in our visualization
+          )
+          .forEach(([book2Id, score]) => {
+            connections.push({
+              source: book1._id,
+              target: book2Id,
+              strength: score,
+              type: 'similarity'
+            });
+          });
       }
     });
     
@@ -68,80 +137,163 @@ function BookClusterMap({
     // Create nodes from books
     const nodes: BookNode[] = allBooks.map(book => {
       // Check if book is a recommendation
-      const isRecommendation = recommendations.some(rec => rec._id === book._id) && 
-                             !Object.keys(readingStatus).includes(book._id);
+      const isRecommendation = recommendationSources[book._id] !== undefined;
+      
+      // Get average similarity score for positioning
+      let similarityScore = 0;
+      let connectionCount = 0;
+      
+      connections.forEach(conn => {
+        if (conn.source === book._id || conn.target === book._id) {
+          similarityScore += conn.strength;
+          connectionCount += 1;
+        }
+      });
+      
+      if (connectionCount > 0) {
+        similarityScore /= connectionCount;
+      }
+      
+      const sourceBookId = isRecommendation ? recommendationSources[book._id][0] : undefined;
       
       return {
         id: book._id,
         book: book,
-        radius: isRecommendation ? 35 : 40, // Make recommendations slightly smaller
-        status: isRecommendation ? 'recommended' : (readingStatus[book._id] || 'to-read')
+        radius: isRecommendation ? 35 : 40,
+        status: isRecommendation ? 'recommended' : (readingStatus[book._id] || 'to-read'),
+        rating: ratings[book._id],
+        similarityScore: similarityScore,
+        sourceBookId: sourceBookId
       };
     });
 
     // Define color scale for different book statuses
     const colorScale = d3.scaleOrdinal<string>()
       .domain(['reading', 'to-read', 'finished', 'recommended'])
-      .range(['#60A5FA', '#6EE7B7', '#F87171', '#C084FC']); // Purple for recommendations
+      .range(['#60A5FA', '#6EE7B7', '#F87171', '#C084FC']);
 
     // Create force simulation
     const simulation = d3.forceSimulation(nodes)
-      .force('charge', d3.forceManyBody().strength(-100))
+      .force('charge', d3.forceManyBody().strength(-200))
       .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2))
-      .force('collision', d3.forceCollide().radius(d => (d as BookNode).radius + 5))
+      .force('collision', d3.forceCollide().radius(d => (d as BookNode).radius + 10))
       .on('tick', ticked);
 
-    // Group clusters by status
-    const forceX = d3.forceX<BookNode>().strength(0.1);
-    const forceY = d3.forceY<BookNode>().strength(0.1);
-    
-    // Adjust positioning based on book status - creating four clusters
-    forceX.x(d => {
-      switch(d.status) {
-        case 'reading': return dimensions.width * 0.25;
-        case 'to-read': return dimensions.width * 0.75;
-        case 'finished': return dimensions.width * 0.25;
-        case 'recommended': return dimensions.width * 0.75;
-        default: return dimensions.width * 0.5;
-      }
-    });
-    
-    forceY.y(d => {
-      switch(d.status) {
-        case 'reading': return dimensions.height * 0.75;
-        case 'to-read': return dimensions.height * 0.75;
-        case 'finished': return dimensions.height * 0.25;
-        case 'recommended': return dimensions.height * 0.25;
-        default: return dimensions.height * 0.5;
-      }
-    });
-    
-    simulation.force('x', forceX).force('y', forceY);
+    // Define forces based on selected clustering method
+    if (clusterMethod === 'status') {
+      // Cluster by reading status
+      simulation
+        .force('x', d3.forceX<BookNode>().strength(0.1).x(d => {
+          switch(d.status) {
+            case 'reading': return dimensions.width * 0.25;
+            case 'to-read': return dimensions.width * 0.75;
+            case 'finished': return dimensions.width * 0.25;
+            case 'recommended': return dimensions.width * 0.75;
+            default: return dimensions.width * 0.5;
+          }
+        }))
+        .force('y', d3.forceY<BookNode>().strength(0.1).y(d => {
+          switch(d.status) {
+            case 'reading': return dimensions.height * 0.75;
+            case 'to-read': return dimensions.height * 0.75;
+            case 'finished': return dimensions.height * 0.25;
+            case 'recommended': return dimensions.height * 0.25;
+            default: return dimensions.height * 0.5;
+          }
+        }));
+    } else if (clusterMethod === 'similarity') {
+      // Position books by similarity - similar books cluster together
+      // Use multidimensional scaling approach
+      
+      // Add forces based on book connections
+      const linkForce = d3.forceLink<BookNode, BookConnection>()
+        .id(d => d.id)
+        .links(connections)
+        .distance(d => 200 * (1 - d.strength)) // Similar books are closer
+        .strength(d => d.strength * 0.5);
+      
+      simulation.force('link', linkForce);
+      
+      // Add forces for recommendations to stay close to source books
+      nodes.filter(d => d.sourceBookId).forEach(node => {
+        if (node.sourceBookId) {
+          const sourceNode = nodes.find(n => n.id === node.sourceBookId);
+          if (sourceNode && sourceNode.x && sourceNode.y) {
+            // Initialize position near source
+            node.x = sourceNode.x + (Math.random() - 0.5) * 50;
+            node.y = sourceNode.y + (Math.random() - 0.5) * 50;
+          }
+        }
+      });
+      
+      // Add light status-based clustering to prevent complete chaos
+      simulation
+        .force('x', d3.forceX<BookNode>().strength(0.02).x(d => {
+          // Very weak status-based clustering
+          switch(d.status) {
+            case 'reading': return dimensions.width * 0.4;
+            case 'to-read': return dimensions.width * 0.6;
+            case 'finished': return dimensions.width * 0.4;
+            case 'recommended': return dimensions.width * 0.6;
+            default: return dimensions.width * 0.5;
+          }
+        }))
+        .force('y', d3.forceY<BookNode>().strength(0.02).y(d => {
+          // Very weak status-based clustering
+          switch(d.status) {
+            case 'reading': return dimensions.height * 0.6;
+            case 'to-read': return dimensions.height * 0.6;
+            case 'finished': return dimensions.height * 0.4;
+            case 'recommended': return dimensions.height * 0.4;
+            default: return dimensions.height * 0.5;
+          }
+        }));
+    } else if (clusterMethod === 'genre') {
+      // Placeholder for genre-based clustering
+      // You would need to extract genres from your book data
+    }
 
     // Create SVG elements
     const nodesG = svg.append('g')
       .attr('class', 'nodes');
-
-    // Add cluster labels
-    const labels = [
-      { text: "Currently Reading", x: dimensions.width * 0.25, y: dimensions.height * 0.9, color: '#60A5FA' },
-      { text: "Reading List", x: dimensions.width * 0.75, y: dimensions.height * 0.9, color: '#6EE7B7' },
-      { text: "Finished Books", x: dimensions.width * 0.25, y: dimensions.height * 0.1, color: '#F87171' },
-      { text: "Recommendations", x: dimensions.width * 0.75, y: dimensions.height * 0.1, color: '#C084FC' }
-    ];
-
-    svg.selectAll('.cluster-label')
-      .data(labels)
+      
+    // Draw connection lines first (so they appear behind nodes)
+    const connectionLinesGroup = svg.append('g')
+      .attr('class', 'connections');
+      
+    const connectionLines = connectionLinesGroup
+      .selectAll('.connection-line')
+      .data(connections)
       .enter()
-      .append('text')
-      .attr('class', 'cluster-label')
-      .attr('x', d => d.x)
-      .attr('y', d => d.y)
-      .attr('text-anchor', 'middle')
-      .attr('fill', d => d.color)
-      .attr('font-weight', 'bold')
-      .attr('font-size', '18px')
-      .text(d => d.text);
+      .append('line')
+      .attr('class', d => `connection-line ${d.type}`)
+      .attr('stroke', d => d.type === 'recommendation' ? '#C084FC' : '#8B5CF6')
+      .attr('stroke-opacity', d => d.type === 'recommendation' ? 0.7 : 0.3)
+      .attr('stroke-width', d => d.strength * 3)
+      .attr('stroke-dasharray', d => d.type === 'recommendation' ? '5,5' : '3,3');
+
+    // Add cluster method labels if using status-based clustering
+    if (clusterMethod === 'status') {
+      const labels = [
+        { text: "Currently Reading", x: dimensions.width * 0.25, y: dimensions.height * 0.9, color: '#60A5FA' },
+        { text: "Reading List", x: dimensions.width * 0.75, y: dimensions.height * 0.9, color: '#6EE7B7' },
+        { text: "Finished Books", x: dimensions.width * 0.25, y: dimensions.height * 0.1, color: '#F87171' },
+        { text: "Recommendations", x: dimensions.width * 0.75, y: dimensions.height * 0.1, color: '#C084FC' }
+      ];
+
+      svg.selectAll('.cluster-label')
+        .data(labels)
+        .enter()
+        .append('text')
+        .attr('class', 'cluster-label')
+        .attr('x', d => d.x)
+        .attr('y', d => d.y)
+        .attr('text-anchor', 'middle')
+        .attr('fill', d => d.color)
+        .attr('font-weight', 'bold')
+        .attr('font-size', '18px')
+        .text(d => d.text);
+    }
 
     // Add book nodes (circles with cover images)
     const node = nodesG.selectAll('.node')
@@ -164,6 +316,16 @@ function BookClusterMap({
       .attr('id', d => `clip-${d.id}`)
       .append('circle')
       .attr('r', d => d.radius);
+      
+    // Add highlight for 5-star rated books
+    node.filter(d => d.rating && d.rating >= 5)
+      .append('circle')
+      .attr('r', d => d.radius + 6)
+      .attr('fill', 'none')
+      .attr('stroke', '#FFD700') // Gold for 5-star books
+      .attr('stroke-width', 3)
+      .attr('stroke-dasharray', '0')
+      .attr('class', 'five-star-highlight');
 
     // Add glowing effect for recommendations
     node.filter(d => d.status === 'recommended')
@@ -194,7 +356,30 @@ function BookClusterMap({
       .attr('clip-path', d => `url(#clip-${d.id})`)
       .attr('preserveAspectRatio', 'xMidYMid slice');
     
-    // Add small recommendation badge for recommended books
+    // Add rating indicator for rated books
+    node.filter(d => d.rating && d.rating > 0)
+      .append('g')
+      .attr('class', 'rating')
+      .attr('transform', d => `translate(0, ${d.radius + 16})`)
+      .each(function(d) {
+        if (!d.rating) return;
+        const rating = Math.round(d.rating);
+        const g = d3.select(this);
+        const starSize = 6;
+        const totalWidth = rating * starSize * 2;
+        
+        for (let i = 0; i < rating; i++) {
+          g.append('text')
+            .attr('x', i * starSize * 2 - totalWidth/2 + starSize)
+            .attr('y', 0)
+            .attr('text-anchor', 'middle')
+            .attr('fill', '#FFD700') // Gold stars
+            .attr('font-size', starSize * 2)
+            .text('★');
+        }
+      });
+    
+    // Add small badge for recommended books
     node.filter(d => d.status === 'recommended')
       .append('circle')
       .attr('r', 10)
@@ -217,70 +402,42 @@ function BookClusterMap({
     
     // Add tooltip on hover
     node.append('title')
-      .text(d => `${d.book.title} by ${d.book.author_names?.[0] || 'Unknown'}`);
+      .text(d => {
+        let title = `${d.book.title} by ${d.book.author_names?.[0] || 'Unknown'}`;
+        if (d.rating) title += ` (${d.rating}★)`;
+        return title;
+      });
 
-    // Add subtle connection lines between books by same author
-    const authorBooks = new Map<string, string[]>();
-    
-    // Collect books by author
-    nodes.forEach(node => {
-      const author = node.book.author_names?.[0];
-      if (author) {
-        if (!authorBooks.has(author)) {
-          authorBooks.set(author, []);
-        }
-        authorBooks.get(author)?.push(node.id);
-      }
-    });
-    
-    // Draw connecting lines for authors with multiple books
-    const connections: { source: string; target: string }[] = [];
-    
-    authorBooks.forEach((bookIds) => {
-      if (bookIds.length > 1) {
-        for (let i = 0; i < bookIds.length - 1; i++) {
-          for (let j = i + 1; j < bookIds.length; j++) {
-            connections.push({
-              source: bookIds[i],
-              target: bookIds[j]
-            });
-          }
-        }
-      }
-    });
-    
-    const line = d3.line();
-    
-    const connectionLines = svg.append('g')
-      .attr('class', 'connections')
-      .selectAll('.connection')
-      .data(connections)
-      .enter()
-      .append('path')
-      .attr('class', 'connection')
-      .attr('stroke', '#8B5CF6')
-      .attr('stroke-opacity', 0.2)
-      .attr('stroke-width', 1.5)
-      .attr('stroke-dasharray', '3,3')
-      .attr('fill', 'none');
-    
     function ticked() {
+      // Update node positions
       node.attr('transform', d => `translate(${d.x},${d.y})`);
       
       // Update connection lines
-      connectionLines.attr('d', function(d) {
-        const source = nodes.find(n => n.id === d.source);
-        const target = nodes.find(n => n.id === d.target);
-        
-        if (source && target && source.x && source.y && target.x && target.y) {
-          return line([[source.x, source.y], [target.x, target.y]]);
-        }
-        return '';
-      });
+      connectionLines
+        .attr('x1', d => {
+          const source = nodes.find(n => n.id === d.source);
+          return source?.x || 0;
+        })
+        .attr('y1', d => {
+          const source = nodes.find(n => n.id === d.source);
+          return source?.y || 0;
+        })
+        .attr('x2', d => {
+          const target = nodes.find(n => n.id === d.target);
+          return target?.x || 0;
+        })
+        .attr('y2', d => {
+          const target = nodes.find(n => n.id === d.target);
+          return target?.y || 0;
+        });
 
       // Make recommendations gently pulse
       d3.selectAll('.recommendation-glow')
         .attr('stroke-opacity', 0.3 + 0.3 * Math.sin(Date.now() / 1000));
+      
+      // Make 5-star books gently pulse with gold glow
+      d3.selectAll('.five-star-highlight')
+        .attr('stroke-opacity', 0.7 + 0.3 * Math.sin(Date.now() / 800));
     }
 
     function dragstarted(event: any, d: BookNode) {
@@ -309,10 +466,49 @@ function BookClusterMap({
     return () => {
       simulation.stop();
     };
-  }, [books, readingStatus, recommendations, dimensions]);
+  }, [books, readingStatus, recommendations, similarityData, ratings, dimensions, clusterMethod]);
 
   return (
     <div className="w-full h-full relative">
+      <div className="mb-4 flex justify-between items-center">
+        <div className="flex space-x-2">
+          <button
+            className={`px-3 py-1 rounded text-sm ${clusterMethod === 'similarity' ? 'bg-indigo-600' : 'bg-gray-700'}`}
+            onClick={() => setClusterMethod('similarity')}
+          >
+            By Similarity
+          </button>
+          <button
+            className={`px-3 py-1 rounded text-sm ${clusterMethod === 'status' ? 'bg-indigo-600' : 'bg-gray-700'}`}
+            onClick={() => setClusterMethod('status')}
+          >
+            By Status
+          </button>
+        </div>
+        <div className="flex items-center space-x-4 text-sm">
+          <div className="flex items-center">
+            <span className="w-3 h-3 inline-block rounded-full mr-1" style={{backgroundColor: '#60A5FA'}}></span>
+            <span>Reading</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-3 h-3 inline-block rounded-full mr-1" style={{backgroundColor: '#6EE7B7'}}></span>
+            <span>To Read</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-3 h-3 inline-block rounded-full mr-1" style={{backgroundColor: '#F87171'}}></span>
+            <span>Finished</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-3 h-3 inline-block rounded-full mr-1" style={{backgroundColor: '#C084FC'}}></span>
+            <span>Recommended</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-3 h-3 inline-block border-2 border-yellow-400 rounded-full mr-1"></span>
+            <span>5★ Books</span>
+          </div>
+        </div>
+      </div>
+      
       <svg 
         ref={svgRef} 
         className="w-full bg-gray-900 rounded-xl" 
@@ -343,6 +539,20 @@ function BookClusterMap({
             />
             <h3 className="text-xl font-bold text-white">{selectedBook.title}</h3>
             <p className="text-gray-300 mb-2">{selectedBook.author_names?.[0] || 'Unknown author'}</p>
+            
+            {ratings[selectedBook._id] && (
+              <div className="flex mb-2">
+                {Array.from({length: 5}).map((_, i) => (
+                  <span 
+                    key={i} 
+                    className={`text-xl ${i < ratings[selectedBook._id] ? 'text-yellow-400' : 'text-gray-600'}`}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+            )}
+            
             <p className="text-gray-400 text-sm mb-3">
               {bookStatus === 'reading' ? 'Currently Reading' : 
                bookStatus === 'to-read' ? 'On Reading List' : 
@@ -369,7 +579,10 @@ function MyBooksPage() {
   const [recommendations, setRecommendations] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [readingStatus, setReadingStatus] = useState<Record<string, 'reading' | 'to-read' | 'finished'>>({});
+  const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [similarityData, setSimilarityData] = useState<Record<string, Record<string, number>>>({});
   
+  // Fetch books and user data
   useEffect(() => {  
     const fetchBooks = async () => {
       try {
@@ -388,48 +601,136 @@ function MyBooksPage() {
 
     fetchBooks();
   }, []);
-
-  // Fetch recommendations based on user's reading history
+  
+  // Fetch book ratings
   useEffect(() => {
-    const fetchRecommendations = async () => {
+    const fetchRatings = async () => {
       try {
-        // Don't generate recommendations if the user hasn't finished any books
-        if (finishedBooks.length === 0) {
-          return;
+        // In a real app, fetch from your API
+        // For now, we'll simulate with random ratings for finished books
+        const ratingsMap: Record<string, number> = {};
+        
+        finishedBooks.forEach(item => {
+          // Generate rating 1-5, with bias toward higher ratings for finished books
+          const rating = Math.max(3, Math.round(Math.random() * 2 + 3)); // 3-5 star ratings
+          ratingsMap[item.bookId] = rating;
+        });
+        
+        setRatings(ratingsMap);
+      } catch (error) {
+        console.error('Failed to fetch ratings:', error);
+      }
+    };
+
+    if (finishedBooks.length > 0) {
+      fetchRatings();
+    }
+  }, [finishedBooks]);
+  
+  // Fetch similarity data and recommendations
+  useEffect(() => {
+    const fetchSimilarityData = async () => {
+      try {
+        // In a real app, fetch from your API
+        // For demonstration, we'll simulate similarity data
+        const similarityMap: Record<string, Record<string, number>> = {};
+        
+        const allBookIds = books.map(book => book._id);
+        
+        // Create clusters of similar books
+        const bookClusters: string[][] = [];
+        let remainingBooks = [...allBookIds];
+        
+        // Create 10-15 clusters of books
+        while (remainingBooks.length > 0) {
+          const clusterSize = Math.min(
+            Math.floor(Math.random() * 5) + 2, // 2-6 books per cluster
+            remainingBooks.length
+          );
+          
+          const cluster = remainingBooks.slice(0, clusterSize);
+          bookClusters.push(cluster);
+          remainingBooks = remainingBooks.slice(clusterSize);
         }
         
-        // Here you would normally fetch recommendations from your API
-        // For now, we'll simulate by selecting 4-6 random books not in user's lists
+        // Generate similarity scores within clusters
+        bookClusters.forEach(cluster => {
+          for (let i = 0; i < cluster.length; i++) {
+            const bookId1 = cluster[i];
+            if (!similarityMap[bookId1]) {
+              similarityMap[bookId1] = {};
+            }
+            
+            for (let j = 0; j < cluster.length; j++) {
+              if (i !== j) {
+                const bookId2 = cluster[j];
+                // Books in same cluster have high similarity (0.7-0.95)
+                similarityMap[bookId1][bookId2] = 0.7 + Math.random() * 0.25;
+              }
+            }
+          }
+        });
+        
+        // Add some cross-cluster similarities (lower scores)
+        for (let i = 0; i < 20; i++) { // Add some random connections
+          const cluster1 = bookClusters[Math.floor(Math.random() * bookClusters.length)];
+          const cluster2 = bookClusters[Math.floor(Math.random() * bookClusters.length)];
+          
+          if (cluster1 !== cluster2 && cluster1.length > 0 && cluster2.length > 0) {
+            const book1 = cluster1[Math.floor(Math.random() * cluster1.length)];
+            const book2 = cluster2[Math.floor(Math.random() * cluster2.length)];
+            
+            if (!similarityMap[book1]) similarityMap[book1] = {};
+            if (!similarityMap[book2]) similarityMap[book2] = {};
+            
+            // Lower similarity for cross-cluster (0.3-0.6)
+            const similarity = 0.3 + Math.random() * 0.3;
+            similarityMap[book1][book2] = similarity;
+            similarityMap[book2][book1] = similarity;
+          }
+        }
+        
+        setSimilarityData(similarityMap);
+        
+        // Generate recommendations based on 5-star books and similarity
         const userBookIds = new Set([
           ...readingList,
           ...currentlyReading,
           ...finishedBooks.map(fb => fb.bookId)
         ]);
         
-        const candidateBooks = books.filter(book => !userBookIds.has(book._id));
+        const highlyRatedBooks = Object.entries(ratings)
+          .filter(([_, rating]) => rating >= 5)
+          .map(([bookId]) => bookId);
+          
+        // Get recommendations from similarity data
+        const recommendationCandidates = new Set<string>();
         
-        // Randomly select 4-6 books
-        const recommendationCount = Math.floor(Math.random() * 3) + 4; // 4 to 6 books
-        const randomRecommendations: Book[] = [];
+        highlyRatedBooks.forEach(bookId => {
+          if (similarityMap[bookId]) {
+            Object.entries(similarityMap[bookId])
+              .filter(([recId, score]) => score > 0.7 && !userBookIds.has(recId))
+              .forEach(([recId]) => recommendationCandidates.add(recId));
+          }
+        });
         
-        for (let i = 0; i < recommendationCount && candidateBooks.length > 0; i++) {
-          const randomIndex = Math.floor(Math.random() * candidateBooks.length);
-          randomRecommendations.push(candidateBooks[randomIndex]);
-          candidateBooks.splice(randomIndex, 1);
-        }
+        // Convert to book objects
+        const recBooks = books.filter(book => 
+          recommendationCandidates.has(book._id)
+        );
         
-        setRecommendations(randomRecommendations);
+        setRecommendations(recBooks);
         
       } catch (error) {
-        console.error('Failed to fetch recommendations:', error);
+        console.error('Failed to fetch similarity data:', error);
       }
     };
 
     if (!isLoading && books.length > 0) {
-      fetchRecommendations();
+      fetchSimilarityData();
     }
-  }, [books, readingList, currentlyReading, finishedBooks, isLoading]);
-
+  }, [books, readingList, currentlyReading, finishedBooks, ratings, isLoading]);
+  
   // Create a map of book status for all user books
   useEffect(() => {
     const statusMap: Record<string, 'reading' | 'to-read' | 'finished'> = {};
@@ -497,6 +798,8 @@ function MyBooksPage() {
           books={userBooks} 
           readingStatus={readingStatus} 
           recommendations={recommendations}
+          similarityData={similarityData}
+          ratings={ratings}
         />
       ) : (
         <div className="bg-gray-800 p-8 rounded-lg text-center">
@@ -514,11 +817,12 @@ function MyBooksPage() {
       <div className="bg-gray-800 p-4 rounded-lg mt-4">
         <h3 className="text-md font-semibold text-white mb-2">How to use:</h3>
         <ul className="text-gray-400 text-sm list-disc pl-5">
-          <li>Drag book covers to move them around</li>
-          <li>Click on a book to see more details</li>
-          <li>Books are grouped by reading status</li>
-          <li>Blue = Currently Reading, Green = Reading List, Red = Finished Books, Purple = Recommendations</li>
-          <li>Dotted lines connect books by the same author</li>
+          <li>Books are colored by their status (blue = reading, green = to read, red = finished, purple = recommended)</li>
+          <li>Books with gold borders are rated 5 stars</li>
+          <li>Connected books by purple dotted lines are similar to each other</li>
+          <li>Recommendations appear based on your highly-rated books</li>
+          <li>Click a book to see details and rating</li>
+          <li>Switch between clustering methods using the buttons above</li>
         </ul>
       </div>
     </div>
