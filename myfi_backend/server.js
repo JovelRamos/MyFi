@@ -699,5 +699,149 @@ app.get('/api/user/recommendations', auth, async (req, res) => {
   }
 });
 
+app.get('/api/books/similarity', async (req, res) => {
+  try {
+    // Get reference book ID and target book IDs from query parameters
+    const { referenceId, targetIds } = req.query;
+    
+    if (!referenceId || !targetIds) {
+      return res.status(400).json({ 
+        error: 'Missing required parameters', 
+        details: 'Both referenceId and targetIds are required' 
+      });
+    }
+    
+    // Parse target IDs string into array
+    const targetIdsArray = targetIds.split(',').map(id => id.trim());
+    
+    console.log(`Calculating similarity between book ${referenceId} and ${targetIdsArray.length} target books`);
+    
+    // Execute Python script for similarity calculation
+    const python = spawn('python', [
+      'services/book_similarity.py', 
+      referenceId,
+      ...targetIdsArray
+    ]);
+    
+    let dataString = '';
+    let errorString = '';
+
+    // Collect data from script
+    python.stdout.on('data', function (data) {
+      dataString += data.toString();
+    });
+
+    // Handle errors
+    python.stderr.on('data', (data) => {
+      errorString += data.toString();
+      console.error(`Python stderr: ${data}`);
+    });
+
+    python.on('close', (code) => {
+      if (code !== 0) {
+        console.error(`Python process failed with code ${code}`);
+        console.error(`Error output: ${errorString}`);
+        return res.status(500).json({ 
+          error: 'Failed to calculate similarity',
+          details: errorString
+        });
+      }
+
+      // Parse and return similarity scores
+      try {
+        const similarityData = JSON.parse(dataString.trim());
+        res.json(similarityData);
+      } catch (error) {
+        res.status(500).json({ 
+          error: 'Failed to parse similarity data',
+          details: error.message
+        });
+      }
+    });
+  } catch (error) {
+    console.error('Endpoint error:', error);
+    res.status(500).json({ 
+      error: 'Failed to calculate book similarity',
+      details: error.message
+    });
+  }
+});
+
+app.get('/api/books/pairwise-similarity', async (req, res) => {
+  try {
+    // Get book IDs from query parameter
+    const { bookIds } = req.query;
+    
+    if (!bookIds) {
+      return res.status(400).json({ 
+        error: 'Missing required parameter', 
+        details: 'bookIds parameter is required' 
+      });
+    }
+    
+    // Parse book IDs string into array
+    const bookIdsArray = bookIds.split(',').map(id => id.trim());
+    
+    if (bookIdsArray.length < 2) {
+      return res.status(400).json({ 
+        error: 'Insufficient book IDs', 
+        details: 'At least two book IDs are required for similarity calculation' 
+      });
+    }
+    
+    console.log(`Calculating pairwise similarity among ${bookIdsArray.length} books`);
+    
+    // Execute Python script for pairwise similarity calculation
+    const python = spawn('python', [
+      'services/pairwise_similarity.py', 
+      ...bookIdsArray
+    ]);
+    
+    let dataString = '';
+    let errorString = '';
+
+    // Collect data from script
+    python.stdout.on('data', function (data) {
+      dataString += data.toString();
+    });
+
+    // Handle errors
+    python.stderr.on('data', (data) => {
+      errorString += data.toString();
+      console.error(`Python stderr: ${data}`);
+    });
+
+    python.on('close', (code) => {
+      if (code !== 0) {
+        console.error(`Python process failed with code ${code}`);
+        console.error(`Error output: ${errorString}`);
+        return res.status(500).json({ 
+          error: 'Failed to calculate pairwise similarity',
+          details: errorString
+        });
+      }
+
+      // Parse and return similarity matrix
+      try {
+        const similarityData = JSON.parse(dataString.trim());
+        res.json(similarityData);
+      } catch (error) {
+        res.status(500).json({ 
+          error: 'Failed to parse similarity data',
+          details: error.message
+        });
+      }
+    });
+  } catch (error) {
+    console.error('Endpoint error:', error);
+    res.status(500).json({ 
+      error: 'Failed to calculate pairwise similarity',
+      details: error.message
+    });
+  }
+});
+
+
+
 
 app.listen(PORT, () => console.log(`Server started on ${PORT}`));

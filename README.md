@@ -8,10 +8,10 @@ Home Page:
 ![Home Page](screenshots/landing.jpeg)
 
 My Books Page:
-![About Me Page](screenshots/landing.jpeg)
+![About Me Page](screenshots/cluster.png)
 
 Backend Peek:
-![Backend](screenshots/backend_sneakpeek.png)
+<img src="./screenshots/backend_sneakpeek.png" alt="Backend Sneak Peek" width="600"/>
 
 
 ## About MyFi
