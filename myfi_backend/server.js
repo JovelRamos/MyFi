@@ -793,7 +793,7 @@ app.get('/api/books/pairwise-similarity', async (req, res) => {
     
     // Execute Python script for pairwise similarity calculation
     const python = spawn('python', [
-      'services/pairwise_similarity.py', 
+      'services/book_similarity.py', 
       ...bookIdsArray
     ]);
     

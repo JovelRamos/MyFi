@@ -9,4 +9,5 @@ export interface Book {
     cover_edition_key: string;
     ratings_average?: number;
     ratings_count?: number;
+    similarityScore?: number;
 }
