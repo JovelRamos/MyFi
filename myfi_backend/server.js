@@ -48,6 +48,159 @@ app.get('/api/import-books', async (req, res) => {
     }
 });
 
+app.get('/api/recommendations_by_finished', auth, async (req, res) => {
+  try {
+    // Get the user from the database
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Check if the user has any finished books
+    if (!user.finishedBooks || user.finishedBooks.length === 0) {
+      return res.json({ 
+        message: 'No finished books found',
+        recommendations: []
+      });
+    }
+    
+    console.log(`Processing recommendations for ${user.finishedBooks.length} finished books`);
+    
+    // Create a results object to collect recommendations for each book
+    const allRecommendations = {};
+    
+    // Check if we can use collaborative filtering
+    let useCollaborativeFiltering = false;
+    
+    // Count books that have an actual rating
+    const ratedBooksCount = user.finishedBooks.filter(book => 
+      book.rating !== null && book.rating !== undefined
+    ).length;
+    
+    console.log(`User has ${ratedBooksCount} rated books (need 10+ for collaborative filtering)`);
+    
+    if (ratedBooksCount >= 10) {
+      useCollaborativeFiltering = true;
+      console.log(`Using collaborative filtering for recommendations`);
+    } else {
+      console.log(`Not enough ratings, will use content-based filtering`);
+    }
+    
+    // Choose which Python script to use
+    const pythonScript = useCollaborativeFiltering 
+      ? 'services/item_collaborative_filtering.py'
+      : 'services/recommendation_service.py';
+    
+    // Process each finished book
+    for (const book of user.finishedBooks) {
+      const bookId = book.bookId;
+      
+      // Verify the book exists in the database
+      const bookExists = await Book.findById(bookId);
+      if (!bookExists) {
+        console.log(`Book not found in database: ${bookId}, skipping...`);
+        continue;
+      }
+      
+      console.log(`Getting recommendations for book: ${bookId}`);
+      
+      // Prepare arguments based on filtering type
+      let args = [];
+      if (useCollaborativeFiltering) {
+        // For collaborative filtering: pass user ID and the specific book ID
+        args = [req.userId.toString(), bookId];
+      } else {
+        // For content-based: just pass the book ID
+        args = [bookId];
+      }
+      
+      // Spawn Python process with appropriate arguments
+      const python = spawn('python', [pythonScript, ...args]);
+      
+      // Collect data using promises to handle async properly
+      const recommendations = await new Promise((resolve, reject) => {
+        let dataString = '';
+        let errorString = '';
+        
+        python.stdout.on('data', (data) => {
+          dataString += data.toString();
+        });
+        
+        python.stderr.on('data', (data) => {
+          errorString += data.toString();
+          console.error(`Python stderr for book ${bookId}: ${data}`);
+        });
+        
+        python.on('close', (code) => {
+          if (code !== 0) {
+            console.error(`Python process failed for book ${bookId} with code ${code}`);
+            console.error(`Error output: ${errorString}`);
+            reject(new Error(`Failed to get recommendations for book ${bookId}: ${errorString}`));
+          } else {
+            try {
+              // Parse the recommendations and take the top 6
+              const allRecs = JSON.parse(dataString.trim());
+              const topRecs = allRecs.slice(0, 6);
+              resolve(topRecs);
+            } catch (error) {
+              reject(new Error(`Failed to parse recommendations for book ${bookId}: ${error.message}`));
+            }
+          }
+        });
+      }).catch(error => {
+        console.error(`Error processing book ${bookId}:`, error);
+        return []; // Return empty array if there was an error
+      });
+      
+      // Store recommendations for this book
+      if (recommendations.length > 0) {
+        allRecommendations[bookId] = recommendations;
+      }
+    }
+    
+    // Combine all recommendations to update the user's recommendations field
+    const allRecommendedBookIds = new Set();
+    Object.values(allRecommendations).forEach(recs => {
+      recs.forEach(book => {
+        if (book.id && typeof book.id === 'string') {
+          allRecommendedBookIds.add(book.id);
+        }
+      });
+    });
+    
+    // Update user's recommendations field
+    const recommendationArray = Array.from(allRecommendedBookIds);
+    if (recommendationArray.length > 0) {
+      try {
+        console.log(`Updating user's recommendations with ${recommendationArray.length} unique books`);
+        await User.findByIdAndUpdate(
+          req.userId,
+          { recommendations: recommendationArray },
+          { new: true }
+        );
+      } catch (error) {
+        console.error('Error saving user recommendations:', error);
+      }
+    }
+    
+    // Return all recommendations grouped by book
+    res.json({
+      success: true,
+      recommendationsByBook: allRecommendations,
+      totalUniqueRecommendations: recommendationArray.length
+    });
+    
+  } catch (error) {
+    console.error('Error in recommendations_by_finished endpoint:', error);
+    res.status(500).json({ 
+      error: 'Failed to process recommendations',
+      details: error.message 
+    });
+  }
+});
+
+
 // Endpoint for books
 app.get('/api/books', async (req, res) => {
     try {
