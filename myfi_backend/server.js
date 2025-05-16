@@ -57,153 +57,42 @@ app.get('/api/recommendations_by_finished', async (req, res) => {
       return res.status(400).json({ error: 'Missing userId parameter' });
     }
     
-    // Get the user from the database
-    const user = await User.findById(userId);
+    // Call the new Python script with the user ID
+    const python = spawn('python', ['services/per_book_collaborative_filtering.py', userId.toString()]);
     
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    let dataString = '';
+    let errorString = '';
     
-    // Check if the user has any finished books
-    if (!user.finishedBooks || user.finishedBooks.length === 0) {
-      return res.json({ 
-        message: 'No finished books found',
-        recommendations: []
-      });
-    }
+    python.stdout.on('data', (data) => {
+      dataString += data.toString();
+    });
     
-    console.log(`Processing recommendations for ${user.finishedBooks.length} finished books`);
+    python.stderr.on('data', (data) => {
+      errorString += data.toString();
+      console.error(`Python stderr: ${data}`);
+    });
     
-    // Process each book individually and aggregate results
-    const allRecommendations = {};
-    const recommendationScores = {};
-    
-    // Process each finished book individually
-    for (const book of user.finishedBooks) {
-      const bookId = book.bookId;
-      
-      if (!bookId) {
-        console.log('Skipping book with missing ID');
-        continue;
-      }
-      
-      // Verify the book exists
-      const bookExists = await Book.findById(bookId);
-      if (!bookExists) {
-        console.log(`Book not found: ${bookId}, skipping...`);
-        continue;
-      }
-      
-      console.log(`Getting similar items for book: ${bookId}`);
-      
-      // Call Python script with BOTH user ID and the specific book ID
-      const python = spawn('python', ['services/item_collaborative_filtering.py', userId.toString(), bookId]);
-      
-      // Process the recommendations for this book
-      try {
-        let dataString = '';
-        let errorString = '';
-        
-        python.stdout.on('data', (data) => {
-          dataString += data.toString();
-        });
-        
-        python.stderr.on('data', (data) => {
-          errorString += data.toString();
-          console.error(`Python stderr for book ${bookId}: ${data}`);
-        });
-        
-        const bookRecommendations = await new Promise((resolve, reject) => {
-          python.on('close', (code) => {
-            if (code !== 0) {
-              console.error(`Python process failed for book ${bookId} with code ${code}`);
-              console.error(`Error output: ${errorString}`);
-              reject(new Error(`Failed to get similar items for book ${bookId}`));
-            } else {
-              try {
-                const recs = JSON.parse(dataString.trim());
-                resolve(recs);
-              } catch (error) {
-                reject(new Error(`Failed to parse recommendations for book ${bookId}: ${error.message}`));
-              }
-            }
-          });
-        });
-        
-        // Store recommendations for this book
-        if (bookRecommendations && bookRecommendations.length > 0) {
-          allRecommendations[bookId] = bookRecommendations;
-          
-          // Add to our aggregated scores
-          for (const rec of bookRecommendations) {
-            // Skip if already in user's finished books
-            const isAlreadyFinished = user.finishedBooks.some(finishedBook => 
-              finishedBook.bookId === rec.id
-            );
-            
-            if (isAlreadyFinished) continue;
-            
-            if (!recommendationScores[rec.id]) {
-              recommendationScores[rec.id] = {
-                id: rec.id,
-                title: rec.title,
-                author: rec.author || (rec.author_names && rec.author_names[0]) || 'Unknown Author',
-                cover_url: rec.cover_url,
-                totalScore: 0,
-                count: 0
-              };
-            }
-            
-            recommendationScores[rec.id].totalScore += rec.similarity_score || 1;
-            recommendationScores[rec.id].count += 1;
+    const recommendationResult = await new Promise((resolve, reject) => {
+      python.on('close', (code) => {
+        if (code !== 0) {
+          console.error(`Python process failed with code ${code}`);
+          console.error(`Error output: ${errorString}`);
+          reject(new Error('Failed to get recommendations'));
+        } else {
+          try {
+            const recs = JSON.parse(dataString.trim());
+            resolve(recs);
+          } catch (error) {
+            reject(new Error(`Failed to parse recommendations: ${error.message}`));
           }
         }
-      } catch (error) {
-        console.error(`Error processing book ${bookId}:`, error);
-        // Continue with next book
-      }
-    }
-    
-    // Create aggregated recommendations from our scores
-    const aggregatedRecommendations = Object.values(recommendationScores)
-      .map(item => ({
-        id: item.id,
-        title: item.title,
-        author: item.author,
-        cover_url: item.cover_url,
-        similarity_score: item.totalScore / item.count,
-        occurrence_count: item.count
-      }))
-      // Sort by occurrence count first, then by similarity score
-      .sort((a, b) => {
-        if (b.occurrence_count !== a.occurrence_count) {
-          return b.occurrence_count - a.occurrence_count;
-        }
-        return b.similarity_score - a.similarity_score;
       });
+    });
     
-    // Get top recommendations
-    const topRecommendations = aggregatedRecommendations.slice(0, 20);
-    
-    // Update user's recommendations in database
-    if (topRecommendations.length > 0) {
-      const recommendationIds = topRecommendations.map(book => book.id);
-      
-      await User.findByIdAndUpdate(
-        userId,
-        { recommendations: recommendationIds },
-        { new: true }
-      );
-      
-      console.log(`Updated user's recommendations with ${recommendationIds.length} books`);
-    }
-    
-    // Return recommendations by book and aggregated
+    // Process the results - already organized by book ID
     res.json({
       success: true,
-      recommendationsByBook: allRecommendations,
-      aggregatedRecommendations: topRecommendations,
-      totalUniqueRecommendations: topRecommendations.length
+      recommendationsByBook: recommendationResult
     });
     
   } catch (error) {
