@@ -10,7 +10,7 @@ from bson.objectid import ObjectId
 import numpy as np
 from scipy.sparse import csr_matrix
 import json
-from collections import defaultdict
+from collections import defaultdict, Counter
 import time
 import re
 
@@ -128,9 +128,44 @@ class ItemBasedCF:
             # Initialize similarity matrix as None - will be computed when needed
             self.similarity_matrix = None
             
+            # Build a hub score mapping
+            self.hub_scores = self.compute_hub_scores()
+            
         except Exception as e:
             print(f"Error initializing ItemBasedCF: {str(e)}", file=sys.stderr)
             raise
+    
+    def compute_hub_scores(self):
+        """Compute hub scores for all books based on their frequency in the dataset"""
+        print("Computing hub scores for books...", file=sys.stderr)
+        
+        # Initialize counter for book occurrences
+        book_counts = Counter()
+        
+        # Use a cursor to process users in batches
+        batch_size = 1000
+        user_cursor = self.storygraph_users.find(
+            {"book_ratings": {"$exists": True, "$ne": []}},
+            {"book_ratings": 1}
+        ).batch_size(batch_size)
+        
+        # Count book occurrences in ratings
+        for user in user_cursor:
+            book_ratings = user.get("book_ratings", [])
+            for rating_item in book_ratings:
+                if not isinstance(rating_item, dict):
+                    continue
+                
+                book_id = rating_item.get("book_id")
+                if book_id:
+                    book_counts[book_id] += 1
+        
+        # Calculate hub scores: normalize by dividing by highest count
+        max_count = max(book_counts.values()) if book_counts else 1
+        hub_scores = {book_id: count/max_count for book_id, count in book_counts.items()}
+        
+        print(f"Computed hub scores for {len(hub_scores)} books", file=sys.stderr)
+        return hub_scores
     
     def normalize_book_id(self, book_id):
         """Try different formats of book_id to ensure compatibility"""
@@ -331,7 +366,7 @@ class ItemBasedCF:
         self.similarity_matrix = similarity_matrix
         return similarity_matrix
     
-    def get_recommendations_for_user(self, user_id, n_recommendations=6, min_similarity=0.05):
+    def get_recommendations_for_user(self, user_id, base_recommendations=10):
         """Get recommendations for a user based on their rated books"""
         try:
             print(f"Getting recommendations for user: {user_id}", file=sys.stderr)
@@ -343,6 +378,11 @@ class ItemBasedCF:
                 return []
                 
             print(f"User has rated {len(user_books)} books", file=sys.stderr)
+            
+            # Scale number of recommendations based on finished books
+            # Base is 10 recommendations, and we add 2 for every 5 books the user has finished
+            n_recommendations = base_recommendations + (len(user_books) // 5) * 2
+            print(f"Scaling to {n_recommendations} recommendations based on {len(user_books)} finished books", file=sys.stderr)
             
             # Convert IDs to StoryGraph IDs for lookup
             sg_book_ids = []
@@ -383,46 +423,16 @@ class ItemBasedCF:
             # Average the similarities
             combined_similarity /= len(indices)
             
-            # Add logging for similarity threshold
-            thresholds = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
-            for threshold in thresholds:
-                above_threshold_indices = np.where(combined_similarity > threshold)[0]
-                books_above_threshold = [self.index_to_book_id[idx] for idx in above_threshold_indices if idx not in indices]
-                
-                # Map StoryGraph IDs to OpenLibrary IDs when possible
-                ol_book_ids = []
-                for sg_id in books_above_threshold:
-                    if sg_id in self.sg_to_ol_mapping:
-                        ol_book_ids.append(self.sg_to_ol_mapping[sg_id])
-                    else:
-                        # Try to extract OpenLibrary ID from StoryGraph ID
-                        match = re.search(r'\/works\/(OL\d+W)', sg_id)
-                        if match:
-                            ol_book_id = f"/works/{match.group(1)}"
-                            ol_book_ids.append(ol_book_id)
-                        else:
-                            ol_book_ids.append(sg_id)  # Use SG ID if no mapping
-                
-                print(f"Number of books with similarity > {threshold}: {len(books_above_threshold)}", file=sys.stderr)
-                print(f"Books with similarity > {threshold}:", file=sys.stderr)
-                for i, book_id in enumerate(ol_book_ids[:10]):  # Limit to first 10 for readability
-                    print(f"  Book {i+1}: {book_id}", file=sys.stderr)
-                if len(ol_book_ids) > 10:
-                    print(f"  ... and {len(ol_book_ids) - 10} more", file=sys.stderr)
-                
-            # Sort by similarity and get top N+len(indices) (to exclude input books later)
+            # Sort by similarity
             similar_indices = combined_similarity.argsort()[::-1]
             
             # Prepare recommendations
             recommendations = []
             recommended_ids = []  # To store and print extracted book IDs
+            
             for idx in similar_indices:
                 # Skip the input books
                 if idx in indices:
-                    continue
-                    
-                # Skip if similarity is below threshold
-                if combined_similarity[idx] < min_similarity:
                     continue
                 
                 # Get StoryGraph book_id
@@ -443,6 +453,9 @@ class ItemBasedCF:
                     else:
                         # No mapping found, use StoryGraph ID as-is
                         ol_book_id = sg_book_id
+                
+                # Get hub score for this book (how popular it is in the dataset)
+                hub_score = self.hub_scores.get(sg_book_id, 0)
                 
                 recommended_ids.append(ol_book_id)  # Add to list of recommended IDs
                 
@@ -466,6 +479,7 @@ class ItemBasedCF:
                         "description": meta.get("description", ""),
                         "cover_id": meta.get("cover_id"),
                         "similarity_score": float(combined_similarity[idx]),
+                        "hub_score": float(hub_score),
                         "method": "item_cf"
                     })
                 else:
@@ -475,6 +489,7 @@ class ItemBasedCF:
                         "title": "Unknown",
                         "author_names": [],
                         "similarity_score": float(combined_similarity[idx]),
+                        "hub_score": float(hub_score),
                         "method": "item_cf"
                     })
                 
@@ -488,7 +503,7 @@ class ItemBasedCF:
                 print(f"  Recommendation {i+1}: {book_id}", file=sys.stderr)
             
             if not recommendations:
-                print(f"No recommendations found that meet the threshold. Consider lowering min_similarity (currently {min_similarity})", file=sys.stderr)
+                print("No recommendations found. Consider adding more books to the system.", file=sys.stderr)
                 
             return recommendations
                 
