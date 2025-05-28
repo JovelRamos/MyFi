@@ -142,30 +142,49 @@ class ItemBasedCF:
         # Initialize counter for book occurrences
         book_counts = Counter()
         
-        # Use a cursor to process users in batches
-        batch_size = 1000
-        user_cursor = self.storygraph_users.find(
-            {"book_ratings": {"$exists": True, "$ne": []}},
-            {"book_ratings": 1}
-        ).batch_size(batch_size)
+        # Use a cursor to process users in batches with timeout
+        batch_size = 500  # Reduced batch size
+        timeout_ms = 30000  # 30 second timeout
         
-        # Count book occurrences in ratings
-        for user in user_cursor:
-            book_ratings = user.get("book_ratings", [])
-            for rating_item in book_ratings:
-                if not isinstance(rating_item, dict):
-                    continue
+        try:
+            user_cursor = self.storygraph_users.find(
+                {"book_ratings": {"$exists": True, "$ne": []}},
+                {"book_ratings": 1}
+            ).batch_size(batch_size).max_time_ms(timeout_ms)
+            
+            processed_users = 0
+            # Count book occurrences in ratings
+            for user in user_cursor:
+                book_ratings = user.get("book_ratings", [])
+                for rating_item in book_ratings:
+                    if not isinstance(rating_item, dict):
+                        continue
+                    
+                    book_id = rating_item.get("book_id")
+                    if book_id:
+                        book_counts[book_id] += 1
                 
-                book_id = rating_item.get("book_id")
-                if book_id:
-                    book_counts[book_id] += 1
+                processed_users += 1
+                if processed_users % 10000 == 0:
+                    print(f"Processed {processed_users} users for hub scores", file=sys.stderr)
+            
+            print(f"Processed total of {processed_users} users", file=sys.stderr)
+            
+        except Exception as e:
+            print(f"Warning: Hub score computation incomplete due to: {str(e)}", file=sys.stderr)
+            print("Continuing with partial hub scores...", file=sys.stderr)
         
         # Calculate hub scores: normalize by dividing by highest count
-        max_count = max(book_counts.values()) if book_counts else 1
-        hub_scores = {book_id: count/max_count for book_id, count in book_counts.items()}
+        if book_counts:
+            max_count = max(book_counts.values())
+            hub_scores = {book_id: count/max_count for book_id, count in book_counts.items()}
+        else:
+            # Fallback: assign equal hub scores if no data
+            hub_scores = {book_id: 0.5 for book_id in self.book_id_to_index.keys()}
         
         print(f"Computed hub scores for {len(hub_scores)} books", file=sys.stderr)
         return hub_scores
+
     
     def normalize_book_id(self, book_id):
         """Try different formats of book_id to ensure compatibility"""

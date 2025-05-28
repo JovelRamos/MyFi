@@ -188,85 +188,86 @@ function BookClusterMap({
       .domain(['reading', 'to-read', 'finished', 'recommended'])
       .range(['#60A5FA', '#6EE7B7', '#F87171', '#C084FC']);
 
-    // Create force simulation
-    const simulation = d3.forceSimulation(nodes)
-      .force('charge', d3.forceManyBody().strength(-200))
-      .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2))
-      .force('collision', d3.forceCollide().radius(d => (d as BookNode).radius + 10))
-      .on('tick', ticked);
+// Create force simulation
+const simulation = d3.forceSimulation(nodes)
+  .force('charge', d3.forceManyBody().strength(-150)) // Reduced from -300
+  .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2).strength(0.3)) // Increased from 0.1
+  .force('collision', d3.forceCollide().radius(d => (d as BookNode).radius + 8).strength(0.9)) // Reduced spacing from 15 to 8
+  .alphaDecay(0.02)
+  .velocityDecay(0.6) // Increased from 0.4
+  .on('tick', ticked);
 
-    // Define forces based on selected clustering method
-    if (clusterMethod === 'status') {
-      // Cluster by reading status
-      simulation
-        .force('x', d3.forceX<BookNode>().strength(0.1).x(d => {
-          switch(d.status) {
-            case 'reading': return dimensions.width * 0.25;
-            case 'to-read': return dimensions.width * 0.75;
-            case 'finished': return dimensions.width * 0.25;
-            case 'recommended': return dimensions.width * 0.75;
-            default: return dimensions.width * 0.5;
-          }
-        }))
-        .force('y', d3.forceY<BookNode>().strength(0.1).y(d => {
-          switch(d.status) {
-            case 'reading': return dimensions.height * 0.75;
-            case 'to-read': return dimensions.height * 0.75;
-            case 'finished': return dimensions.height * 0.25;
-            case 'recommended': return dimensions.height * 0.25;
-            default: return dimensions.height * 0.5;
-          }
-        }));
-    } else if (clusterMethod === 'similarity') {
-      // Position books by similarity - similar books cluster together
-      // Use multidimensional scaling approach
-      
-      // Add forces based on book connections
-      const linkForce = d3.forceLink<BookNode, BookConnection>()
-        .id(d => d.id)
-        .links(connections)
-        .distance(d => 200 * (1 - d.strength)) // Similar books are closer
-        .strength(d => d.strength * 0.5);
-      
-      simulation.force('link', linkForce);
-      
-      // Add forces for recommendations to stay close to source books
-      nodes.filter(d => d.sourceBookId).forEach(node => {
-        if (node.sourceBookId) {
-          const sourceNode = nodes.find(n => n.id === node.sourceBookId);
-          if (sourceNode && sourceNode.x && sourceNode.y) {
-            // Initialize position near source
-            node.x = sourceNode.x + (Math.random() - 0.5) * 50;
-            node.y = sourceNode.y + (Math.random() - 0.5) * 50;
-          }
-        }
-      });
-      
-      // Add light status-based clustering to prevent complete chaos
-      simulation
-        .force('x', d3.forceX<BookNode>().strength(0.02).x(d => {
-          // Very weak status-based clustering
-          switch(d.status) {
-            case 'reading': return dimensions.width * 0.4;
-            case 'to-read': return dimensions.width * 0.6;
-            case 'finished': return dimensions.width * 0.4;
-            case 'recommended': return dimensions.width * 0.6;
-            default: return dimensions.width * 0.5;
-          }
-        }))
-        .force('y', d3.forceY<BookNode>().strength(0.02).y(d => {
-          // Very weak status-based clustering
-          switch(d.status) {
-            case 'reading': return dimensions.height * 0.6;
-            case 'to-read': return dimensions.height * 0.6;
-            case 'finished': return dimensions.height * 0.4;
-            case 'recommended': return dimensions.height * 0.4;
-            default: return dimensions.height * 0.5;
-          }
-        }));
-    } else if (clusterMethod === 'genre') {
+// Define forces based on selected clustering method
+if (clusterMethod === 'status') {
+  // Cluster by reading status
+  simulation
+    .force('x', d3.forceX<BookNode>().strength(0.3).x(d => { // Increased from 0.1
+      switch(d.status) {
+        case 'reading': return dimensions.width * 0.3; // Moved closer to center
+        case 'to-read': return dimensions.width * 0.7;
+        case 'finished': return dimensions.width * 0.3;
+        case 'recommended': return dimensions.width * 0.7;
+        default: return dimensions.width * 0.5;
+      }
+    }))
+    .force('y', d3.forceY<BookNode>().strength(0.3).y(d => { // Increased from 0.1
+      switch(d.status) {
+        case 'reading': return dimensions.height * 0.65; // Moved closer to center
+        case 'to-read': return dimensions.height * 0.65;
+        case 'finished': return dimensions.height * 0.35;
+        case 'recommended': return dimensions.height * 0.35;
+        default: return dimensions.height * 0.5;
+      }
+    }));
+} else if (clusterMethod === 'similarity') {
+  // Position books by similarity - similar books cluster together
+  
+  // Add forces based on book connections
+  const linkForce = d3.forceLink<BookNode, BookConnection>()
+    .id(d => d.id)
+    .links(connections)
+    .distance(d => 120 * (1 - d.strength)) // Reduced from 200
+    .strength(d => d.strength * 0.7); // Increased from 0.5
+  
+  simulation.force('link', linkForce);
+  
+  // Add forces for recommendations to stay close to source books
+  nodes.filter(d => d.sourceBookId).forEach(node => {
+    if (node.sourceBookId) {
+      const sourceNode = nodes.find(n => n.id === node.sourceBookId);
+      if (sourceNode && sourceNode.x && sourceNode.y) {
+        // Initialize position near source
+        node.x = sourceNode.x + (Math.random() - 0.5) * 50;
+        node.y = sourceNode.y + (Math.random() - 0.5) * 50;
+      }
+    }
+  });
+  
+  // Add light status-based clustering to prevent complete chaos
+  simulation
+    .force('x', d3.forceX<BookNode>().strength(0.1).x(d => { // Increased from 0.02
+      // Very weak status-based clustering
+      switch(d.status) {
+        case 'reading': return dimensions.width * 0.45; // Moved closer to center
+        case 'to-read': return dimensions.width * 0.55;
+        case 'finished': return dimensions.width * 0.45;
+        case 'recommended': return dimensions.width * 0.55;
+        default: return dimensions.width * 0.5;
+      }
+    }))
+    .force('y', d3.forceY<BookNode>().strength(0.1).y(d => { // Increased from 0.02
+      // Very weak status-based clustering
+      switch(d.status) {
+        case 'reading': return dimensions.height * 0.55; // Moved closer to center
+        case 'to-read': return dimensions.height * 0.55;
+        case 'finished': return dimensions.height * 0.45;
+        case 'recommended': return dimensions.height * 0.45;
+        default: return dimensions.height * 0.5;
+      }
+    }));
+}
+ else if (clusterMethod === 'genre') {
       // Placeholder for genre-based clustering
-      // You would need to extract genres from your book data
     }
 
     // Create SVG elements
@@ -334,7 +335,7 @@ function BookClusterMap({
       .attr('r', d => d.radius);
       
     // Add highlight for 5-star rated books
-node.filter(d => typeof d.rating === 'number' && d.rating >= 5)
+    node.filter(d => typeof d.rating === 'number' && d.rating >= 5)
       .append('circle')
       .attr('r', d => d.radius + 6)
       .attr('fill', 'none')
@@ -359,36 +360,65 @@ node.filter(d => typeof d.rating === 'number' && d.rating >= 5)
       .attr('fill', 'none')
       .attr('stroke', d => colorScale(d.status))
       .attr('stroke-width', 3);
+// src/components/MapPanel.tsx
 
-    // Add book cover images
-    node.append('image')
-        .attr('xlink:href', d => {
-        if (d.book.cover_id) {
-            // Convert cover_id to string to safely use string methods
-            const coverId = String(d.book.cover_id);
-            
-            // Check if cover_id looks like a numeric ID
-            if (/^\d+$/.test(coverId)) {
-            return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
-            }
+// Add book cover images
+node.append('image')
+    .attr('xlink:href', d => {
+    console.log(`Generating cover URL for "${d.book.title}":`, {
+        book_id: d.book._id,
+        cover_id: d.book.cover_id,
+        status: d.status,
+        is_recommendation: d.status === 'recommended'
+    });
+    
+    if (d.book.cover_id) {
+        const coverId = String(d.book.cover_id);
+        console.log(`Cover ID found: ${coverId}`);
+        
+        if (/^\d+$/.test(coverId)) {
+        const url = `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
+        console.log(`Using numeric cover ID URL: ${url}`);
+        return url;
         }
         
-        // If no valid cover_id, use the _id as olid (since _id is the olid)
-        if (d.book._id && d.book._id.startsWith('OL')) {
-            return `https://covers.openlibrary.org/b/olid/${d.book._id}-M.jpg`;
+        if (coverId.startsWith('OL') && coverId.includes('M')) {
+        const url = `https://covers.openlibrary.org/b/olid/${coverId.replace('M', '')}-M.jpg`;
+        console.log(`Using OL edition key URL: ${url}`);
+        return url;
         }
+    }
+    
+    if (d.book._id && d.book._id.startsWith('OL')) {
+        const url = `https://covers.openlibrary.org/b/olid/${d.book._id}-M.jpg`;
+        console.log(`Using book ID as OL URL: ${url}`);
+        return url;
+    }
+    
+    console.log(`No cover found, using placeholder for "${d.book.title}"`);
+    return '/placeholder-cover.jpg';
+    })
+    .attr('x', d => -d.radius)
+    .attr('y', d => -d.radius)
+    .attr('width', d => d.radius * 2)
+    .attr('height', d => d.radius * 2)
+    .attr('clip-path', d => `url(#clip-${d.id})`)
+    .attr('preserveAspectRatio', 'xMidYMid slice')
+    .on('error', function(event, d) {
+        const current = d3.select(this).attr('xlink:href');
+        console.log(`Image load error for "${d.book.title}":`, {
+            attempted_url: current,
+            book_data: d.book
+        });
         
-        // Fallback to placeholder
-        return '/placeholder-cover.jpg';
-        })
-        .attr('x', d => -d.radius)
-        .attr('y', d => -d.radius)
-        .attr('width', d => d.radius * 2)
-        .attr('height', d => d.radius * 2)
-        .attr('clip-path', d => `url(#clip-${d.id})`)
-        .attr('preserveAspectRatio', 'xMidYMid slice');
-  
-  
+        if (current !== '/placeholder-cover.jpg') {
+            d3.select(this).attr('xlink:href', '/placeholder-cover.jpg');
+        }
+    })
+    .on('load', function(event, d) {
+        console.log(`Image loaded successfully for "${d.book.title}"`);
+    });
+
     
     // Add rating indicator for rated books
     node.filter(d => typeof d.rating === 'number' && d.rating > 0)

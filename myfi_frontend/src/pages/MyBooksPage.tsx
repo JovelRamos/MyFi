@@ -1,4 +1,4 @@
-// src/pages/MyBooksPage.tsx
+// myfi_frontend/src/pages/MyBooksPage.tsx
 import { useState, useEffect, useMemo } from 'react';
 import { useUserBooks } from '../contexts/UserBookContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -13,18 +13,18 @@ export default function MyBooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [recommendations, setRecommendations] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch books and recommendations
+  // Load user books first
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchBooks = async () => {
       if (!isAuthenticated || isInitialLoading) return;
       
       try {
         setLoading(true);
         setError(null);
 
-        // Get all unique book IDs from user's lists
         const allBookIds = [...new Set([
           ...readingList,
           ...currentlyReading,
@@ -33,55 +33,89 @@ export default function MyBooksPage() {
 
         if (allBookIds.length === 0) {
           setBooks([]);
-          setRecommendations([]);
           setLoading(false);
           return;
         }
 
-        // Fetch book details
         const response = await api.get('/books');
         const allBooks = response.data.books;
         
-        // Filter books to only include user's books
         const userBooks = allBooks.filter((book: Book) => 
           allBookIds.includes(book._id)
         );
         setBooks(userBooks);
 
-        // Get recommendations based on highly rated books
-        const highlyRatedBooks = finishedBooks
-          .filter(book => book.rating && book.rating >= 4)
-          .map(book => book.bookId);
-
-        if (highlyRatedBooks.length > 0) {
-          try {
-            const recResponse = await api.get(`/recommendations_multiple?books=${highlyRatedBooks.join(',')}&userId=${user?.id}`);
-            const recBooks = recResponse.data.map((rec: any) => ({
-              _id: rec.id,
-              title: rec.title,
-              author_names: rec.author_names,
-              description: rec.description,
-              cover_id: rec.cover_id,
-              ratings_average: 0,
-              similarity_score: rec.similarity_score
-            }));
-            setRecommendations(recBooks);
-          } catch (recError) {
-            console.warn('Failed to fetch recommendations:', recError);
-            setRecommendations([]);
-          }
-        }
-
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error('Error fetching books:', err);
         setError('Failed to load your books');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [isAuthenticated, isInitialLoading, readingList, currentlyReading, finishedBooks, user?.id]);
+    fetchBooks();
+  }, [isAuthenticated, isInitialLoading, readingList, currentlyReading, finishedBooks]);
+
+
+// Load recommendations separately
+useEffect(() => {
+  let isActiveCall = true;
+  const fetchRecommendations = async () => {
+  if (!isAuthenticated || loading) return;
+
+  try {
+    setLoadingRecommendations(true);
+    
+    const recResponse = await api.get('/user/recommendations');
+    
+    if (!isActiveCall) return;
+    
+    const recBooks = recResponse.data.recommendations || [];
+    
+    // Fetch complete book data from database to get cover_id
+    const bookIds = recBooks.map((rec: any) => rec.id || rec._id);
+    let booksWithCoverData = [];
+    
+    if (bookIds.length > 0) {
+      const booksResponse = await api.get('/books');
+      const allBooks = booksResponse.data.books;
+      booksWithCoverData = allBooks.filter((book: Book) => 
+        bookIds.includes(book._id)
+      );
+    }
+    
+    const formattedRecs = recBooks.map((rec: any) => {
+      // Find the corresponding book data with cover_id
+      const bookData = booksWithCoverData.find(book => book._id === (rec.id || rec._id));
+      
+      return {
+        _id: rec.id || rec._id,
+        title: rec.title,
+        author_names: rec.author_names || rec.author,
+        description: rec.description,
+        cover_id: bookData?.cover_id || rec.cover_id || rec.coverId || rec.cover_edition_key,
+        ratings_average: rec.ratings_average || 0,
+        similarity_score: rec.similarity_score || 1.0
+      };
+    });
+    
+    setRecommendations(formattedRecs);
+  } catch (recError) {
+    console.warn('Failed to fetch recommendations:', recError);
+    if (isActiveCall) setRecommendations([]);
+  } finally {
+    if (isActiveCall) setLoadingRecommendations(false);
+  }
+};
+
+  fetchRecommendations();
+  
+  return () => {
+    isActiveCall = false;
+  };
+}, [isAuthenticated, loading, user?.id]);
+
+
 
   // Create reading status mapping
   const readingStatus = useMemo(() => {
@@ -123,8 +157,8 @@ export default function MyBooksPage() {
       
       // Add connections to recommendations
       recommendations.forEach(rec => {
-        if (rec.similarity_score && rec.similarity_score > 0.3) {
-          data[book._id][rec._id] = rec.similarity_score;
+        if (rec.similarityScore && rec.similarityScore > 0.3) {
+          data[book._id][rec._id] = rec.similarityScore;
         }
       });
     });
@@ -182,6 +216,7 @@ export default function MyBooksPage() {
         <h1 className="text-4xl font-bold text-white mb-4">My Books</h1>
         <p className="text-gray-400">
           Explore your reading collection with {books.length} books 
+          {loadingRecommendations && " (loading recommendations...)"}
           {recommendations.length > 0 && ` and ${recommendations.length} recommendations`}
         </p>
       </div>
