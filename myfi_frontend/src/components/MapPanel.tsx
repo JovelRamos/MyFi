@@ -188,13 +188,13 @@ function BookClusterMap({
       .domain(['reading', 'to-read', 'finished', 'recommended'])
       .range(['#60A5FA', '#6EE7B7', '#F87171', '#C084FC']);
 
-// Create force simulation
+// Force simulation adjustments
 const simulation = d3.forceSimulation(nodes)
-  .force('charge', d3.forceManyBody().strength(-150)) // Reduced from -300
-  .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2).strength(0.3)) // Increased from 0.1
-  .force('collision', d3.forceCollide().radius(d => (d as BookNode).radius + 8).strength(0.9)) // Reduced spacing from 15 to 8
+  .force('charge', d3.forceManyBody().strength(-100)) // Reduced from -150 
+  .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2).strength(0.3))
+  .force('collision', d3.forceCollide().radius(d => (d as BookNode).radius + 20).strength(0.9)) // Increased spacing from 8 to 20
   .alphaDecay(0.02)
-  .velocityDecay(0.6) // Increased from 0.4
+  .velocityDecay(0.6)
   .on('tick', ticked);
 
 // Define forces based on selected clustering method
@@ -327,6 +327,7 @@ if (clusterMethod === 'status') {
         setBookStatus(d.status);
         event.stopPropagation();
       });
+      
 
     // Add clipPath for circular book covers
     node.append('clipPath')
@@ -420,28 +421,28 @@ node.append('image')
     });
 
     
-    // Add rating indicator for rated books
-    node.filter(d => typeof d.rating === 'number' && d.rating > 0)
-      .append('g')
-      .attr('class', 'rating')
-      .attr('transform', d => `translate(0, ${d.radius + 16})`)
-      .each(function(d) {
-        if (!d.rating) return;
-        const rating = Math.round(d.rating);
-        const g = d3.select(this);
-        const starSize = 6;
-        const totalWidth = rating * starSize * 2;
-        
-        for (let i = 0; i < rating; i++) {
-          g.append('text')
-            .attr('x', i * starSize * 2 - totalWidth/2 + starSize)
-            .attr('y', 0)
-            .attr('text-anchor', 'middle')
-            .attr('fill', '#FFD700') // Gold stars
-            .attr('font-size', starSize * 2)
-            .text('★');
-        }
-      });
+ // Add rating indicator for rated books with increased offset
+node.filter(d => typeof d.rating === 'number' && d.rating > 0)
+  .append('g')
+  .attr('class', 'rating')
+  .attr('transform', d => `translate(0, ${d.radius + 25})`) // Increased from 16 to 25
+  .each(function(d) {
+    if (!d.rating) return;
+    const rating = Math.round(d.rating);
+    const g = d3.select(this);
+    const starSize = 6;
+    const totalWidth = rating * starSize * 2;
+    
+    for (let i = 0; i < rating; i++) {
+      g.append('text')
+        .attr('x', i * starSize * 2 - totalWidth/2 + starSize)
+        .attr('y', 0)
+        .attr('text-anchor', 'middle')
+        .attr('fill', '#FFD700')
+        .attr('font-size', starSize * 2)
+        .text('★');
+    }
+  });
     
     // Add small badge for recommended books
     node.filter(d => d.status === 'recommended')
